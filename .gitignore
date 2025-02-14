@@ -1,5 +1,14 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Data directories
+data/
+data/*
+data/inventory_postgres/
+
+# Generated database files
+apps/server/inventory-api/database/gen/
+apps/server/shipment-api/database/gen/
+
 # Dependencies
 node_modules
 .pnp

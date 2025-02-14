@@ -1,0 +1,21 @@
+version: "2"
+sql:
+  - name: "inventory"
+    engine: "postgresql"
+    queries: "apps/server/inventory-api/database/queries"
+    schema: "apps/server/inventory-api/database/migrations"
+    gen:
+      go:
+        package: "database"
+        out: "apps/server/inventory-api/database/gen"
+        sql_package: "pgx/v5"
+
+  - name: "shipment"
+    engine: "postgresql"
+    queries: "apps/server/shipment-api/database/queries"
+    schema: "apps/server/shipment-api/database/migrations"
+    gen:
+      go:
+        package: "database"
+        out: "apps/server/shipment-api/database/gen"
+        sql_package: "pgx/v5"

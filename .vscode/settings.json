@@ -1,7 +1,14 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ]
+	"eslint.workingDirectories": [
+		{
+			"mode": "auto"
+		}
+	],
+	"workbench.colorCustomizations": {
+		"editorCursor.foreground": "#e9dbb7",
+		"activityBarBadge.background": "#e9dbb7",
+		"activityBarBadge.foreground": "#262626",
+		"statusBar.background": "#262626",
+		"statusBar.foreground": "#e9dbb7"
+	}
 }
