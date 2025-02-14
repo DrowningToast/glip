@@ -4,16 +4,16 @@ INSERT INTO accounts (
     password,
     role
 ) VALUES (
-    $1, $2, $3
+    @username, @password, @role
 ) RETURNING *;
 
 -- name: GetShipmentAccountByUsername :one
 SELECT * FROM accounts
-WHERE username = $1 AND deleted_at IS NULL;
+WHERE username = @username AND deleted_at IS NULL;
 
 -- name: GetShipmentAccountById :one
 SELECT * FROM accounts
-WHERE account_id = $1 AND deleted_at IS NULL;
+WHERE id = @id AND deleted_at IS NULL;
 
 -- name: ListShipmentAccounts :many
 SELECT * FROM accounts
@@ -23,14 +23,14 @@ ORDER BY created_at DESC;
 -- name: UpdateShipmentAccount :one
 UPDATE accounts
 SET 
-    username = COALESCE($1, username),
-    password = COALESCE($2, password),
-    role = COALESCE($3, role),
+    username = COALESCE(@username, username),
+    password = COALESCE(@password, password),
+    role = COALESCE(@role, role),
     updated_at = CURRENT_TIMESTAMP
-WHERE account_id = $4 AND deleted_at IS NULL
+WHERE id = @id AND deleted_at IS NULL
 RETURNING *;
 
 -- name: SoftDeleteShipmentAccount :exec
 UPDATE accounts
 SET deleted_at = CURRENT_TIMESTAMP
-WHERE account_id = $1; 
+WHERE id = @id; 

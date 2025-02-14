@@ -7,42 +7,46 @@ INSERT INTO alerts (
     description,
     status
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    @relatedEntityType, @relatedEntityId,
+    @alertType, @severity, @description, @status
 ) RETURNING *;
 
 -- name: GetShipmentAlertById :one
 SELECT * FROM alerts
-WHERE alert_id = $1;
+WHERE id = @id;
 
 -- name: ListShipmentActiveAlerts :many
 SELECT * FROM alerts
 WHERE status != 'resolved'
 ORDER BY created_at DESC
-LIMIT $1 OFFSET $2;
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
 -- name: ListShipmentAlertsByType :many
 SELECT * FROM alerts
-WHERE alert_type = $1 AND status != 'resolved'
-ORDER BY created_at DESC;
+WHERE alert_type = @alertType AND status != 'resolved'
+ORDER BY created_at DESC
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
 -- name: ListShipmentAlertsBySeverity :many
 SELECT * FROM alerts
-WHERE severity = $1 AND status != 'resolved'
-ORDER BY created_at DESC;
+WHERE severity = @severity AND status != 'resolved'
+ORDER BY created_at DESC
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
 -- name: ListShipmentAlertsByEntity :many
 SELECT * FROM alerts
-WHERE related_entity_type = $1 
-AND related_entity_id = $2 
+WHERE related_entity_type = @entityType
+AND related_entity_id = @entityId
 AND status != 'resolved'
-ORDER BY created_at DESC;
+ORDER BY created_at DESC
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
 -- name: UpdateShipmentAlertStatus :one
 UPDATE alerts
 SET 
-    status = $1,
+    status = @status,
     updated_at = CURRENT_TIMESTAMP
-WHERE alert_id = $2
+WHERE id = @id
 RETURNING *;
 
 -- name: GetShipmentActiveAlertCount :one

@@ -1,58 +1,67 @@
 -- name: CreateShipment :one
 INSERT INTO shipments (
-    origin_warehouse_id,
+    route,
+    last_warehouse_id,
     destination_address,
     carrier_id,
     scheduled_departure,
     scheduled_arrival,
+    actual_departure,
+    actual_arrival,
     status,
     total_weight,
     total_volume,
     special_instructions
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9
+    @route, @lastWarehouseId, @destinationAddress, @carrierId,
+    @scheduledDeparture, @scheduledArrival, @actualDeparture, @actualArrival,
+    @status, @totalWeight, @totalVolume, @specialInstructions
 ) RETURNING *;
 
 -- name: GetShipmentById :one
 SELECT * FROM shipments
-WHERE shipment_id = $1;
+WHERE id = @id;
 
 -- name: ListShipments :many
 SELECT * FROM shipments
 ORDER BY created_at DESC
-LIMIT $1 OFFSET $2;
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
--- name: ListShipmentsByWarehouse :many
+-- name: ListShipmentsByLastWarehouse :many
 SELECT * FROM shipments
-WHERE origin_warehouse_id = $1
-ORDER BY created_at DESC;
+WHERE last_warehouse_id = @warehouseId
+ORDER BY created_at DESC
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
 -- name: ListShipmentsByCarrier :many
 SELECT * FROM shipments
-WHERE carrier_id = $1
-ORDER BY created_at DESC;
+WHERE carrier_id = @carrierId
+ORDER BY created_at DESC
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
 -- name: UpdateShipment :one
 UPDATE shipments
 SET 
-    destination_address = COALESCE($1, destination_address),
-    carrier_id = COALESCE($2, carrier_id),
-    scheduled_departure = COALESCE($3, scheduled_departure),
-    scheduled_arrival = COALESCE($4, scheduled_arrival),
-    actual_departure = COALESCE($5, actual_departure),
-    actual_arrival = COALESCE($6, actual_arrival),
-    status = COALESCE($7, status),
-    total_weight = COALESCE($8, total_weight),
-    total_volume = COALESCE($9, total_volume),
-    special_instructions = COALESCE($10, special_instructions),
+    route = COALESCE(@route, route),
+    last_warehouse_id = COALESCE(@lastWarehouseId, last_warehouse_id),
+    destination_address = COALESCE(@destinationAddress, destination_address),
+    carrier_id = COALESCE(@carrierId, carrier_id),
+    scheduled_departure = COALESCE(@scheduledDeparture, scheduled_departure),
+    scheduled_arrival = COALESCE(@scheduledArrival, scheduled_arrival),
+    actual_departure = COALESCE(@actualDeparture, actual_departure),
+    actual_arrival = COALESCE(@actualArrival, actual_arrival),
+    status = COALESCE(@status, status),
+    total_weight = COALESCE(@totalWeight, total_weight),
+    total_volume = COALESCE(@totalVolume, total_volume),
+    special_instructions = COALESCE(@specialInstructions, special_instructions),
     updated_at = CURRENT_TIMESTAMP
-WHERE shipment_id = $11
+WHERE id = @id
 RETURNING *;
 
 -- name: UpdateShipmentStatus :one
 UPDATE shipments
 SET 
-    status = $1,
+    status = @status,
     updated_at = CURRENT_TIMESTAMP
-WHERE shipment_id = $2
+WHERE id = @id
 RETURNING *; 

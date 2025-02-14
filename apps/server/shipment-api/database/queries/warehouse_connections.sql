@@ -6,55 +6,46 @@ INSERT INTO warehouse_connections (
     status,
     created_by
 ) VALUES (
-    $1, $2, $3, $4, $5
+    @warehouseId, @apiKey, @name, @status, @createdBy
 ) RETURNING *;
 
 -- name: GetWarehouseConnectionById :one
 SELECT * FROM warehouse_connections
-WHERE connection_id = $1;
+WHERE id = @id;
 
 -- name: GetWarehouseConnectionByApiKey :one
 SELECT * FROM warehouse_connections
-WHERE api_key = $1 AND status = 'active';
+WHERE api_key = @apiKey AND status = 'ACTIVE';
 
 -- name: ListWarehouseConnections :many
 SELECT * FROM warehouse_connections
-ORDER BY created_at DESC;
+ORDER BY created_at DESC
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
--- name: ListWarehouseConnectionsByWarehouse :many
+-- name: ListWarehouseConnectionsByStatus :many
 SELECT * FROM warehouse_connections
-WHERE warehouse_id = $1
-ORDER BY created_at DESC;
+WHERE status = @status
+ORDER BY created_at DESC
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
--- name: UpdateWarehouseConnectionStatus :one
+-- name: UpdateWarehouseConnection :one
 UPDATE warehouse_connections
 SET 
-    status = $1,
-    updated_at = CURRENT_TIMESTAMP
-WHERE connection_id = $2
-RETURNING *;
-
--- name: UpdateWarehouseConnectionLastUsed :one
-UPDATE warehouse_connections
-SET 
-    last_used_at = CURRENT_TIMESTAMP,
-    updated_at = CURRENT_TIMESTAMP
-WHERE connection_id = $1
+    status = COALESCE(@status, status),
+    updated_at = CURRENT_TIMESTAMP,
+    warehouse_id = COALESCE(@warehouseId, warehouse_id),
+    api_key = COALESCE(@apiKey, api_key), 
+    name = COALESCE(@name, name),
+    status = COALESCE(@status, status),
+    last_used_at = COALESCE(@lastUsedAt, last_used_at),
+    created_by = COALESCE(@createdBy, created_by)
+WHERE id = @id
 RETURNING *;
 
 -- name: RevokeWarehouseConnection :one
 UPDATE warehouse_connections
 SET 
-    status = 'revoked',
+    status = 'REVOKED',
     updated_at = CURRENT_TIMESTAMP
-WHERE connection_id = $1
+WHERE id = @id
 RETURNING *;
-
--- name: GetActiveWarehouseConnectionCount :one
-SELECT 
-    COUNT(*) as total_connections,
-    COUNT(CASE WHEN status = 'active' THEN 1 END) as active_connections,
-    COUNT(CASE WHEN status = 'inactive' THEN 1 END) as inactive_connections,
-    COUNT(CASE WHEN status = 'revoked' THEN 1 END) as revoked_connections
-FROM warehouse_connections
-WHERE warehouse_id = $1; 

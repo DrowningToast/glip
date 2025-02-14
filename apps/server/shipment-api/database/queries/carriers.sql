@@ -8,12 +8,12 @@ INSERT INTO carriers (
     description,
     status
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    @name, @carrierType, @contactPerson, @contactPhone, @email, @description, @status
 ) RETURNING *;
 
 -- name: GetCarrierById :one
 SELECT * FROM carriers
-WHERE carrier_id = $1;
+WHERE id = @id;
 
 -- name: ListCarriers :many
 SELECT * FROM carriers
@@ -24,28 +24,23 @@ SELECT * FROM carriers
 WHERE status = 'active'
 ORDER BY name;
 
--- name: ListCarriersByType :many
-SELECT * FROM carriers
-WHERE carrier_type = $1
-ORDER BY name;
-
 -- name: UpdateCarrier :one
 UPDATE carriers
 SET 
-    name = $1,
-    carrier_type = $2,
-    contact_person = $3,
-    contact_phone = $4,
-    email = $5,
-    description = $6,
-    status = $7
-WHERE carrier_id = $8
+    name = @name,
+    carrier_type = @carrierType,
+    contact_person = @contactPerson,
+    contact_phone = @contactPhone,
+    email = @email,
+    description = @description,
+    status = @status
+WHERE id = @id
 RETURNING *;
 
 -- name: GetCarrierShipmentStats :one
 SELECT 
     c.*,
-    COUNT(s.shipment_id) as total_shipments,
+    COUNT(s.id) as total_shipments,
     COUNT(CASE WHEN s.status = 'DELIVERED' THEN 1 END) as delivered_shipments,
     COUNT(CASE WHEN s.status = 'CANCELLED' THEN 1 END) as cancelled_shipments,
     AVG(CASE 
@@ -53,6 +48,6 @@ SELECT
         THEN EXTRACT(EPOCH FROM (s.actual_arrival - s.scheduled_arrival))/3600 
     END) as avg_delay_hours
 FROM carriers c
-LEFT JOIN shipments s ON c.carrier_id = s.carrier_id
-WHERE c.carrier_id = $1
-GROUP BY c.carrier_id; 
+LEFT JOIN shipments s ON c.id = s.carrier_id
+WHERE c.id = @id
+GROUP BY c.id; 

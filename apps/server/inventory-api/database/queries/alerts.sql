@@ -1,4 +1,4 @@
--- name: CreateAlert :one
+-- name: CreateInventoryAlert :one
 INSERT INTO alerts (
     related_entity_type,
     related_entity_id,
@@ -7,46 +7,46 @@ INSERT INTO alerts (
     description,
     status
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    @relatedEntityType, @relatedEntityId,
+    @alertType, @severity, @description, @status
 ) RETURNING *;
 
--- name: GetAlertById :one
+-- name: GetInventoryAlertById :one
 SELECT * FROM alerts
-WHERE alert_id = $1;
+WHERE id = @id;
 
--- name: ListActiveAlerts :many
+-- name: ListInventoryActiveAlerts :many
 SELECT * FROM alerts
 WHERE status != 'resolved'
 ORDER BY created_at DESC
-LIMIT $1
-OFFSET $2;
+LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
 
--- name: ListAlertsByType :many
+-- name: ListInventoryAlertsByType :many
 SELECT * FROM alerts
-WHERE alert_type = $1 AND status != 'resolved'
+WHERE alert_type = @alertType AND status != 'resolved'
 ORDER BY created_at DESC;
 
--- name: ListAlertsBySeverity :many
+-- name: ListInventoryAlertsBySeverity :many
 SELECT * FROM alerts
-WHERE severity = $1 AND status != 'resolved'
+WHERE severity = @severity AND status != 'resolved'
 ORDER BY created_at DESC;
 
--- name: ListAlertsByEntity :many
+-- name: ListInventoryAlertsByEntity :many
 SELECT * FROM alerts
-WHERE related_entity_type = $1 
-AND related_entity_id = $2 
+WHERE related_entity_type = @entityType 
+AND related_entity_id = @entityId 
 AND status != 'resolved'
 ORDER BY created_at DESC;
 
--- name: UpdateAlertStatus :one
+-- name: UpdateInventoryAlertStatus :one
 UPDATE alerts
 SET 
-    status = $1,
+    status = @status,
     updated_at = CURRENT_TIMESTAMP
-WHERE alert_id = $2
+WHERE id = @id
 RETURNING *;
 
--- name: GetActiveAlertCount :one
+-- name: GetInventoryActiveAlertCount :one
 SELECT 
     COUNT(*) as total_alerts,
     COUNT(CASE WHEN severity = 'high' THEN 1 END) as high_severity,

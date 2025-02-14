@@ -4,16 +4,16 @@ INSERT INTO accounts (
     password,
     role
 ) VALUES (
-    $1, $2, $3
+    @username, @password, @role
 ) RETURNING *;
 
 -- name: GetAccountByUsername :one
 SELECT * FROM accounts
-WHERE username = $1 AND deleted_at IS NULL;
+WHERE username = @username AND deleted_at IS NULL;
 
--- name: GetAccountByID :one
+-- name: GetAccountById :one
 SELECT * FROM accounts
-WHERE account_id = $1 AND deleted_at IS NULL;
+WHERE id = @id AND deleted_at IS NULL;
 
 -- name: ListAccounts :many
 SELECT * FROM accounts
@@ -23,14 +23,14 @@ ORDER BY created_at DESC;
 -- name: UpdateAccount :one
 UPDATE accounts
 SET 
-    username = COALESCE(sqlc.narg('username'), username),
-    password = COALESCE(sqlc.narg('password'), password),
-    role = COALESCE(sqlc.narg('role'), role),
+    username = COALESCE(@username, username),
+    password = COALESCE(@password, password),
+    role = COALESCE(@role, role),
     updated_at = CURRENT_TIMESTAMP
-WHERE account_id = sqlc.arg('account_id') AND deleted_at IS NULL
+WHERE id = @id AND deleted_at IS NULL
 RETURNING *;
 
 -- name: SoftDeleteAccount :exec
 UPDATE accounts
 SET deleted_at = CURRENT_TIMESTAMP
-WHERE account_id = $1;
+WHERE id = @id;
