@@ -11,7 +11,8 @@ const (
 )
 
 type WarehouseConnection struct {
-	Id          int                       `json:"id"`
+	Id int `json:"id"`
+	// The warehouse id that the connection is for
 	WarehouseId int                       `json:"warehouse_id"`
 	ApiKey      string                    `json:"api_key"`
 	Name        string                    `json:"name"`
@@ -19,4 +20,6 @@ type WarehouseConnection struct {
 	CreatedAt   *time.Time                `json:"created_at"`
 	UpdatedAt   *time.Time                `json:"updated_at"`
 	LastUsedAt  *time.Time                `json:"last_used_at"`
+	// The account id of the user who created the connection
+	CreatedBy int `json:"created_by"`
 }

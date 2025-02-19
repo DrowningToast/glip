@@ -1,4 +1,4 @@
--- name: CreateShipmentAccount :one
+-- name: CreateAccount :one
 INSERT INTO accounts (
     username,
     password,
@@ -7,20 +7,21 @@ INSERT INTO accounts (
     @username, @password, @role
 ) RETURNING *;
 
--- name: GetShipmentAccountByUsername :one
+-- name: GetAccountByUsername :one
 SELECT * FROM accounts
 WHERE username = @username AND deleted_at IS NULL;
 
--- name: GetShipmentAccountById :one
+-- name: GetAccountById :one
 SELECT * FROM accounts
 WHERE id = @id AND deleted_at IS NULL;
 
--- name: ListShipmentAccounts :many
+-- name: ListAccounts :many
 SELECT * FROM accounts
 WHERE deleted_at IS NULL
-ORDER BY created_at DESC;
+ORDER BY created_at DESC
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
--- name: UpdateShipmentAccount :one
+-- name: UpdateAccount :one
 UPDATE accounts
 SET 
     username = COALESCE(@username, username),
@@ -30,7 +31,7 @@ SET
 WHERE id = @id AND deleted_at IS NULL
 RETURNING *;
 
--- name: SoftDeleteShipmentAccount :exec
+-- name: SoftDeleteAccount :exec
 UPDATE accounts
 SET deleted_at = CURRENT_TIMESTAMP
-WHERE id = @id; 
+WHERE id = @id;

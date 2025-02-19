@@ -13,9 +13,9 @@ INSERT INTO shipments (
     total_volume,
     special_instructions
 ) VALUES (
-    @route, @lastWarehouseId, @destinationAddress, @carrierId,
-    @scheduledDeparture, @scheduledArrival, @actualDeparture, @actualArrival,
-    @status, @totalWeight, @totalVolume, @specialInstructions
+    @route, @last_warehouse_id, @destination_address, @carrier_id,
+    @scheduled_departure, @scheduled_arrival, @actual_departure, @actual_arrival,
+    @status, @total_weight, @total_volume, @special_instructions
 ) RETURNING *;
 
 -- name: GetShipmentById :one
@@ -25,35 +25,35 @@ WHERE id = @id;
 -- name: ListShipments :many
 SELECT * FROM shipments
 ORDER BY created_at DESC
-LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
 -- name: ListShipmentsByLastWarehouse :many
 SELECT * FROM shipments
-WHERE last_warehouse_id = @warehouseId
+WHERE last_warehouse_id = @warehouse_id
 ORDER BY created_at DESC
-LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
 -- name: ListShipmentsByCarrier :many
 SELECT * FROM shipments
-WHERE carrier_id = @carrierId
+WHERE carrier_id = @carrier_id
 ORDER BY created_at DESC
-LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
 -- name: UpdateShipment :one
 UPDATE shipments
 SET 
     route = COALESCE(@route, route),
-    last_warehouse_id = COALESCE(@lastWarehouseId, last_warehouse_id),
-    destination_address = COALESCE(@destinationAddress, destination_address),
-    carrier_id = COALESCE(@carrierId, carrier_id),
-    scheduled_departure = COALESCE(@scheduledDeparture, scheduled_departure),
-    scheduled_arrival = COALESCE(@scheduledArrival, scheduled_arrival),
-    actual_departure = COALESCE(@actualDeparture, actual_departure),
-    actual_arrival = COALESCE(@actualArrival, actual_arrival),
+    last_warehouse_id = COALESCE(@last_warehouse_id, last_warehouse_id),
+    destination_address = COALESCE(@destination_address, destination_address),
+    carrier_id = COALESCE(@carrier_id, carrier_id),
+    scheduled_departure = COALESCE(@scheduled_departure, scheduled_departure),
+    scheduled_arrival = COALESCE(@scheduled_arrival, scheduled_arrival),
+    actual_departure = COALESCE(@actual_departure, actual_departure),
+    actual_arrival = COALESCE(@actual_arrival, actual_arrival),
     status = COALESCE(@status, status),
-    total_weight = COALESCE(@totalWeight, total_weight),
-    total_volume = COALESCE(@totalVolume, total_volume),
-    special_instructions = COALESCE(@specialInstructions, special_instructions),
+    total_weight = COALESCE(@total_weight, total_weight),
+    total_volume = COALESCE(@total_volume, total_volume),
+    special_instructions = COALESCE(@special_instructions, special_instructions),
     updated_at = CURRENT_TIMESTAMP
 WHERE id = @id
 RETURNING *;

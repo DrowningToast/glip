@@ -39,6 +39,8 @@ CREATE TABLE warehouses (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     location_address TEXT NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    city VARCHAR(100) NOT NULL,
     total_capacity DECIMAL(10,2) NOT NULL,
     current_capacity DECIMAL(10,2) NOT NULL,
     description TEXT,
@@ -71,7 +73,7 @@ CREATE TABLE shipments (
     scheduled_arrival TIMESTAMP NOT NULL,
     actual_departure TIMESTAMP,
     actual_arrival TIMESTAMP,
-    status VARCHAR(20), -- IN_TRANSIT_ON_THE_WAY, IN_TRANSIT_IN_WAREHOUSE, DELIVERED, CANCELLED
+    status VARCHAR(20) NOT NULL, -- IN_TRANSIT_ON_THE_WAY, IN_TRANSIT_IN_WAREHOUSE, DELIVERED, CANCELLED
     total_weight DECIMAL(10,2) NOT NULL,
     total_volume DECIMAL(10,2) NOT NULL,
     special_instructions TEXT,
@@ -83,12 +85,12 @@ CREATE TABLE shipments (
 -- Alerts and Notifications (Shipment-specific)
 CREATE TABLE alerts (
     id SERIAL PRIMARY KEY,
-    related_entity_type VARCHAR(50), -- shipment, carrier
-    related_entity_id INTEGER,
-    alert_type VARCHAR(50), -- delay, route_change, carrier_issue
-    severity VARCHAR(20), -- low, medium, high
+    related_entity_type VARCHAR(50) NOT NULL, -- shipment, carrier
+    related_entity_id INTEGER NOT NULL,
+    alert_type VARCHAR(50) NOT NULL, -- delay, route_change, carrier_issue
+    severity VARCHAR(20) NOT NULL, -- low, medium, high
     description TEXT,
-    status VARCHAR(20), -- new, acknowledged, resolved
+    status VARCHAR(20) NOT NULL, -- new, acknowledged, resolved
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ); 

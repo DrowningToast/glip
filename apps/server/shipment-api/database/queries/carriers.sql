@@ -1,14 +1,14 @@
 -- name: CreateCarrier :one
 INSERT INTO carriers (
     name,
-    carrier_type,
+    
     contact_person,
     contact_phone,
     email,
     description,
     status
 ) VALUES (
-    @name, @carrierType, @contactPerson, @contactPhone, @email, @description, @status
+    @name, @contact_person, @contact_phone, @email, @description, @status
 ) RETURNING *;
 
 -- name: GetCarrierById :one
@@ -28,9 +28,8 @@ ORDER BY name;
 UPDATE carriers
 SET 
     name = @name,
-    carrier_type = @carrierType,
-    contact_person = @contactPerson,
-    contact_phone = @contactPhone,
+    contact_person = @contact_person,
+    contact_phone = @contact_phone,
     email = @email,
     description = @description,
     status = @status

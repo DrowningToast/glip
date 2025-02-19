@@ -7,8 +7,8 @@ INSERT INTO alerts (
     description,
     status
 ) VALUES (
-    @relatedEntityType, @relatedEntityId,
-    @alertType, @severity, @description, @status
+    @related_entity_type, @related_entity_id,
+    @alert_type, @severity, @description, @status
 ) RETURNING *;
 
 -- name: GetShipmentAlertById :one
@@ -19,27 +19,34 @@ WHERE id = @id;
 SELECT * FROM alerts
 WHERE status != 'resolved'
 ORDER BY created_at DESC
-LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
 -- name: ListShipmentAlertsByType :many
 SELECT * FROM alerts
-WHERE alert_type = @alertType AND status != 'resolved'
+WHERE alert_type = @alert_type AND status != 'resolved'
 ORDER BY created_at DESC
-LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
 -- name: ListShipmentAlertsBySeverity :many
 SELECT * FROM alerts
 WHERE severity = @severity AND status != 'resolved'
 ORDER BY created_at DESC
-LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
--- name: ListShipmentAlertsByEntity :many
+-- name: ListShipmentAlertsByEntityType :many
 SELECT * FROM alerts
-WHERE related_entity_type = @entityType
-AND related_entity_id = @entityId
+WHERE related_entity_type = @entity_type
 AND status != 'resolved'
 ORDER BY created_at DESC
-LIMIT sqlc.narg(returnLimit) OFFSET sqlc.narg(returnOffset);
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
+
+-- name: ListShipmentAlertsByEntityId :many
+SELECT * FROM alerts
+WHERE related_entity_type = @entity_type
+AND related_entity_id = @entity_id
+AND status != 'resolved'
+ORDER BY created_at DESC
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
 -- name: UpdateShipmentAlertStatus :one
 UPDATE alerts
@@ -48,12 +55,3 @@ SET
     updated_at = CURRENT_TIMESTAMP
 WHERE id = @id
 RETURNING *;
-
--- name: GetShipmentActiveAlertCount :one
-SELECT 
-    COUNT(*) as total_alerts,
-    COUNT(CASE WHEN severity = 'high' THEN 1 END) as high_severity,
-    COUNT(CASE WHEN severity = 'medium' THEN 1 END) as medium_severity,
-    COUNT(CASE WHEN severity = 'low' THEN 1 END) as low_severity
-FROM alerts
-WHERE status != 'resolved'; 

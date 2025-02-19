@@ -1,0 +1,20 @@
+package datagateway
+
+import (
+	"context"
+
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
+)
+
+type WarehouseDataGateway interface {
+	CreateWarehouse(ctx context.Context, warehouse *entity.Warehouse) (*entity.Warehouse, error)
+	GetWarehouse(ctx context.Context, id int) (*entity.Warehouse, error)
+	GetWarehouseByStatus(ctx context.Context, status entity.WarehouseStatus) ([]*entity.Warehouse, error)
+	GetWarehouseByCountry(ctx context.Context, country string) ([]*entity.Warehouse, error)
+	GetWarehouseByCity(ctx context.Context, city string) ([]*entity.Warehouse, error)
+	ListWarehouses(ctx context.Context) ([]*entity.Warehouse, error)
+
+	UpdateWarehouse(ctx context.Context, warehouse *entity.Warehouse) (*entity.Warehouse, error)
+	UpdateWarehouseCapacity(ctx context.Context, warehouse *entity.Warehouse) (*entity.Warehouse, error)
+	DeleteWarehouse(ctx context.Context, id int) error
+}

@@ -4,6 +4,13 @@ import "time"
 
 type AlertRelatedEntityType string
 
+type AlertCount struct {
+	TotalAlerts    int `json:"total_alerts"`
+	HighSeverity   int `json:"high_severity"`
+	MediumSeverity int `json:"medium_severity"`
+	LowSeverity    int `json:"low_severity"`
+}
+
 const (
 	AlertRelatedEntityTypeShipment AlertRelatedEntityType = "SHIPMENT"
 	AlertRelatedEntityTypeCarrier  AlertRelatedEntityType = "CARRIER"
@@ -37,9 +44,9 @@ type Alert struct {
 	Id                int                    `json:"id"`
 	RelatedEntityType AlertRelatedEntityType `json:"related_entity_type"`
 	RelatedEntityId   int                    `json:"related_entity_id"`
-	AlertType         AlertType              `json:"alert_type"`
-	AlertSeverity     AlertSeverity          `json:"alert_severity"`
-	Description       string                 `json:"description"`
+	Type              AlertType              `json:"alert_type"`
+	Severity          AlertSeverity          `json:"alert_severity"`
+	Description       *string                `json:"description"`
 	Status            AlertStatus            `json:"status"`
 	CreatedAt         time.Time              `json:"created_at"`
 	UpdatedAt         time.Time              `json:"updated_at"`

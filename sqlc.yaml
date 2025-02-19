@@ -6,7 +6,7 @@ sql:
     schema: "apps/server/inventory-api/database/migrations"
     gen:
       go:
-        package: "database"
+        package: "inventory_database"
         out: "apps/server/inventory-api/database/gen"
         sql_package: "pgx/v5"
 
@@ -16,6 +16,6 @@ sql:
     schema: "apps/server/shipment-api/database/migrations"
     gen:
       go:
-        package: "database"
+        package: "shipment_database"
         out: "apps/server/shipment-api/database/gen"
         sql_package: "pgx/v5"
