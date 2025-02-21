@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/cockroachdb/errors"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -15,14 +16,25 @@ type PostgresConfig struct {
 	DBName   string `json:"db_name" env:"DB_NAME"`
 }
 
-func (c *PostgresConfig) GetConnectionString() string {
-	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", c.Host, c.Port, c.User, c.Password, c.DBName)
+func (c *PostgresConfig) String() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s", c.User, c.Password, c.Host, c.Port, c.DBName)
 }
 
 func (c *PostgresConfig) NewConnection(ctx context.Context) (*pgx.Conn, error) {
-	conn, err := pgx.Connect(ctx, c.GetConnectionString())
+	connString := c.String()
+	connConfig, err := pgx.ParseConfig(connString)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to parse connection string")
 	}
+
+	conn, err := pgx.ConnectConfig(ctx, connConfig)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to connect to database")
+	}
+
+	if err := conn.Ping(ctx); err != nil {
+		return nil, errors.Wrap(err, "failed to ping database")
+	}
+
 	return conn, nil
 }

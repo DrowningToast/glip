@@ -10,15 +10,17 @@ import (
 )
 
 type Config struct {
-	InventoryPgConfig services.PostgresConfig `envPrefix:"INVENTORY_PG"`
-	ShipmentPgConfig  services.PostgresConfig `envPrefix:"SHIPMENT_PG"`
+	ShipmentAuthConfig AuthConfig `envPrefix:"SHIPMENT_AUTH_"`
+
+	InventoryPgConfig services.PostgresConfig `envPrefix:"INVENTORY_PG_"`
+	ShipmentPgConfig  services.PostgresConfig `envPrefix:"SHIPMENT_PG_"`
 }
 
 const (
 	DefaultConfigPath = "./.env"
 )
 
-func LoadConfig() *Config {
+func Load() *Config {
 	var (
 		config     Config
 		configPath string

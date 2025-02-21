@@ -7,23 +7,87 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/cockroachdb/errors"
+	"github.com/drowningtoast/glip/apps/server/common"
+	"github.com/drowningtoast/glip/apps/server/config"
+	"github.com/drowningtoast/glip/apps/server/errs"
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/handler"
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/postgres"
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
 	"github.com/gofiber/fiber/v3"
 )
 
 func main() {
 	// Create background context
-	_, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	// Load config
+	configuration := config.Load()
+	if configuration == nil {
+		log.Fatal("Failed to load config")
+	}
+
+	// shipment pg conn
+	pgConn, err := configuration.ShipmentPgConfig.NewConnection(ctx)
+	if err != nil {
+		log.Fatalf("Failed to connect to shipment pg: %v\n", err)
+	}
+
+	// init repository
+	pgRepo := postgres.New(pgConn)
+
+	// init usecase
+	uc := usecase.NewUsecase(&usecase.UsecaseParams{
+		Config: configuration,
+
+		ShipmentDg:            pgRepo,
+		WarehouseDg:           pgRepo,
+		WarehouseConnectionDg: pgRepo,
+		CustomerDg:            pgRepo,
+		CarrierDg:             pgRepo,
+		AlertDg:               pgRepo,
+	})
+
+	// init handler
+	handler := handler.New(handler.HandlerNewParams{
+		Usecase: uc,
+	})
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
 		AppName: "Shipment API",
+		ErrorHandler: func(c fiber.Ctx, err error) error {
+			code := fiber.StatusInternalServerError
+
+			customErr := errs.Err{}
+			if errors.As(err, &customErr) {
+				code = customErr.StatusCode
+				return c.Status(code).JSON(common.HTTPResponse{
+					Code:    customErr.Error(),
+					Message: err.Error(),
+				})
+			}
+
+			var fiberErr *fiber.Error
+			if errors.As(err, &fiberErr) {
+				code = fiberErr.Code
+				return c.Status(code).JSON(common.HTTPResponse{
+					Code:    fiberErr.Error(),
+					Message: fiberErr.Message,
+				})
+			}
+
+			return c.Status(code).JSON(common.HTTPResponse{
+				Code:    errs.ErrInternal.Code,
+				Message: err.Error(),
+			})
+		},
 	})
 
-	// Basic route
-	app.Get("/", func(c fiber.Ctx) error {
-		return c.SendString("Hello, Shipment API!")
-	})
+	// Mount
+	v1Router := app.Group("/v1")
+	handler.Mount(v1Router)
 
 	// Start server with graceful shutdown
 	go func() {

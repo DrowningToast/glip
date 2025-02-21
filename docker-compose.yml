@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: ${INVENTORY_PG_USER}
       POSTGRES_PASSWORD: ${INVENTORY_PG_PASSWORD}
-      POSTGRES_DB: ${INVENTORY_PG_DB}
+      POSTGRES_DB: ${INVENTORY_PG_DB_NAME}
     ports:
       - "${INVENTORY_PG_PORT}:5432"
     volumes:
@@ -20,7 +20,7 @@ services:
     environment:
       POSTGRES_USER: ${SHIPMENT_PG_USER}
       POSTGRES_PASSWORD: ${SHIPMENT_PG_PASSWORD}
-      POSTGRES_DB: ${SHIPMENT_PG_DB}
+      POSTGRES_DB: ${SHIPMENT_PG_DB_NAME}
     ports:
       - "${SHIPMENT_PG_PORT}:5432"
     volumes:
