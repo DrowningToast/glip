@@ -14,6 +14,7 @@ import (
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/handler"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/postgres"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
+	"github.com/drowningtoast/glip/apps/server/shipment-api/middleware"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -49,8 +50,8 @@ func main() {
 		AlertDg:               pgRepo,
 	})
 
-	// init handler
-	handler := handler.New(handler.HandlerNewParams{
+	// init h
+	h := handler.New(handler.HandlerNewParams{
 		Usecase: uc,
 	})
 
@@ -85,9 +86,17 @@ func main() {
 		},
 	})
 
+	// Middleware
+	initContextMiddleware := middleware.NewInitContextMiddleware(uc)
+	authGuard := middleware.NewAuthGuard(uc)
+	roleGuard := middleware.NewRoleGuard(uc)
+
 	// Mount
-	v1Router := app.Group("/v1")
-	handler.Mount(v1Router)
+	v1Router := app.Group("/v1", initContextMiddleware)
+	h.Mount(v1Router, handler.MiddlewareParameters{
+		AuthGuard: authGuard,
+		RoleGuard: roleGuard,
+	})
 
 	// Start server with graceful shutdown
 	go func() {

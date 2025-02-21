@@ -7,6 +7,14 @@ type HTTPResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
+type PaginatedResult struct {
+	Count int         `json:"count"`
+	Items interface{} `json:"items"`
+
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+
 var EmptyHTTPResponse = HTTPResponse{
 	Result: struct{}{},
 }

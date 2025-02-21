@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
 	"github.com/gofiber/fiber/v3"
 )
@@ -19,7 +20,12 @@ func New(params HandlerNewParams) Handler {
 	}
 }
 
-func (h *Handler) Mount(r fiber.Router) {
+type MiddlewareParameters struct {
+	AuthGuard fiber.Handler
+	RoleGuard func(permission entity.ConnectionType) fiber.Handler
+}
+
+func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 	if r == nil {
 		panic("router is nil")
 	}
@@ -33,4 +39,12 @@ func (h *Handler) Mount(r fiber.Router) {
 	authGroup := r.Group("/auth")
 	authGroup.Post("/warehouse", h.AuthenticateWarehouseConnection)
 	authGroup.Post("/admin", h.AuthenticateAdmin)
+
+	// Customer
+	customerGroup := r.Group("/customer", middlewares.AuthGuard)
+	customerGroup.Get("/", h.GetCustomer, middlewares.AuthGuard)
+	customerGroup.Get("/list", h.ListCustomers, middlewares.AuthGuard)
+	customerGroup.Post("/", h.CreateCustomer, middlewares.AuthGuard, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	customerGroup.Put("/", h.UpdateCustomer, middlewares.AuthGuard, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	customerGroup.Delete("/:id", h.DeleteCustomer, middlewares.AuthGuard, middlewares.RoleGuard(entity.ConnectionTypeRoot))
 }

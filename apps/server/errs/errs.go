@@ -36,6 +36,11 @@ var (
 		Code:       "UNAUTHORIZED",
 		Message:    "Unauthorized",
 	}
+	ErrInvalidQueryString = Err{
+		StatusCode: 400,
+		Code:       "INVALID_QUERY_STRING",
+		Message:    "Invalid query string",
+	}
 	ErrForbidden = Err{
 		StatusCode: 403,
 		Code:       "FORBIDDEN",
