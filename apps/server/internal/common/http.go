@@ -7,9 +7,9 @@ type HTTPResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
-type PaginatedResult struct {
-	Count int         `json:"count"`
-	Items interface{} `json:"items"`
+type PaginatedResult[T interface{}] struct {
+	Count int `json:"count"`
+	Items []T `json:"items"`
 
 	Offset int `json:"offset"`
 	Limit  int `json:"limit"`

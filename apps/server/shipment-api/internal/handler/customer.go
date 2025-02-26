@@ -57,19 +57,28 @@ func (h *Handler) ListCustomers(ctx fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidQueryString, err.Error())
 	}
 
-	customers, err := h.uc.ListCustomers(ctx.Context(), &usecase.ListCustomersQuery{
-		Limit:  queries.Limit,
-		Offset: queries.Offset,
+	var limit, offset int = 100, 0
+	if queries.Limit != nil {
+		limit = *queries.Limit
+	}
+	if queries.Offset != nil {
+		offset = *queries.Offset
+	}
+
+	customerPtrs, err := h.uc.ListCustomers(ctx.Context(), &usecase.ListCustomersQuery{
+		Limit:  limit,
+		Offset: offset,
 	})
 	if err != nil {
 		return errors.Wrap(err, "failed to get customers")
 	}
 
 	return ctx.JSON(common.HTTPResponse{
-		Result: struct {
-			Customers []*entity.Customer `json:"customers"`
-		}{
-			Customers: customers,
+		Result: common.PaginatedResult[*entity.Customer]{
+			Count:  len(customerPtrs),
+			Items:  customerPtrs,
+			Offset: offset,
+			Limit:  limit,
 		},
 	})
 }
@@ -96,9 +105,16 @@ func (h *Handler) GetCustomer(ctx fiber.Ctx) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to get customer")
 	}
+	if customer == nil {
+		return errors.Wrap(errs.ErrNotFound, "customer not found")
+	}
 
 	return ctx.JSON(common.HTTPResponse{
-		Result: customer,
+		Result: struct {
+			Customer *entity.Customer `json:"customer"`
+		}{
+			Customer: customer,
+		},
 	})
 }
 
@@ -130,7 +146,11 @@ func (h *Handler) UpdateCustomer(ctx fiber.Ctx) error {
 	}
 
 	return ctx.JSON(common.HTTPResponse{
-		Result: customer,
+		Result: struct {
+			Customer *entity.Customer `json:"customer"`
+		}{
+			Customer: customer,
+		},
 	})
 }
 

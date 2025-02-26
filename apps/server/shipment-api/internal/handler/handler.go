@@ -42,9 +42,17 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 
 	// Customer
 	customerGroup := r.Group("/customer", middlewares.AuthGuard)
-	customerGroup.Get("/", h.GetCustomer, middlewares.AuthGuard)
-	customerGroup.Get("/list", h.ListCustomers, middlewares.AuthGuard)
-	customerGroup.Post("/", h.CreateCustomer, middlewares.AuthGuard, middlewares.RoleGuard(entity.ConnectionTypeRoot))
-	customerGroup.Put("/", h.UpdateCustomer, middlewares.AuthGuard, middlewares.RoleGuard(entity.ConnectionTypeRoot))
-	customerGroup.Delete("/:id", h.DeleteCustomer, middlewares.AuthGuard, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	customerGroup.Get("/", h.GetCustomer)
+	customerGroup.Get("/list", h.ListCustomers)
+	customerGroup.Post("/", h.CreateCustomer, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	customerGroup.Put("/", h.UpdateCustomer, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	customerGroup.Delete("/:id", h.DeleteCustomer, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+
+	// Warehouse Connections
+	warehouseConnectionGroup := r.Group("/warehouse-connection", middlewares.AuthGuard, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	warehouseConnectionGroup.Get("/", h.GetWarehouseConnection)
+	warehouseConnectionGroup.Get("/list", h.ListWarehouseConnections)
+	warehouseConnectionGroup.Post("/", h.CreateWarehouseConnection)
+	warehouseConnectionGroup.Put("/", h.UpdateWarehouseConnection)
+	warehouseConnectionGroup.Delete("/:id", h.RevokeWarehouseConnection)
 }

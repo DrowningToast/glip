@@ -34,25 +34,11 @@ CREATE TABLE carriers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Warehouses
-CREATE TABLE warehouses (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    location_address TEXT NOT NULL,
-    country VARCHAR(100) NOT NULL,
-    city VARCHAR(100) NOT NULL,
-    total_capacity DECIMAL(10,2) NOT NULL,
-    current_capacity DECIMAL(10,2) NOT NULL,
-    description TEXT,
-    status VARCHAR(20), -- active, maintenance, closed
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 -- Warehouse Connection (Authorization)
 CREATE TABLE warehouse_connections (
     id SERIAL PRIMARY KEY,
-    warehouse_id INTEGER NOT NULL REFERENCES warehouses(id),
+    warehouse INT NOT NULL,
     api_key VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(100) NOT NULL,
     status VARCHAR(20) NOT NULL, -- ACTIVE, INACTIVE, REVOKED
@@ -66,7 +52,7 @@ CREATE TABLE warehouse_connections (
 CREATE TABLE shipments (
     id SERIAL PRIMARY KEY,
     route int[] DEFAULT ARRAY[]::int[],
-    last_warehouse_id INTEGER REFERENCES warehouses(id),
+    last_warehouse_id INTEGER,
     destination_address TEXT NOT NULL,
     carrier_id INTEGER REFERENCES carriers(id),
     scheduled_departure TIMESTAMP NOT NULL,

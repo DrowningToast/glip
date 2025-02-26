@@ -10,6 +10,7 @@ require (
 	github.com/jackc/pgerrcode v0.0.0-20240316143900-6e2875d9b438
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/joho/godotenv v1.5.1
+	github.com/pingcap/errors v0.11.4
 	github.com/samber/lo v1.49.1
 	github.com/shopspring/decimal v1.4.0
 )

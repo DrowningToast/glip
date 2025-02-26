@@ -38,24 +38,12 @@ func (u *Usecase) GetCustomer(ctx context.Context, query GetCustomerQuery) (*ent
 
 // If both field are provided, the id will be used
 type ListCustomersQuery struct {
-	Limit  *int
-	Offset *int
+	Limit  int
+	Offset int
 }
 
 func (u *Usecase) ListCustomers(ctx context.Context, query *ListCustomersQuery) ([]*entity.Customer, error) {
-	var limit, offset int = 200, 0
-	if query == nil {
-		return u.CustomerDg.ListShipmentOwners(ctx, limit, offset)
-	}
-
-	if query.Limit != nil {
-		limit = *query.Limit
-	}
-	if query.Offset != nil {
-		offset = *query.Offset
-	}
-
-	return u.CustomerDg.ListShipmentOwners(ctx, limit, offset)
+	return u.CustomerDg.ListShipmentOwners(ctx, query.Limit, query.Offset)
 }
 
 func (u *Usecase) UpdateCustomer(ctx context.Context, customer *entity.Customer) (*entity.Customer, error) {
