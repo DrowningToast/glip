@@ -1,80 +1,89 @@
 {
-    "zone-NA": {
-        "USA-1": {
-            "id": "USA-1",
+    "zoneNA": {
+        "USA1": {
+            "id": "USA1",
             "name": "USA Warehouse 1",
             "address": "1234 Main St, Los Angeles, CA 90001",
             "country": "USA",
             "city": "Los Angeles",
-            "description": "Main warehouse in Los Angeles"
+            "description": "Main warehouse in Los Angeles",
+            "status": "ACTIVE"
         },
-        "USA-2": {
-            "id": "USA-2",
+        "USA2": {
+            "id": "USA2",
             "name": "USA Warehouse 2",
             "address": "5678 Elm St, New York, NY 10001",
             "country": "USA",
             "city": "New York",
-            "description": "Main warehouse in New York"
+            "description": "Main warehouse in New York",
+            "status": "ACTIVE"
         },
-        "USA-3": {
-            "id": "USA-3",
+        "USA3": {
+            "id": "USA3",
             "name": "USA Warehouse 3",
             "address": "9101 Oak St, Chicago, IL 60601",
             "country": "USA",
             "city": "Chicago",
-            "description": "Main warehouse in Chicago"
+            "description": "Main warehouse in Chicago",
+            "status": "ACTIVE"
         }
     },
-    "zone-EU": {
-        "EU-1": {
-            "id": "EU-1",
+    "zoneEU": {
+        "EU1": {
+            "id": "EU1",
             "name": "EU Warehouse 1",
             "address": "1234 Rue de Rivoli, Paris, France",
             "country": "France",
             "city": "Paris",
-            "description": "Main warehouse in Paris"
+            "description": "Main warehouse in Paris",
+            "status": "ACTIVE"
         },
-        "EU-2": {
-            "id": "EU-2",
+        "EU2": {
+            "id": "EU2",
             "name": "EU Warehouse 2",
             "address": "5678 Via Roma, Rome, Italy",
             "country": "Italy",
             "city": "Rome",
-            "description": "Main warehouse in Rome"
+            "description": "Main warehouse in Rome",
+            "status": "ACTIVE"
         },
-        "EU-3": {
-            "id": "EU-3",
+        "EU3": {
+            "id": "EU3",
             "name": "EU Warehouse 3",
             "address": "9101 Bahnhofstrasse, Zurich, Switzerland",
             "country": "Switzerland",
             "city": "Zurich",
-            "description": "Main warehouse in Zurich"
+            "description": "Main warehouse in Zurich",
+            "status": "ACTIVE"
         }
     },
-    "zone-APAC": {
-        "APAC-1": {
-            "id": "APAC-1",
+    "zoneAPAC": {
+        "APAC1": {
+            "id": "APAC1",
             "name": "APAC Warehouse 1",
             "address": "1234 Orchard Rd, Singapore",
             "country": "Singapore",
             "city": "Singapore",
-            "description": "Main warehouse in Singapore"
+            "description": "Main warehouse in Singapore",
+            "status": "ACTIVE"
         },
-        "APAC-2": {
-            "id": "APAC-2",
+        "APAC2": {
+            "id": "APAC2",
             "name": "APAC Warehouse 2",
             "address": "5678 Nanjing Rd, Shanghai, China",
             "country": "China",
             "city": "Shanghai",
-            "description": "Main warehouse in Shanghai"
+            "description": "Main warehouse in Shanghai",
+            "status": "ACTIVE"
         },
-        "APAC-3": {
-            "id": "APAC-3",
+        "APAC3": {
+            "id": "APAC3",
             "name": "APAC Warehouse 3",
             "address": "9101 Shinjuku, Tokyo, Japan",
             "country": "Japan",
             "city": "Tokyo",
-            "description": "Main warehouse in Tokyo"
+            "description": "Main warehouse in Tokyo",
+            "status": "ACTIVE"
         }
     }
 }

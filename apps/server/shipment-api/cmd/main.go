@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"context"
@@ -8,9 +8,10 @@ import (
 	"syscall"
 
 	"github.com/cockroachdb/errors"
-	"github.com/drowningtoast/glip/apps/server/common"
-	"github.com/drowningtoast/glip/apps/server/config"
-	"github.com/drowningtoast/glip/apps/server/errs"
+	"github.com/drowningtoast/glip/apps/server/internal/common"
+	globalConfig "github.com/drowningtoast/glip/apps/server/internal/config"
+	"github.com/drowningtoast/glip/apps/server/internal/errs"
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/config"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/handler"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/postgres"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
@@ -24,9 +25,18 @@ func main() {
 	defer cancel()
 
 	// Load config
-	configuration := config.Load()
-	if configuration == nil {
+	globalConfiguration, err := globalConfig.Load()
+	if err != nil {
+		log.Fatalf("Failed to load config: %v\n", err)
+	}
+	if globalConfiguration == nil {
 		log.Fatal("Failed to load config")
+	}
+
+	// Load local config
+	configuration, err := config.ExtendConfig(globalConfiguration, nil)
+	if err != nil {
+		log.Fatalf("Failed to load local config: %v\n", err)
 	}
 
 	// shipment pg conn
@@ -43,7 +53,6 @@ func main() {
 		Config: configuration,
 
 		ShipmentDg:            pgRepo,
-		WarehouseDg:           pgRepo,
 		WarehouseConnectionDg: pgRepo,
 		CustomerDg:            pgRepo,
 		CarrierDg:             pgRepo,

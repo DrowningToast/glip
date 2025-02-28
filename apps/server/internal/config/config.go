@@ -3,24 +3,25 @@ package config
 import (
 	"os"
 
-	"github.com/drowningtoast/glip/apps/server/services"
+	"github.com/cockroachdb/errors"
+	"github.com/drowningtoast/glip/apps/server/internal/services"
 
 	"github.com/caarlos0/env/v9"
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	ShipmentAuthConfig AuthConfig `envPrefix:"SHIPMENT_AUTH_"`
+	InventoryServiceRegistry services.EtcdConfig `envPrefix:"REGISTRY_"`
 
-	InventoryPgConfig services.PostgresConfig `envPrefix:"INVENTORY_PG_"`
-	ShipmentPgConfig  services.PostgresConfig `envPrefix:"SHIPMENT_PG_"`
+	InventoryPgConfig       services.PostgresConfig `envPrefix:"INVENTORY_PG_"`
+	InventoryRegistryConfig services.EtcdConfig     `envPrefix:"REGISTRY_"`
 }
 
 const (
 	DefaultConfigPath = "./.env"
 )
 
-func Load() *Config {
+func Load() (*Config, error) {
 	var (
 		config     Config
 		configPath string
@@ -33,13 +34,14 @@ func Load() *Config {
 	}
 
 	if err := godotenv.Load(configPath); err != nil {
-		panic(err)
+		return nil, errors.Wrap(err, "failed to load config")
 	}
 
 	if err := env.ParseWithOptions(&config, env.Options{
 		RequiredIfNoDef: false,
 	}); err != nil {
-		panic(err)
+		return nil, errors.Wrap(err, "failed to parse config")
 	}
-	return &config
+
+	return &config, nil
 }

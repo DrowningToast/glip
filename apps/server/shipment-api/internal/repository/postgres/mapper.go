@@ -87,22 +87,6 @@ func mapCarrierModelToEntity(carrier *shipment_database.Carrier) *entity.Carrier
 	}
 }
 
-func mapWarehouseModelToEntity(warehouse *shipment_database.Warehouse) *entity.Warehouse {
-	return &entity.Warehouse{
-		Id:              int(warehouse.ID),
-		Name:            warehouse.Name,
-		Location:        warehouse.LocationAddress,
-		Country:         warehouse.Country,
-		City:            warehouse.City,
-		TotalCapacity:   decimal.New(warehouse.TotalCapacity.Int.Int64(), warehouse.TotalCapacity.Exp),
-		CurrentCapacity: decimal.New(warehouse.CurrentCapacity.Int.Int64(), warehouse.CurrentCapacity.Exp),
-		Description:     mapPgTextToStringPtr(warehouse.Description),
-		Status:          entity.WarehouseStatus(warehouse.Status.String),
-		CreatedAt:       warehouse.CreatedAt.Time,
-		UpdatedAt:       warehouse.UpdatedAt.Time,
-	}
-}
-
 func mapWarehouseConnectionModelToEntity(connection *shipment_database.WarehouseConnection) *entity.WarehouseConnection {
 	return &entity.WarehouseConnection{
 		Id:          int(connection.ID),

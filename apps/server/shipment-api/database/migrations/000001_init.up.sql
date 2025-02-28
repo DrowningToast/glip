@@ -38,7 +38,7 @@ CREATE TABLE carriers (
 -- Warehouse Connection (Authorization)
 CREATE TABLE warehouse_connections (
     id SERIAL PRIMARY KEY,
-    warehouse INT NOT NULL,
+    warehouse_id INT NOT NULL,
     api_key VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(100) NOT NULL,
     status VARCHAR(20) NOT NULL, -- ACTIVE, INACTIVE, REVOKED

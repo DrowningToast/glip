@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/shopspring/decimal"
 )
 
@@ -14,16 +12,15 @@ const (
 )
 
 type Warehouse struct {
-	Id              int             `json:"id"`
-	Name            string          `json:"name"`
-	Location        string          `json:"location"`
-	Country         string          `json:"country"`
-	City            string          `json:"city"`
+	Id              int             `json:"id" validate:"required"`
+	Name            string          `json:"name" validate:"required"`
+	Location        string          `json:"location" validate:"required"`
+	Country         string          `json:"country" validate:"required"`
+	City            string          `json:"city" validate:"required"`
 	TotalCapacity   decimal.Decimal `json:"total_capacity"`
 	CurrentCapacity decimal.Decimal `json:"current_capacity"`
-	Description     *string         `json:"description"`
-	Status          WarehouseStatus `json:"status"`
+	Description     *string         `json:"description" validate:"required"`
+	Status          WarehouseStatus `json:"status" validate:"required"`
 
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	EndPoint *string
 }

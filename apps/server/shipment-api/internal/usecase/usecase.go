@@ -1,12 +1,12 @@
 package usecase
 
 import (
-	"github.com/drowningtoast/glip/apps/server/config"
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/config"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/datagateway"
 )
 
 type Usecase struct {
-	Config *config.Config
+	Config *config.ShipmentConfig
 
 	WarehouseDg           datagateway.WarehouseDataGateway
 	WarehouseConnectionDg datagateway.WarehouseConnectionDataGateway
@@ -17,7 +17,7 @@ type Usecase struct {
 }
 
 type UsecaseParams struct {
-	Config *config.Config
+	Config *config.ShipmentConfig
 
 	WarehouseDg           datagateway.WarehouseDataGateway
 	WarehouseConnectionDg datagateway.WarehouseConnectionDataGateway
