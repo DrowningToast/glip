@@ -5,6 +5,7 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
+	"github.com/drowningtoast/glip/apps/server/internal/utils/pgmapper"
 	database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/datagateway"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
@@ -23,17 +24,17 @@ func (r *PostgresRepository) CreateShipment(ctx context.Context, s *entity.Shipm
 
 	shipment, err := r.queries.CreateShipment(ctx, database.CreateShipmentParams{
 		Route:               lo.Map(s.Route, func(id int, _ int) int32 { return int32(id) }),
-		LastWarehouseID:     mapIntPtrToPgInt4(s.LastWarehouseId),
+		LastWarehouseID:     pgmapper.MapIntPtrToPgInt4(s.LastWarehouseId),
 		DestinationAddress:  s.DestinationAddress,
-		CarrierID:           mapIntPtrToPgInt4(s.CarrierId),
-		ScheduledDeparture:  mapTimeToTimestamp(s.ScheduledDeparture),
-		ScheduledArrival:    mapTimeToTimestamp(s.ScheduledArrival),
-		ActualDeparture:     mapTimePtrToTimestamp(s.ActualDeparture),
-		ActualArrival:       mapTimePtrToTimestamp(s.ActualArrival),
+		CarrierID:           pgmapper.MapIntPtrToPgInt4(s.CarrierId),
+		ScheduledDeparture:  pgmapper.MapTimeToTimestamp(s.ScheduledDeparture),
+		ScheduledArrival:    pgmapper.MapTimeToTimestamp(s.ScheduledArrival),
+		ActualDeparture:     pgmapper.MapTimePtrToTimestamp(s.ActualDeparture),
+		ActualArrival:       pgmapper.MapTimePtrToTimestamp(s.ActualArrival),
 		Status:              string(s.Status),
-		TotalWeight:         mapDecimalToPgNumeric(s.TotalWeight),
-		TotalVolume:         mapDecimalToPgNumeric(s.TotalVolume),
-		SpecialInstructions: mapStringPtrToPgText(s.SpecialInstructions),
+		TotalWeight:         pgmapper.MapDecimalToPgNumeric(s.TotalWeight),
+		TotalVolume:         pgmapper.MapDecimalToPgNumeric(s.TotalVolume),
+		SpecialInstructions: pgmapper.MapStringPtrToPgText(s.SpecialInstructions),
 	})
 	if err != nil {
 		if checkPgErrCode(err, pgerrcode.UniqueViolation) {
@@ -93,16 +94,16 @@ func (r *PostgresRepository) UpdateShipment(ctx context.Context, shipment *entit
 	updatedShipment, err := r.queries.UpdateShipment(ctx, database.UpdateShipmentParams{
 		ID:                 int32(shipment.Id),
 		Route:              lo.Map(shipment.Route, func(id int, _ int) int32 { return int32(id) }),
-		LastWarehouseID:    mapIntPtrToPgInt4(shipment.LastWarehouseId),
+		LastWarehouseID:    pgmapper.MapIntPtrToPgInt4(shipment.LastWarehouseId),
 		DestinationAddress: shipment.DestinationAddress,
-		CarrierID:          mapIntPtrToPgInt4(shipment.CarrierId),
-		ScheduledDeparture: mapTimeToTimestamp(shipment.ScheduledDeparture),
-		ScheduledArrival:   mapTimeToTimestamp(shipment.ScheduledArrival),
-		ActualDeparture:    mapTimePtrToTimestamp(shipment.ActualDeparture),
-		ActualArrival:      mapTimePtrToTimestamp(shipment.ActualArrival),
+		CarrierID:          pgmapper.MapIntPtrToPgInt4(shipment.CarrierId),
+		ScheduledDeparture: pgmapper.MapTimeToTimestamp(shipment.ScheduledDeparture),
+		ScheduledArrival:   pgmapper.MapTimeToTimestamp(shipment.ScheduledArrival),
+		ActualDeparture:    pgmapper.MapTimePtrToTimestamp(shipment.ActualDeparture),
+		ActualArrival:      pgmapper.MapTimePtrToTimestamp(shipment.ActualArrival),
 		Status:             string(shipment.Status),
-		TotalWeight:        mapDecimalToPgNumeric(shipment.TotalWeight),
-		TotalVolume:        mapDecimalToPgNumeric(shipment.TotalVolume),
+		TotalWeight:        pgmapper.MapDecimalToPgNumeric(shipment.TotalWeight),
+		TotalVolume:        pgmapper.MapDecimalToPgNumeric(shipment.TotalVolume),
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {

@@ -8,34 +8,31 @@ import (
 type Usecase struct {
 	Config *config.ShipmentConfig
 
-	WarehouseDg           datagateway.WarehouseDataGateway
-	WarehouseConnectionDg datagateway.WarehouseConnectionDataGateway
-	ShipmentDg            datagateway.ShipmentDataGateway
-	CustomerDg            datagateway.OwnersDataGateway
-	CarrierDg             datagateway.CarrierDataGateway
-	AlertDg               datagateway.AlertDataGateway
+	WarehouseDg datagateway.WarehouseDataGateway
+	ShipmentDg  datagateway.ShipmentDataGateway
+	CustomerDg  datagateway.OwnersDataGateway
+	CarrierDg   datagateway.CarrierDataGateway
+	AlertDg     datagateway.AlertDataGateway
 }
 
 type UsecaseParams struct {
 	Config *config.ShipmentConfig
 
-	WarehouseDg           datagateway.WarehouseDataGateway
-	WarehouseConnectionDg datagateway.WarehouseConnectionDataGateway
-	ShipmentDg            datagateway.ShipmentDataGateway
-	CustomerDg            datagateway.OwnersDataGateway
-	CarrierDg             datagateway.CarrierDataGateway
-	AlertDg               datagateway.AlertDataGateway
+	WarehouseDg datagateway.WarehouseDataGateway
+	ShipmentDg  datagateway.ShipmentDataGateway
+	CustomerDg  datagateway.OwnersDataGateway
+	CarrierDg   datagateway.CarrierDataGateway
+	AlertDg     datagateway.AlertDataGateway
 }
 
 func NewUsecase(params *UsecaseParams) *Usecase {
 	return &Usecase{
 		Config: params.Config,
 
-		WarehouseDg:           params.WarehouseDg,
-		WarehouseConnectionDg: params.WarehouseConnectionDg,
-		ShipmentDg:            params.ShipmentDg,
-		CustomerDg:            params.CustomerDg,
-		CarrierDg:             params.CarrierDg,
-		AlertDg:               params.AlertDg,
+		WarehouseDg: params.WarehouseDg,
+		ShipmentDg:  params.ShipmentDg,
+		CustomerDg:  params.CustomerDg,
+		CarrierDg:   params.CarrierDg,
+		AlertDg:     params.AlertDg,
 	}
 }

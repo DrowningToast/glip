@@ -5,6 +5,7 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
+	"github.com/drowningtoast/glip/apps/server/internal/utils/pgmapper"
 	shipment_database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/datagateway"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
@@ -22,7 +23,7 @@ func (r *PostgresRepository) CreateShipmentAlert(ctx context.Context, newAlert *
 		Status:            string(newAlert.Status),
 		RelatedEntityType: string(newAlert.RelatedEntityType),
 		RelatedEntityID:   int32(newAlert.RelatedEntityId),
-		Description:       mapStringPtrToPgText(newAlert.Description),
+		Description:       pgmapper.MapStringPtrToPgText(newAlert.Description),
 	})
 	if err != nil {
 		if checkPgErrCode(err, pgerrcode.UniqueViolation) {
@@ -49,8 +50,8 @@ func (r *PostgresRepository) GetShipmentAlertById(ctx context.Context, id int) (
 
 func (r *PostgresRepository) ListShipmentActiveAlerts(ctx context.Context, limit int, offset int) ([]*entity.Alert, error) {
 	alerts, err := r.queries.ListShipmentActiveAlerts(ctx, shipment_database.ListShipmentActiveAlertsParams{
-		ReturnLimit:  mapIntPtrToPgInt4(&limit),
-		ReturnOffset: mapIntPtrToPgInt4(&offset),
+		ReturnLimit:  pgmapper.MapIntPtrToPgInt4(&limit),
+		ReturnOffset: pgmapper.MapIntPtrToPgInt4(&offset),
 	})
 	if err != nil {
 		return nil, err
@@ -64,8 +65,8 @@ func (r *PostgresRepository) ListShipmentActiveAlerts(ctx context.Context, limit
 func (r *PostgresRepository) ListShipmentAlertsByType(ctx context.Context, alertType entity.AlertType, limit int, offset int) ([]*entity.Alert, error) {
 	alerts, err := r.queries.ListShipmentAlertsByType(ctx, shipment_database.ListShipmentAlertsByTypeParams{
 		AlertType:    string(alertType),
-		ReturnLimit:  mapIntPtrToPgInt4(&limit),
-		ReturnOffset: mapIntPtrToPgInt4(&offset),
+		ReturnLimit:  pgmapper.MapIntPtrToPgInt4(&limit),
+		ReturnOffset: pgmapper.MapIntPtrToPgInt4(&offset),
 	})
 	if err != nil {
 		return nil, err
@@ -79,8 +80,8 @@ func (r *PostgresRepository) ListShipmentAlertsByType(ctx context.Context, alert
 func (r *PostgresRepository) ListShipmentAlertsBySeverity(ctx context.Context, severity entity.AlertSeverity, limit int, offset int) ([]*entity.Alert, error) {
 	alerts, err := r.queries.ListShipmentAlertsBySeverity(ctx, shipment_database.ListShipmentAlertsBySeverityParams{
 		Severity:     string(severity),
-		ReturnLimit:  mapIntPtrToPgInt4(&limit),
-		ReturnOffset: mapIntPtrToPgInt4(&offset),
+		ReturnLimit:  pgmapper.MapIntPtrToPgInt4(&limit),
+		ReturnOffset: pgmapper.MapIntPtrToPgInt4(&offset),
 	})
 	if err != nil {
 		return nil, err
@@ -94,8 +95,8 @@ func (r *PostgresRepository) ListShipmentAlertsBySeverity(ctx context.Context, s
 func (r *PostgresRepository) ListShipmentAlertsByEntityType(ctx context.Context, entityType entity.AlertRelatedEntityType, limit int, offset int) ([]*entity.Alert, error) {
 	alerts, err := r.queries.ListShipmentAlertsByEntityType(ctx, shipment_database.ListShipmentAlertsByEntityTypeParams{
 		EntityType:   string(entityType),
-		ReturnLimit:  mapIntPtrToPgInt4(&limit),
-		ReturnOffset: mapIntPtrToPgInt4(&offset),
+		ReturnLimit:  pgmapper.MapIntPtrToPgInt4(&limit),
+		ReturnOffset: pgmapper.MapIntPtrToPgInt4(&offset),
 	})
 	if err != nil {
 		return nil, err
@@ -110,8 +111,8 @@ func (r *PostgresRepository) ListShipmentAlertsByEntityId(ctx context.Context, e
 	alerts, err := r.queries.ListShipmentAlertsByEntityId(ctx, shipment_database.ListShipmentAlertsByEntityIdParams{
 		EntityType:   string(entityType),
 		EntityID:     int32(entityID),
-		ReturnLimit:  mapIntPtrToPgInt4(&limit),
-		ReturnOffset: mapIntPtrToPgInt4(&offset),
+		ReturnLimit:  pgmapper.MapIntPtrToPgInt4(&limit),
+		ReturnOffset: pgmapper.MapIntPtrToPgInt4(&offset),
 	})
 	if err != nil {
 		return nil, err

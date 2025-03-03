@@ -1,16 +1,15 @@
-package cmd
+package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/cockroachdb/errors"
-	"github.com/drowningtoast/glip/apps/server/internal/common"
 	globalConfig "github.com/drowningtoast/glip/apps/server/internal/config"
-	"github.com/drowningtoast/glip/apps/server/internal/errs"
+	"github.com/drowningtoast/glip/apps/server/internal/utils"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/config"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/handler"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/postgres"
@@ -52,11 +51,10 @@ func main() {
 	uc := usecase.NewUsecase(&usecase.UsecaseParams{
 		Config: configuration,
 
-		ShipmentDg:            pgRepo,
-		WarehouseConnectionDg: pgRepo,
-		CustomerDg:            pgRepo,
-		CarrierDg:             pgRepo,
-		AlertDg:               pgRepo,
+		ShipmentDg: pgRepo,
+		CustomerDg: pgRepo,
+		CarrierDg:  pgRepo,
+		AlertDg:    pgRepo,
 	})
 
 	// init h
@@ -66,34 +64,11 @@ func main() {
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
-		AppName: "Shipment API",
-		ErrorHandler: func(c fiber.Ctx, err error) error {
-			code := fiber.StatusInternalServerError
-
-			customErr := errs.Err{}
-			if errors.As(err, &customErr) {
-				code = customErr.StatusCode
-				return c.Status(code).JSON(common.HTTPResponse{
-					Code:    customErr.Error(),
-					Message: err.Error(),
-				})
-			}
-
-			var fiberErr *fiber.Error
-			if errors.As(err, &fiberErr) {
-				code = fiberErr.Code
-				return c.Status(code).JSON(common.HTTPResponse{
-					Code:    fiberErr.Error(),
-					Message: fiberErr.Message,
-				})
-			}
-
-			return c.Status(code).JSON(common.HTTPResponse{
-				Code:    errs.ErrInternal.Code,
-				Message: err.Error(),
-			})
-		},
+		AppName:      "Shipment API",
+		ErrorHandler: utils.FiberErrHandler,
 	})
+
+	// app.Use(logger.New())
 
 	// Middleware
 	initContextMiddleware := middleware.NewInitContextMiddleware(uc)
@@ -109,7 +84,7 @@ func main() {
 
 	// Start server with graceful shutdown
 	go func() {
-		if err := app.Listen(":3001"); err != nil {
+		if err := app.Listen(fmt.Sprintf(":%s", configuration.ShipmentPort)); err != nil {
 			log.Fatalf("Error starting server: %v\n", err)
 		}
 	}()

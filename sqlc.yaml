@@ -10,6 +10,16 @@ sql:
         out: "apps/server/inventory-api/database/gen"
         sql_package: "pgx/v5"
 
+  - name: "inventory_registry"
+    engine: "postgresql"
+    queries: "apps/server/registry-api/database/queries"
+    schema: "apps/server/registry-api/database/migrations"
+    gen:
+      go:
+        package: "registry_database"
+        out: "apps/server/registry-api/database/gen"
+        sql_package: "pgx/v5"
+
   - name: "shipment"
     engine: "postgresql"
     queries: "apps/server/shipment-api/database/queries"

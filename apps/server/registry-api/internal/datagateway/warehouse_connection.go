@@ -3,7 +3,7 @@ package datagateway
 import (
 	"context"
 
-	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
+	"github.com/drowningtoast/glip/apps/server/registry-api/internal/entity"
 )
 
 type WarehouseConnectionDataGateway interface {

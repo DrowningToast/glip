@@ -1,35 +1,33 @@
 package config
 
 import (
+	"errors"
 	"os"
 
 	"github.com/caarlos0/env/v9"
-	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/config"
 	"github.com/drowningtoast/glip/apps/server/internal/services"
 	"github.com/joho/godotenv"
 )
 
-type ShipmentConfig struct {
+type RegistryConfig struct {
 	config.Config
 
-	RegistryApiKey string `env:"SHIPMENT_REGISTRY_API_KEY"`
-
-	ShipmentAuthConfig config.AuthConfig       `envPrefix:"SHIPMENT_AUTH_"`
-	ShipmentPgConfig   services.PostgresConfig `envPrefix:"SHIPMENT_PG_"`
+	RegistryAuthConfig RegistryAuthConfig      `envPrefix:"INVENTORY_REGISTRY_AUTH_"`
+	RegistryPgConfig   services.PostgresConfig `envPrefix:"INVENTORY_REGISTRY_PG_"`
 }
 
 const (
 	DefaultConfigPath = "./.env"
 )
 
-func ExtendConfig(config *config.Config, path *string) (*ShipmentConfig, error) {
+func ExtendConfig(config *config.Config, path *string) (*RegistryConfig, error) {
 	if config == nil {
 		return nil, errors.New("config cannot be nil")
 	}
 
 	var (
-		extendedConfig ShipmentConfig
+		extendedConfig RegistryConfig
 		configPath     string
 	)
 

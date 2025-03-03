@@ -2,6 +2,11 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
 	"time"
 
 	"github.com/cockroachdb/errors"
@@ -47,18 +52,89 @@ func (u *Usecase) VerifyJWT(ctx context.Context, tokenString string) (*entity.JW
 	return &claims, nil
 }
 
+type warehouseConnectionStatus string
+
+const (
+	warehouseConnectionStatusActive   warehouseConnectionStatus = "ACTIVE"
+	warehouseConnectionStatusInactive warehouseConnectionStatus = "INACTIVE"
+	warehouseConnectionStatusRevoked  warehouseConnectionStatus = "REVOKED"
+)
+
+type warehouseConnectionResponse struct {
+	WarehouseConnection struct {
+		Id int `json:"id"`
+		// The warehouse id that the connection is for
+		WarehouseId string                    `json:"warehouse_id"`
+		ApiKey      string                    `json:"api_key"`
+		Name        string                    `json:"name"`
+		Status      warehouseConnectionStatus `json:"status"`
+		CreatedAt   *time.Time                `json:"created_at"`
+		UpdatedAt   *time.Time                `json:"updated_at"`
+		LastUsedAt  *time.Time                `json:"last_used_at"`
+	} `json:"warehouse_connection"`
+}
+
 // return jwt token string
 func (u *Usecase) CreateWarehouseConnectionSession(ctx context.Context, apiKey string) (*string, error) {
-	warehouse, err := u.WarehouseConnectionDg.GetWarehouseConnectionByApiKey(ctx, apiKey)
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://%s:%s/v1/warehouse-connection", u.Config.RegistryEndpoint, u.Config.RegistryPort), nil)
+	if err != nil {
+		return nil, errors.Wrap(errs.ErrInternal, err.Error())
+	}
+	req.Header.Set("Authorization", u.Config.RegistryApiKey)
+	req.Header.Set("AuthType", "ADMIN")
+	q := req.URL.Query()
+	q.Add("api-key", apiKey)
+	req.URL.RawQuery = q.Encode()
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(errs.ErrInternal, err.Error())
 	}
 
-	if warehouse == nil {
-		return nil, errors.Wrap(errs.ErrUnauthorized, "invalid api key")
+	defer resp.Body.Close()
+
+	// check if found or not
+	if resp.StatusCode == http.StatusNotFound {
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, errors.Wrap(errs.ErrInternal, err.Error())
+		}
+		log.Println(string(body))
+		return nil, errors.Wrap(errs.ErrUnauthorized, string(body))
+	}
+	if resp.StatusCode != http.StatusOK {
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, errors.Wrap(errs.ErrInternal, err.Error())
+		}
+		log.Println(string(body))
+		return nil, errors.Wrap(errs.ErrInternal, "error while querying the database")
 	}
 
-	tokenString, err := u.SignJWT(ctx, warehouse.Id, entity.ConnectionTypeWarehouse)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(errs.ErrInternal, err.Error())
+	}
+
+	respBody := struct {
+		Result warehouseConnectionResponse `json:"result"`
+	}{}
+	if err := json.Unmarshal(body, &respBody); err != nil {
+		return nil, errors.Wrap(errs.ErrInternal, err.Error())
+	}
+
+	warehouseConn := respBody.Result.WarehouseConnection
+
+	if warehouseConn.Status == warehouseConnectionStatusRevoked {
+		return nil, errors.Wrap(errs.ErrUnauthorized, "warehouse connection revoked")
+	}
+
+	if warehouseConn.Status == warehouseConnectionStatusInactive {
+		return nil, errors.Wrap(errs.ErrUnauthorized, "warehouse connection inactive")
+	}
+
+	tokenString, err := u.SignJWT(ctx, warehouseConn.Id, entity.ConnectionTypeWarehouse)
 	if err != nil {
 		return nil, errors.Wrap(errs.ErrInternal, err.Error())
 	}

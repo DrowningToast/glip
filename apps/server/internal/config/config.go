@@ -11,7 +11,12 @@ import (
 )
 
 type Config struct {
-	InventoryServiceRegistry services.EtcdConfig `envPrefix:"REGISTRY_"`
+	ShipmentEndpoint string `env:"SHIPMENT_ENDPOINT,required"`
+	ShipmentPort     string `env:"SHIPMENT_PORT,required"`
+	RegistryEndpoint string `env:"INVENTORY_REGISTRY_ENDPOINT,required"`
+	RegistryPort     string `env:"INVENTORY_REGISTRY_PORT,required"`
+
+	EtcdConfig services.EtcdConfig `envPrefix:"REGISTRY_"`
 
 	InventoryPgConfig       services.PostgresConfig `envPrefix:"INVENTORY_PG_"`
 	InventoryRegistryConfig services.EtcdConfig     `envPrefix:"REGISTRY_"`

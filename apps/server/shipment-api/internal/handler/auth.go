@@ -9,7 +9,7 @@ import (
 
 func (h *Handler) AuthenticateWarehouseConnection(ctx fiber.Ctx) error {
 	var body struct {
-		Key string `json:"key"`
+		Key string `json:"key" validate:"required"`
 	}
 
 	err := ctx.Bind().Body(&body)

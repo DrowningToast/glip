@@ -5,6 +5,7 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
+	"github.com/drowningtoast/glip/apps/server/internal/utils/pgmapper"
 	shipment_database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/datagateway"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
@@ -22,10 +23,11 @@ func (r *PostgresRepository) CreateShipmentOwner(ctx context.Context, ownerPtr *
 	}
 
 	owner, err := r.queries.CreateShipmentOwner(ctx, shipment_database.CreateShipmentOwnerParams{
-		Name:    ownerPtr.Name,
-		Email:   ownerPtr.Email,
-		Phone:   mapStringPtrToPgText(ownerPtr.Phone),
-		Address: mapStringPtrToPgText(ownerPtr.Address),
+		Name:      ownerPtr.Name,
+		Email:     ownerPtr.Email,
+		Phone:     pgmapper.MapStringPtrToPgText(ownerPtr.Phone),
+		Address:   pgmapper.MapStringPtrToPgText(ownerPtr.Address),
+		AccountID: pgmapper.MapIntPtrToPgInt4(ownerPtr.AccountId),
 	})
 	if err != nil {
 		if checkPgErrCode(err, pgerrcode.UniqueViolation) {
@@ -80,11 +82,12 @@ func (r *PostgresRepository) ListShipmentOwners(ctx context.Context, limit int, 
 
 func (r *PostgresRepository) UpdateShipmentOwner(ctx context.Context, ownerPtr *entity.Customer) (*entity.Customer, error) {
 	owner, err := r.queries.UpdateShipmentOwner(ctx, shipment_database.UpdateShipmentOwnerParams{
-		ID:      int32(ownerPtr.Id),
-		Name:    ownerPtr.Name,
-		Email:   ownerPtr.Email,
-		Phone:   mapStringPtrToPgText(ownerPtr.Phone),
-		Address: mapStringPtrToPgText(ownerPtr.Address),
+		ID:        int32(ownerPtr.Id),
+		Name:      ownerPtr.Name,
+		Email:     ownerPtr.Email,
+		Phone:     pgmapper.MapStringPtrToPgText(ownerPtr.Phone),
+		Address:   pgmapper.MapStringPtrToPgText(ownerPtr.Address),
+		AccountID: pgmapper.MapIntPtrToPgInt4(ownerPtr.AccountId),
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to update shipment owner")

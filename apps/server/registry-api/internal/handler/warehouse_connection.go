@@ -6,30 +6,30 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/common"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
-	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
-	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
+	"github.com/drowningtoast/glip/apps/server/registry-api/internal/entity"
+	"github.com/drowningtoast/glip/apps/server/registry-api/internal/usecase"
 	"github.com/gofiber/fiber/v3"
 )
 
 func (h *Handler) CreateWarehouseConnection(c fiber.Ctx) error {
 	var body struct {
 		WarehouseConnection struct {
-			WarehouseId int                              `json:"warehouse_id" validate:"required"`
-			ApiKey      string                           `json:"api" validate:"required"`
-			Name        string                           `json:"name" validate:"required"`
-			Status      entity.WarehouseConnectionStatus `json:"status" validate:"required"`
+			WarehouseId string `json:"warehouse_id" validate:"required"`
+			ApiKey      string `json:"api" validate:"required"`
+			Name        string `json:"name" validate:"required"`
+			Status      string `json:"status" validate:"required"`
 		} `json:"warehouse_connection" validate:"required"`
 	}
 
 	if err := c.Bind().Body(&body); err != nil {
-		return errors.Wrap(errs.ErrInternal, "error while binding body")
+		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}
 
 	payload := entity.WarehouseConnection{
 		WarehouseId: body.WarehouseConnection.WarehouseId,
 		ApiKey:      body.WarehouseConnection.ApiKey,
 		Name:        body.WarehouseConnection.Name,
-		Status:      body.WarehouseConnection.Status,
+		Status:      entity.WarehouseConnectionStatus(body.WarehouseConnection.Status),
 	}
 
 	warehouseConn, err := h.uc.CreateWarehouseConnection(c.Context(), payload)
@@ -51,8 +51,8 @@ func (h *Handler) CreateWarehouseConnection(c fiber.Ctx) error {
 }
 
 type GetWarehouseConnectionRequestQuery struct {
-	Id     *int    `json:"id,omitempty"`
-	ApiKey *string `json:"api_key,omitempty"`
+	Id     *int    `query:"id,omitempty"`
+	ApiKey *string `query:"api-key,omitempty"`
 }
 
 // accepts a warehouse connection request and returns a warehouse connection
@@ -72,7 +72,7 @@ func (h *Handler) GetWarehouseConnection(c fiber.Ctx) error {
 		ApiKey: query.ApiKey,
 	})
 	if err != nil {
-		return errors.Wrap(err, "error while querying the database")
+		return errors.Wrap(err, "failed to get warehouse connection")
 	}
 
 	if warehouseConn == nil {
@@ -81,7 +81,7 @@ func (h *Handler) GetWarehouseConnection(c fiber.Ctx) error {
 
 	return c.JSON(common.HTTPResponse{
 		Result: struct {
-			Warehouse entity.WarehouseConnection `json:"warehouse"`
+			Warehouse entity.WarehouseConnection `json:"warehouse_connection"`
 		}{
 			Warehouse: *warehouseConn,
 		},
@@ -132,7 +132,8 @@ func (h *Handler) ListWarehouseConnections(c fiber.Ctx) error {
 func (h *Handler) UpdateWarehouseConnection(c fiber.Ctx) error {
 	var body struct {
 		WarehouseConnection struct {
-			WarehouseId int                              `json:"warehouse_id" validate:"required"`
+			Id          int                              `json:"id" validate:"required"`
+			WarehouseId string                           `json:"warehouse_id" validate:"required"`
 			ApiKey      string                           `json:"api" validate:"required"`
 			Name        string                           `json:"name" validate:"required"`
 			Status      entity.WarehouseConnectionStatus `json:"status" validate:"required"`
@@ -144,6 +145,7 @@ func (h *Handler) UpdateWarehouseConnection(c fiber.Ctx) error {
 	}
 
 	payload := entity.WarehouseConnection{
+		Id:          body.WarehouseConnection.Id,
 		WarehouseId: body.WarehouseConnection.WarehouseId,
 		ApiKey:      body.WarehouseConnection.ApiKey,
 		Name:        body.WarehouseConnection.Name,

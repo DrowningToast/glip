@@ -2,14 +2,36 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
-	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
+	"github.com/drowningtoast/glip/apps/server/registry-api/internal/entity"
 	"github.com/pingcap/errors"
 )
 
 func (uc *Usecase) CreateWarehouseConnection(ctx context.Context, warehouseConn entity.WarehouseConnection) (*entity.WarehouseConnection, error) {
-	return uc.WarehouseConnectionDg.CreateWarehouseConnection(ctx, &warehouseConn)
+	warehouseId := warehouseConn.WarehouseId
+
+	// find if the warehouse id exists in the json config file or not
+	var regions map[string]map[string]entity.Warehouse
+	bytes, err := json.Marshal(uc.WarehouseRegions)
+	if err != nil {
+		return nil, errors.Wrap(errs.ErrInternal, "failed to marshal warehouse regions")
+	}
+
+	if err := json.Unmarshal(bytes, &regions); err != nil {
+		return nil, errors.Wrap(errs.ErrInternal, "failed to unmarshal warehouse regions")
+	}
+
+	for _, region := range regions {
+		for _, w := range region {
+			if w.Id == warehouseId {
+				return uc.WarehouseConnectionDg.CreateWarehouseConnection(ctx, &warehouseConn)
+			}
+		}
+	}
+
+	return nil, errors.Wrap(errs.ErrInvalidArgument, "warehouse id not found")
 }
 
 type GetWarehouseConnectionQuery struct {
@@ -23,7 +45,7 @@ func (uc *Usecase) GetWarehouseConnection(ctx context.Context, query GetWarehous
 	if query.Id != nil {
 		warehouseConn, err := uc.WarehouseConnectionDg.GetWarehouseConnectionById(ctx, *query.Id)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "failed to get warehouse connection by id")
 		}
 		return warehouseConn, nil
 	}
@@ -31,7 +53,7 @@ func (uc *Usecase) GetWarehouseConnection(ctx context.Context, query GetWarehous
 	if query.ApiKey != nil {
 		warehouseConn, err := uc.WarehouseConnectionDg.GetWarehouseConnectionByApiKey(ctx, *query.ApiKey)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "failed to get warehouse connection by api key")
 		}
 		return warehouseConn, nil
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
+	"github.com/drowningtoast/glip/apps/server/internal/utils/pgmapper"
 	shipment_database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/datagateway"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
@@ -21,10 +22,10 @@ func (r *PostgresRepository) CreateCarrier(ctx context.Context, carrierPtr *enti
 
 	carrier, err := r.queries.CreateCarrier(ctx, shipment_database.CreateCarrierParams{
 		Name:          carrierPtr.Name,
-		ContactPerson: mapStringPtrToPgText(carrierPtr.ContactPerson),
-		ContactPhone:  mapStringPtrToPgText(carrierPtr.ContactPhone),
-		Email:         mapStringPtrToPgText(carrierPtr.Email),
-		Description:   mapStringPtrToPgText(carrierPtr.Description),
+		ContactPerson: pgmapper.MapStringPtrToPgText(carrierPtr.ContactPerson),
+		ContactPhone:  pgmapper.MapStringPtrToPgText(carrierPtr.ContactPhone),
+		Email:         pgmapper.MapStringPtrToPgText(carrierPtr.Email),
+		Description:   pgmapper.MapStringPtrToPgText(carrierPtr.Description),
 		Status:        string(carrierPtr.Status),
 	})
 	if err != nil {

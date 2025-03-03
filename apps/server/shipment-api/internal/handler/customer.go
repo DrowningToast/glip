@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"strconv"
 
 	"github.com/cockroachdb/errors"
@@ -38,8 +37,6 @@ func (h *Handler) CreateCustomer(ctx fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-
-	log.Println(customer)
 
 	return ctx.JSON(common.HTTPResponse{
 		Result: customer,
