@@ -1,19 +1,6 @@
 version: "3.8"
 
 services:
-  inventory_postgres:
-    image: postgres:alpine
-    container_name: inventory_postgres
-    environment:
-      POSTGRES_USER: ${INVENTORY_PG_USER}
-      POSTGRES_PASSWORD: ${INVENTORY_PG_PASSWORD}
-      POSTGRES_DB: ${INVENTORY_PG_DB_NAME}
-    ports:
-      - "${INVENTORY_PG_PORT}:5432"
-    volumes:
-      - ./data/inventory_postgres:/var/lib/postgresql/data
-    restart: unless-stopped
-
   shipment_postgres:
     image: postgres:alpine
     container_name: shipment_postgres
@@ -51,7 +38,20 @@ services:
       - "${REGISTRY_ETCD_PORT:-2379}:2379"
     volumes:
       - ./data/inventory_registry_etcd:/bitnami/etcd
+    restart: unless-stopped
+
+  inventory_postgres:
+    image: postgres:latest
+    container_name: postgres_db
     restart: always
+    environment:
+      POSTGRES_USER: mdd_inventory
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: public
+    ports:
+      - "5432:5432"
+    volumes:
+      - inventory_postgres_data:/var/lib/postgresql/data
 
 volumes:
   inventory_postgres_data:
