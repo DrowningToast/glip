@@ -5,10 +5,10 @@ import (
 
 	"github.com/drowningtoast/glip/apps/server/internal/common"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
-func FiberErrHandler(c fiber.Ctx, err error) error {
+func FiberErrHandler(c *fiber.Ctx, err error) error {
 	code := fiber.StatusInternalServerError
 
 	customErr := errs.Err{}

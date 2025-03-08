@@ -17,7 +17,7 @@ import (
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/repository/etcd"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/repository/postgres"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/usecase"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
 func main() {

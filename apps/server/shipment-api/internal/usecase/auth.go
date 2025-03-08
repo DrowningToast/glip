@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"time"
 
@@ -100,15 +99,13 @@ func (u *Usecase) CreateWarehouseConnectionSession(ctx context.Context, apiKey s
 		if err != nil {
 			return nil, errors.Wrap(errs.ErrInternal, err.Error())
 		}
-		log.Println(string(body))
 		return nil, errors.Wrap(errs.ErrUnauthorized, string(body))
 	}
 	if resp.StatusCode != http.StatusOK {
-		body, err := io.ReadAll(resp.Body)
+		_, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return nil, errors.Wrap(errs.ErrInternal, err.Error())
 		}
-		log.Println(string(body))
 		return nil, errors.Wrap(errs.ErrInternal, "error while querying the database")
 	}
 

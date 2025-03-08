@@ -5,7 +5,7 @@ import (
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/entity"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/usecase"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
 type AuthHeader struct {
@@ -14,10 +14,10 @@ type AuthHeader struct {
 }
 
 func NewAuthGuard(uc *usecase.Usecase) fiber.Handler {
-	return func(c fiber.Ctx) error {
-		authHeader := AuthHeader{}
-		if err := c.Bind().Header(&authHeader); err != nil {
-			return errors.Wrap(errs.ErrUnauthorized, err.Error())
+	return func(c *fiber.Ctx) error {
+		authHeader := AuthHeader{
+			Authorization: c.Get("Authorization"),
+			AuthType:      c.Get("AuthType"),
 		}
 
 		if authHeader.AuthType != "ADMIN" && authHeader.AuthType != "WAREHOUSE" {
@@ -29,7 +29,7 @@ func NewAuthGuard(uc *usecase.Usecase) fiber.Handler {
 			return errors.Wrap(errs.ErrUnauthorized, err.Error())
 		}
 
-		c.SetContext(ctx)
+		c.SetUserContext(ctx)
 
 		return c.Next()
 	}

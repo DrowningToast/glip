@@ -5,13 +5,13 @@ import (
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/entity"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/usecase"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
 // Requires a valid session and a specific role
 func NewRoleGuard(uc *usecase.Usecase, authType entity.AuthenticationType) fiber.Handler {
-	return func(c fiber.Ctx) error {
-		authType, _, err := uc.GetRequestContext(c.Context())
+	return func(c *fiber.Ctx) error {
+		authType, _, err := uc.GetRequestContext(c)
 		if err != nil {
 			return errors.Wrap(errs.ErrUnauthorized, err.Error())
 		}

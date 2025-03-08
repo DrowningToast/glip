@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/usecase"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
 type Handler struct {
@@ -31,7 +31,7 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 	}
 
 	// Health check
-	r.Get("/", func(c fiber.Ctx) error {
+	r.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, Shipment API!")
 	})
 

@@ -7,7 +7,7 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
 type UserContextKey struct{}
@@ -16,8 +16,8 @@ func (u *Usecase) InitUserContext(ctx context.Context, session *entity.JWTSessio
 	return context.WithValue(ctx, UserContextKey{}, session)
 }
 
-func (u *Usecase) GetUserContext(ctx context.Context) *entity.JWTSession {
-	session, ok := ctx.Value(UserContextKey{}).(*entity.JWTSession)
+func (u *Usecase) GetUserContext(ctx *fiber.Ctx) *entity.JWTSession {
+	session, ok := ctx.UserContext().Value(UserContextKey{}).(*entity.JWTSession)
 	if !ok {
 		return nil
 	}
@@ -25,7 +25,7 @@ func (u *Usecase) GetUserContext(ctx context.Context) *entity.JWTSession {
 	return session
 }
 
-func (u *Usecase) InjectSessionContext(ctx context.Context, c fiber.Ctx) (*entity.JWTSession, error) {
+func (u *Usecase) InjectSessionContext(ctx context.Context, c *fiber.Ctx) (*entity.JWTSession, error) {
 	bearerString := c.Get("Authorization")
 	if bearerString == "" {
 		return nil, nil
@@ -48,7 +48,7 @@ func (u *Usecase) InjectSessionContext(ctx context.Context, c fiber.Ctx) (*entit
 	}
 
 	context := u.InitUserContext(c.Context(), session)
-	c.SetContext(context)
+	c.SetUserContext(context)
 
 	return session, nil
 }

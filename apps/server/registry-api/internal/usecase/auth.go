@@ -6,6 +6,7 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/entity"
+	"github.com/gofiber/fiber/v2"
 )
 
 type (
@@ -27,9 +28,9 @@ func (uc *Usecase) SetRequestContext(ctx context.Context, authType entity.Authen
 	return nil, errors.Wrap(errs.ErrUnauthorized, "invalid authentication type")
 }
 
-func (uc *Usecase) GetRequestContext(ctx context.Context) (entity.AuthenticationType, *entity.WarehouseConnection, error) {
+func (uc *Usecase) GetRequestContext(ctx *fiber.Ctx) (entity.AuthenticationType, *entity.WarehouseConnection, error) {
 	// Get auth type
-	authTypeVal := ctx.Value(RequestContextAuthTypeKey{})
+	authTypeVal := ctx.UserContext().Value(RequestContextAuthTypeKey{})
 	if authTypeVal == nil {
 		return "", nil, errors.Wrap(errs.ErrUnauthorized, "authentication type not found in context")
 	}
@@ -41,7 +42,7 @@ func (uc *Usecase) GetRequestContext(ctx context.Context) (entity.Authentication
 
 	// Get session (only required for warehouse auth type)
 	if authType == entity.AuthenticationTypeWarehouse {
-		sessionVal := ctx.Value(RequestContextSessionKey{})
+		sessionVal := ctx.UserContext().Value(RequestContextSessionKey{})
 		if sessionVal == nil {
 			return "", nil, errors.Wrap(errs.ErrUnauthorized, "warehouse session not found in context")
 		}

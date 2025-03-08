@@ -4,15 +4,15 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/common"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
-func (h *Handler) AuthenticateWarehouseConnection(ctx fiber.Ctx) error {
+func (h *Handler) AuthenticateWarehouseConnection(ctx *fiber.Ctx) error {
 	var body struct {
 		Key string `json:"key" validate:"required"`
 	}
 
-	err := ctx.Bind().Body(&body)
+	err := ctx.BodyParser(&body)
 	if err != nil {
 		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}
@@ -35,12 +35,12 @@ func (h *Handler) AuthenticateWarehouseConnection(ctx fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) AuthenticateAdmin(ctx fiber.Ctx) error {
+func (h *Handler) AuthenticateAdmin(ctx *fiber.Ctx) error {
 	var body struct {
 		Key string `json:"key"`
 	}
 
-	err := ctx.Bind().Body(&body)
+	err := ctx.BodyParser(&body)
 	if err != nil {
 		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}

@@ -8,10 +8,10 @@ import (
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/entity"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/usecase"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
-func (h *Handler) CreateWarehouseConnection(c fiber.Ctx) error {
+func (h *Handler) CreateWarehouseConnection(c *fiber.Ctx) error {
 	var body struct {
 		WarehouseConnection struct {
 			WarehouseId string `json:"warehouse_id" validate:"required"`
@@ -21,7 +21,7 @@ func (h *Handler) CreateWarehouseConnection(c fiber.Ctx) error {
 		} `json:"warehouse_connection" validate:"required"`
 	}
 
-	if err := c.Bind().Body(&body); err != nil {
+	if err := c.BodyParser(&body); err != nil {
 		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}
 
@@ -56,10 +56,10 @@ type GetWarehouseConnectionRequestQuery struct {
 }
 
 // accepts a warehouse connection request and returns a warehouse connection
-func (h *Handler) GetWarehouseConnection(c fiber.Ctx) error {
+func (h *Handler) GetWarehouseConnection(c *fiber.Ctx) error {
 	var query GetWarehouseConnectionRequestQuery
 
-	if err := c.Bind().Query(&query); err != nil {
+	if err := c.QueryParser(&query); err != nil {
 		return errors.Wrap(errs.ErrInternal, "error while binding query")
 	}
 
@@ -95,10 +95,10 @@ type ListWarehouseConnectionsQuery struct {
 	Status *entity.WarehouseConnectionStatus `json:"status,omitempty"`
 }
 
-func (h *Handler) ListWarehouseConnections(c fiber.Ctx) error {
+func (h *Handler) ListWarehouseConnections(c *fiber.Ctx) error {
 	var query ListWarehouseConnectionsQuery
 
-	if err := c.Bind().Query(&query); err != nil {
+	if err := c.QueryParser(&query); err != nil {
 		return errors.Wrap(errs.ErrInternal, err.Error())
 	}
 
@@ -129,7 +129,7 @@ func (h *Handler) ListWarehouseConnections(c fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) UpdateWarehouseConnection(c fiber.Ctx) error {
+func (h *Handler) UpdateWarehouseConnection(c *fiber.Ctx) error {
 	var body struct {
 		WarehouseConnection struct {
 			Id          int                              `json:"id" validate:"required"`
@@ -140,7 +140,7 @@ func (h *Handler) UpdateWarehouseConnection(c fiber.Ctx) error {
 		} `json:"warehouse_connection" validate:"required"`
 	}
 
-	if err := c.Bind().Body(&body); err != nil {
+	if err := c.BodyParser(&body); err != nil {
 		return errors.Wrap(errs.ErrInternal, err.Error())
 	}
 
@@ -171,7 +171,7 @@ func (h *Handler) UpdateWarehouseConnection(c fiber.Ctx) error {
 }
 
 // accepts params "id" and returns a warehouse connection
-func (h *Handler) RevokeWarehouseConnection(c fiber.Ctx) error {
+func (h *Handler) RevokeWarehouseConnection(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return errors.Wrap(errs.ErrInvalidArgument, "invalid id")
