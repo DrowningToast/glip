@@ -38,7 +38,7 @@ func (r *EtcdRepository) GetEndpointByWarehouseId(ctx context.Context, warehouse
 func (r *EtcdRepository) ListEndpoints(ctx context.Context) ([]*entity.WarehouseEndpoint, error) {
 	resp, err := r.Client.Get(ctx, "warehouse/", clientv3.WithPrefix())
 	if err != nil {
-		return nil, errors.Wrap(errs.ErrInternal, "failed to list endpoints")
+		return nil, errors.Wrap(errs.ErrInternal, err.Error())
 	}
 
 	warehouseEndpoints := lo.Map(resp.Kvs, func(kv *mvccpb.KeyValue, _ int) *entity.WarehouseEndpoint {

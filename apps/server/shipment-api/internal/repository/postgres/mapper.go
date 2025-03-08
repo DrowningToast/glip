@@ -1,8 +1,6 @@
 package postgres
 
 import (
-	"time"
-
 	"github.com/drowningtoast/glip/apps/server/internal/utils/pgmapper"
 	shipment_database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
@@ -11,10 +9,9 @@ import (
 )
 
 func mapShipmentModelToEntity(shipment *shipment_database.Shipment) *entity.Shipment {
-	var lastWarehouseId *int
+	var lastWarehouseId *string
 	if shipment.LastWarehouseID.Valid {
-		i := int(shipment.LastWarehouseID.Int32)
-		lastWarehouseId = &i
+		lastWarehouseId = &shipment.LastWarehouseID.String
 	}
 
 	var carrierId *int
@@ -23,35 +20,24 @@ func mapShipmentModelToEntity(shipment *shipment_database.Shipment) *entity.Ship
 		carrierId = &i
 	}
 
-	var actualDeparture *time.Time
-	if shipment.ActualDeparture.Valid {
-		actualDeparture = &shipment.ActualDeparture.Time
-	}
-
-	var actualArrival *time.Time
-	if shipment.ActualArrival.Valid {
-		actualArrival = &shipment.ActualArrival.Time
-	}
-
 	var specialInstructions *string
 	if shipment.SpecialInstructions.Valid {
 		specialInstructions = &shipment.SpecialInstructions.String
 	}
 
 	return &entity.Shipment{
-		Id:                  int(shipment.ID),
-		Route:               lo.Map(shipment.Route, func(id int32, _ int) int { return int(id) }),
-		LastWarehouseId:     lastWarehouseId,
-		DestinationAddress:  shipment.DestinationAddress,
-		CarrierId:           carrierId,
-		ScheduledDeparture:  shipment.ScheduledDeparture.Time,
-		ScheduledArrival:    shipment.ScheduledArrival.Time,
-		ActualDeparture:     actualDeparture,
-		ActualArrival:       actualArrival,
-		Status:              entity.ShipmentStatus(shipment.Status),
-		TotalWeight:         decimal.New(shipment.TotalWeight.Int.Int64(), shipment.TotalWeight.Exp),
-		TotalVolume:         decimal.New(shipment.TotalVolume.Int.Int64(), shipment.TotalVolume.Exp),
-		SpecialInstructions: specialInstructions,
+		Id:                     int(shipment.ID),
+		Route:                  lo.Map(shipment.Route, func(id string, _ int) string { return id }),
+		LastWarehouseId:        lastWarehouseId,
+		DepartureWarehouseId:   shipment.DepartureWarehouseID,
+		DepartureAddress:       pgmapper.MapPgTextToStringPtr(shipment.DepartureAddress),
+		DestinationWarehouseId: shipment.DestinationWarehouseID,
+		DestinationAddress:     shipment.DestinationAddress,
+		CarrierId:              carrierId,
+		Status:                 entity.ShipmentStatus(shipment.Status),
+		TotalWeight:            decimal.New(shipment.TotalWeight.Int.Int64(), shipment.TotalWeight.Exp),
+		TotalVolume:            decimal.New(shipment.TotalVolume.Int.Int64(), shipment.TotalVolume.Exp),
+		SpecialInstructions:    specialInstructions,
 	}
 }
 

@@ -4,18 +4,12 @@ INSERT INTO shipments (
     last_warehouse_id,
     destination_address,
     carrier_id,
-    scheduled_departure,
-    scheduled_arrival,
-    actual_departure,
-    actual_arrival,
-    status,
+        status,
     total_weight,
     total_volume,
     special_instructions
 ) VALUES (
-    @route, @last_warehouse_id, @destination_address, @carrier_id,
-    @scheduled_departure, @scheduled_arrival, @actual_departure, @actual_arrival,
-    @status, @total_weight, @total_volume, @special_instructions
+    @route, @last_warehouse_id, @destination_address, @carrier_id,  @status, @total_weight, @total_volume, @special_instructions
 ) RETURNING *;
 
 -- name: GetShipmentById :one
@@ -46,10 +40,6 @@ SET
     last_warehouse_id = COALESCE(@last_warehouse_id, last_warehouse_id),
     destination_address = COALESCE(@destination_address, destination_address),
     carrier_id = COALESCE(@carrier_id, carrier_id),
-    scheduled_departure = COALESCE(@scheduled_departure, scheduled_departure),
-    scheduled_arrival = COALESCE(@scheduled_arrival, scheduled_arrival),
-    actual_departure = COALESCE(@actual_departure, actual_departure),
-    actual_arrival = COALESCE(@actual_arrival, actual_arrival),
     status = COALESCE(@status, status),
     total_weight = COALESCE(@total_weight, total_weight),
     total_volume = COALESCE(@total_volume, total_volume),

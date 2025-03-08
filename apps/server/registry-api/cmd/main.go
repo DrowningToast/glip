@@ -47,7 +47,7 @@ func main() {
 	}
 
 	// registry etcd conn
-	etcdConn, err := configuration.EtcdConfig.NewConnection()
+	etcdConn, err := configuration.EtcdConfig.NewConnectionWithRootUser()
 	if err != nil {
 		log.Fatalf("Failed to connect to etcd: %v\n", err)
 	}

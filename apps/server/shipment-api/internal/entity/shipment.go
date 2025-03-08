@@ -9,10 +9,10 @@ import (
 type ShipmentStatus string
 
 const (
-	ShipmentStatusInTransitOnTheWay    ShipmentStatus = "IN_TRANSIT_ON_THE_WAY"
-	ShipmentStatusInTransitInWarehouse ShipmentStatus = "IN_TRANSIT_IN_WAREHOUSE"
-	ShipmentStatusDelivered            ShipmentStatus = "DELIVERED"
-	ShipmentStatusCancelled            ShipmentStatus = "CANCELLED"
+	ShipmentStatusWaitingForPickup  ShipmentStatus = "WAITING_FOR_PICKUP"
+	ShipmentStatusInTransitOnTheWay ShipmentStatus = "IN_TRANSIT_ON_THE_WAY"
+	ShipmentStatusDelivered         ShipmentStatus = "DELIVERED"
+	ShipmentStatusCancelled         ShipmentStatus = "CANCELLED"
 )
 
 func (s ShipmentStatus) String() string {
@@ -22,7 +22,7 @@ func (s ShipmentStatus) String() string {
 func (s ShipmentStatus) Valid() bool {
 	switch s {
 	case ShipmentStatusInTransitOnTheWay,
-		ShipmentStatusInTransitInWarehouse,
+		ShipmentStatusWaitingForPickup,
 		ShipmentStatusDelivered,
 		ShipmentStatusCancelled:
 		return true
@@ -32,15 +32,22 @@ func (s ShipmentStatus) Valid() bool {
 }
 
 type Shipment struct {
-	Id                  int             `json:"id"`
-	Route               []int           `json:"route"`
-	LastWarehouseId     *int            `json:"last_warehouse_id"`
-	DestinationAddress  string          `json:"destination_address"`
+	Id int `json:"id"`
+	// Route is a list of warehouse ids that the shipment will pass through
+	Route []string `json:"route"`
+
+	// Last visited warehouse id
+	LastWarehouseId *string `json:"last_warehouse_id"`
+
+	// Departure warehouse id
+	DepartureWarehouseId string  `json:"departure_warehouse_id"`
+	DepartureAddress     *string `json:"departure_address"`
+
+	// Destination warehouse id
+	DestinationWarehouseId string `json:"destination_warehouse_id"`
+	DestinationAddress     string `json:"destination_address"`
+
 	CarrierId           *int            `json:"carrier_id"`
-	ScheduledDeparture  time.Time       `json:"scheduled_departure"`
-	ScheduledArrival    time.Time       `json:"scheduled_arrival"`
-	ActualDeparture     *time.Time      `json:"actual_departure"`
-	ActualArrival       *time.Time      `json:"actual_arrival"`
 	Status              ShipmentStatus  `json:"status"`
 	TotalWeight         decimal.Decimal `json:"total_weight"`
 	TotalVolume         decimal.Decimal `json:"total_volume"`

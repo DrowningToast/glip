@@ -20,7 +20,15 @@ func (h *Handler) GetWarehouseEndpoint(c fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get warehouse endpoint")
 	}
 
-	return c.JSON(warehouseEndpoint)
+	return c.JSON(
+		common.HTTPResponse{
+			Result: struct {
+				WarehouseEndpoint *entity.WarehouseEndpoint `json:"warehouse_endpoint"`
+			}{
+				WarehouseEndpoint: warehouseEndpoint,
+			},
+		},
+	)
 }
 
 func (h *Handler) ListWarehouseEndpoints(c fiber.Ctx) error {
@@ -29,7 +37,15 @@ func (h *Handler) ListWarehouseEndpoints(c fiber.Ctx) error {
 		return errors.Wrap(err, "failed to list warehouse endpoints")
 	}
 
-	return c.JSON(warehouseEndpoints)
+	return c.JSON(
+		common.HTTPResponse{
+			Result: struct {
+				WarehouseEndpoints []*entity.WarehouseEndpoint `json:"warehouse_endpoints"`
+			}{
+				WarehouseEndpoints: warehouseEndpoints,
+			},
+		},
+	)
 }
 
 func (h *Handler) UpdateWarehouseEndpoint(c fiber.Ctx) error {

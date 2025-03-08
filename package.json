@@ -6,8 +6,8 @@
         "dev": "turbo dev",
         "lint": "turbo lint",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "compose": "dotenv -e .env -- docker-compose -f docker-compose.yml up -d",
-        "compose:down": "dotenv -e .env -- docker-compose -f docker-compose.yml down",
+        "compose": "dotenv -e .env -- docker compose -f docker-compose.yml up -d",
+        "compose:down": "dotenv -e .env -- docker compose -f docker-compose.yml down",
         "db:migrate": "turbo db:migrate",
         "db:studio": "turbo db:studio",
         "db:generate": "turbo db:generate"

@@ -13,6 +13,11 @@ import (
 type ShipmentConfig struct {
 	config.Config
 
+	// static config
+	WarehouseRegions WarehouseRegions
+	WarehouseRoutes  WarehouseRoutes
+
+	// API config
 	RegistryApiKey string `env:"SHIPMENT_REGISTRY_API_KEY"`
 
 	ShipmentAuthConfig config.AuthConfig       `envPrefix:"SHIPMENT_AUTH_"`
@@ -51,6 +56,18 @@ func ExtendConfig(config *config.Config, path *string) (*ShipmentConfig, error) 
 	}); err != nil {
 		return nil, err
 	}
+
+	// load local config
+	warehouseRegions, err := GetWarehouseRegions()
+	if err != nil {
+		return nil, err
+	}
+	extendedConfig.WarehouseRegions = *warehouseRegions
+	warehouseRoutes, err := GetWarehouseRoutes()
+	if err != nil {
+		return nil, err
+	}
+	extendedConfig.WarehouseRoutes = *warehouseRoutes
 
 	return &extendedConfig, nil
 }

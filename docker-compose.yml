@@ -53,6 +53,21 @@ services:
     volumes:
       - inventory_postgres_data:/var/lib/postgresql/data
 
+  shipment_rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: "shipment_rabbitmq"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-admin}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_VHOST:-/}
+    volumes:
+      - ./data/shipment_queue/data/:/var/lib/rabbitmq/
+      - ./data/shipment_queue/log/:/var/log/rabbitmq
+      - ./config/shipment_rabbitmq_definitions.json:/etc/rabbitmq/definitions.json:ro
+
 volumes:
   inventory_postgres_data:
     name: inventory_postgres_data
@@ -60,3 +75,7 @@ volumes:
     name: shipment_postgres_data
   inventory_registry_etcd:
     name: inventory_registry_etcd
+  shipment_queue_data:
+    name: shipment_queue_data
+  shipment_queue_log:
+    name: shipment_queue_log

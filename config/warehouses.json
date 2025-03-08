@@ -4,7 +4,7 @@
             "id": "USA1",
             "name": "USA Warehouse 1",
             "address": "1234 Main St, Los Angeles, CA 90001",
-            "country": "USA",
+            "country": "United States of America",
             "city": "Los Angeles",
             "description": "Main warehouse in Los Angeles",
             "status": "ACTIVE"

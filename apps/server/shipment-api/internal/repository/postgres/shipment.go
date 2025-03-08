@@ -23,14 +23,10 @@ func (r *PostgresRepository) CreateShipment(ctx context.Context, s *entity.Shipm
 	}
 
 	shipment, err := r.queries.CreateShipment(ctx, database.CreateShipmentParams{
-		Route:               lo.Map(s.Route, func(id int, _ int) int32 { return int32(id) }),
-		LastWarehouseID:     pgmapper.MapIntPtrToPgInt4(s.LastWarehouseId),
+		Route:               lo.Map(s.Route, func(id string, _ int) string { return id }),
+		LastWarehouseID:     pgmapper.MapStringPtrToPgText(s.LastWarehouseId),
 		DestinationAddress:  s.DestinationAddress,
 		CarrierID:           pgmapper.MapIntPtrToPgInt4(s.CarrierId),
-		ScheduledDeparture:  pgmapper.MapTimeToTimestamp(s.ScheduledDeparture),
-		ScheduledArrival:    pgmapper.MapTimeToTimestamp(s.ScheduledArrival),
-		ActualDeparture:     pgmapper.MapTimePtrToTimestamp(s.ActualDeparture),
-		ActualArrival:       pgmapper.MapTimePtrToTimestamp(s.ActualArrival),
 		Status:              string(s.Status),
 		TotalWeight:         pgmapper.MapDecimalToPgNumeric(s.TotalWeight),
 		TotalVolume:         pgmapper.MapDecimalToPgNumeric(s.TotalVolume),
@@ -71,9 +67,9 @@ func (r *PostgresRepository) ListShipments(ctx context.Context, limit int, offse
 	}), nil
 }
 
-func (r *PostgresRepository) ListShipmentsByLastWarehouse(ctx context.Context, lastWarehouseId int, limit int, offset int) ([]*entity.Shipment, error) {
+func (r *PostgresRepository) ListShipmentsByLastWarehouse(ctx context.Context, lastWarehouseId string, limit int, offset int) ([]*entity.Shipment, error) {
 	shipments, err := r.queries.ListShipmentsByLastWarehouse(ctx, database.ListShipmentsByLastWarehouseParams{
-		WarehouseID:  pgtype.Int4{Int32: int32(lastWarehouseId)},
+		WarehouseID:  pgtype.Text{String: lastWarehouseId},
 		ReturnLimit:  pgtype.Int4{Int32: int32(limit)},
 		ReturnOffset: pgtype.Int4{Int32: int32(offset)},
 	})
@@ -93,14 +89,10 @@ func (r *PostgresRepository) UpdateShipment(ctx context.Context, shipment *entit
 
 	updatedShipment, err := r.queries.UpdateShipment(ctx, database.UpdateShipmentParams{
 		ID:                 int32(shipment.Id),
-		Route:              lo.Map(shipment.Route, func(id int, _ int) int32 { return int32(id) }),
-		LastWarehouseID:    pgmapper.MapIntPtrToPgInt4(shipment.LastWarehouseId),
+		Route:              lo.Map(shipment.Route, func(id string, _ int) string { return id }),
+		LastWarehouseID:    pgmapper.MapStringPtrToPgText(shipment.LastWarehouseId),
 		DestinationAddress: shipment.DestinationAddress,
 		CarrierID:          pgmapper.MapIntPtrToPgInt4(shipment.CarrierId),
-		ScheduledDeparture: pgmapper.MapTimeToTimestamp(shipment.ScheduledDeparture),
-		ScheduledArrival:   pgmapper.MapTimeToTimestamp(shipment.ScheduledArrival),
-		ActualDeparture:    pgmapper.MapTimePtrToTimestamp(shipment.ActualDeparture),
-		ActualArrival:      pgmapper.MapTimePtrToTimestamp(shipment.ActualArrival),
 		Status:             string(shipment.Status),
 		TotalWeight:        pgmapper.MapDecimalToPgNumeric(shipment.TotalWeight),
 		TotalVolume:        pgmapper.MapDecimalToPgNumeric(shipment.TotalVolume),

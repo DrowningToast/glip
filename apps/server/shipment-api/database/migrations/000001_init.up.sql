@@ -51,19 +51,17 @@ CREATE TABLE warehouse_connections (
 -- Shipments
 CREATE TABLE shipments (
     id SERIAL PRIMARY KEY,
-    route int[] DEFAULT ARRAY[]::int[],
-    last_warehouse_id INTEGER,
+    route TEXT[] DEFAULT ARRAY[]::text[],
+    last_warehouse_id TEXT,
+    departure_warehouse_id TEXT NOT NULL,
+    departure_address TEXT,
+    destination_warehouse_id TEXT NOT NULL,
     destination_address TEXT NOT NULL,
     carrier_id INTEGER REFERENCES carriers(id),
-    scheduled_departure TIMESTAMP NOT NULL,
-    scheduled_arrival TIMESTAMP NOT NULL,
-    actual_departure TIMESTAMP,
-    actual_arrival TIMESTAMP,
-    status VARCHAR(20) NOT NULL, -- IN_TRANSIT_ON_THE_WAY, IN_TRANSIT_IN_WAREHOUSE, DELIVERED, CANCELLED
+    status VARCHAR(20) NOT NULL, -- WAITING_FOR_PICKUP, IN_TRANSIT_ON_THE_WAY, DELIVERED, CANCELLED
     total_weight DECIMAL(10,2) NOT NULL,
     total_volume DECIMAL(10,2) NOT NULL,
     special_instructions TEXT,
-    estimated_duration INTEGER, -- in minutes
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

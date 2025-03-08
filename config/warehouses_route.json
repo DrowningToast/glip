@@ -1,0 +1,554 @@
+{
+    "zoneNA": {
+        "USA1": {
+            "USA2": {
+                "route": [
+                    "USA1",
+                    "USA2"
+                ]
+            },
+            "USA3": {
+                "route": [
+                    "USA1",
+                    "USA3"
+                ]
+            },
+            "EU1": {
+                "route": [
+                    "USA1",
+                    "EU1"
+                ]
+            },
+            "EU2": {
+                "route": [
+                    "USA1",
+                    "EU1",
+                    "EU2"
+                ]
+            },
+            "EU3": {
+                "route": [
+                    "USA1",
+                    "EU1",
+                    "EU3"
+                ]
+            },
+            "APAC1": {
+                "route": [
+                    "USA1",
+                    "EU1",
+                    "APAC1"
+                ]
+            },
+            "APAC2": {
+                "route": [
+                    "USA1",
+                    "EU1",
+                    "APAC1",
+                    "APAC2"
+                ]
+            },
+            "APAC3": {
+                "route": [
+                    "USA1",
+                    "EU1",
+                    "APAC1",
+                    "APAC3"
+                ]
+            }
+        },
+        "USA2": {
+            "USA1": {
+                "route": [
+                    "USA2",
+                    "USA1"
+                ]
+            },
+            "USA3": {
+                "route": [
+                    "USA2",
+                    "USA1",
+                    "USA3"
+                ]
+            },
+            "EU1": {
+                "route": [
+                    "USA2",
+                    "USA1",
+                    "EU1"
+                ]
+            },
+            "EU2": {
+                "route": [
+                    "USA2",
+                    "USA1",
+                    "EU1",
+                    "EU2"
+                ]
+            },
+            "EU3": {
+                "route": [
+                    "USA2",
+                    "USA1",
+                    "EU1",
+                    "EU3"
+                ]
+            },
+            "APAC1": {
+                "route": [
+                    "USA2",
+                    "USA1",
+                    "EU1",
+                    "APAC1"
+                ]
+            },
+            "APAC2": {
+                "route": [
+                    "USA2",
+                    "USA1",
+                    "EU1",
+                    "APAC1",
+                    "APAC2"
+                ]
+            },
+            "APAC3": {
+                "route": [
+                    "USA2",
+                    "USA1",
+                    "EU1",
+                    "APAC1",
+                    "APAC3"
+                ]
+            }
+        },
+        "USA3": {
+            "USA1": {
+                "route": [
+                    "USA3",
+                    "USA1"
+                ]
+            },
+            "USA2": {
+                "route": [
+                    "USA3",
+                    "USA1",
+                    "USA2"
+                ]
+            },
+            "EU1": {
+                "route": [
+                    "USA3",
+                    "USA1",
+                    "EU1"
+                ]
+            },
+            "EU2": {
+                "route": [
+                    "USA3",
+                    "USA1",
+                    "EU1",
+                    "EU2"
+                ]
+            },
+            "EU3": {
+                "route": [
+                    "USA3",
+                    "USA1",
+                    "EU1",
+                    "EU3"
+                ]
+            },
+            "APAC1": {
+                "route": [
+                    "USA3",
+                    "USA1",
+                    "EU1",
+                    "APAC1"
+                ]
+            },
+            "APAC2": {
+                "route": [
+                    "USA3",
+                    "USA1",
+                    "EU1",
+                    "APAC1",
+                    "APAC2"
+                ]
+            },
+            "APAC3": {
+                "route": [
+                    "USA3",
+                    "USA1",
+                    "EU1",
+                    "APAC1",
+                    "APAC3"
+                ]
+            }
+        }
+    },
+    "zoneEU": {
+        "EU1": {
+            "EU2": {
+                "route": [
+                    "EU1",
+                    "EU2"
+                ]
+            },
+            "EU3": {
+                "route": [
+                    "EU1",
+                    "EU3"
+                ]
+            },
+            "USA1": {
+                "route": [
+                    "EU1",
+                    "USA1"
+                ]
+            },
+            "USA2": {
+                "route": [
+                    "EU1",
+                    "USA1",
+                    "USA2"
+                ]
+            },
+            "USA3": {
+                "route": [
+                    "EU1",
+                    "USA1",
+                    "USA3"
+                ]
+            },
+            "APAC1": {
+                "route": [
+                    "EU1",
+                    "APAC1"
+                ]
+            },
+            "APAC2": {
+                "route": [
+                    "EU1",
+                    "APAC1",
+                    "APAC2"
+                ]
+            },
+            "APAC3": {
+                "route": [
+                    "EU1",
+                    "APAC1",
+                    "APAC3"
+                ]
+            }
+        },
+        "EU2": {
+            "EU1": {
+                "route": [
+                    "EU2",
+                    "EU1"
+                ]
+            },
+            "EU3": {
+                "route": [
+                    "EU2",
+                    "EU1",
+                    "EU3"
+                ]
+            },
+            "USA1": {
+                "route": [
+                    "EU2",
+                    "EU1",
+                    "USA1"
+                ]
+            },
+            "USA2": {
+                "route": [
+                    "EU2",
+                    "EU1",
+                    "USA1",
+                    "USA2"
+                ]
+            },
+            "USA3": {
+                "route": [
+                    "EU2",
+                    "EU1",
+                    "USA1",
+                    "USA3"
+                ]
+            },
+            "APAC1": {
+                "route": [
+                    "EU2",
+                    "EU1",
+                    "APAC1"
+                ]
+            },
+            "APAC2": {
+                "route": [
+                    "EU2",
+                    "EU1",
+                    "APAC1",
+                    "APAC2"
+                ]
+            },
+            "APAC3": {
+                "route": [
+                    "EU2",
+                    "EU1",
+                    "APAC1",
+                    "APAC3"
+                ]
+            }
+        },
+        "EU3": {
+            "EU1": {
+                "route": [
+                    "EU3",
+                    "EU1"
+                ]
+            },
+            "EU2": {
+                "route": [
+                    "EU3",
+                    "EU1",
+                    "EU2"
+                ]
+            },
+            "USA1": {
+                "route": [
+                    "EU3",
+                    "EU1",
+                    "USA1"
+                ]
+            },
+            "USA2": {
+                "route": [
+                    "EU3",
+                    "EU1",
+                    "USA1",
+                    "USA2"
+                ]
+            },
+            "USA3": {
+                "route": [
+                    "EU3",
+                    "EU1",
+                    "USA1",
+                    "USA3"
+                ]
+            },
+            "APAC1": {
+                "route": [
+                    "EU3",
+                    "EU1",
+                    "APAC1"
+                ]
+            },
+            "APAC2": {
+                "route": [
+                    "EU3",
+                    "EU1",
+                    "APAC1",
+                    "APAC2"
+                ]
+            },
+            "APAC3": {
+                "route": [
+                    "EU3",
+                    "EU1",
+                    "APAC1",
+                    "APAC3"
+                ]
+            }
+        }
+    },
+    "zoneAPAC": {
+        "APAC1": {
+            "APAC2": {
+                "route": [
+                    "APAC1",
+                    "APAC2"
+                ]
+            },
+            "APAC3": {
+                "route": [
+                    "APAC1",
+                    "APAC3"
+                ]
+            },
+            "EU1": {
+                "route": [
+                    "APAC1",
+                    "EU1"
+                ]
+            },
+            "EU2": {
+                "route": [
+                    "APAC1",
+                    "EU1",
+                    "EU2"
+                ]
+            },
+            "EU3": {
+                "route": [
+                    "APAC1",
+                    "EU1",
+                    "EU3"
+                ]
+            },
+            "USA1": {
+                "route": [
+                    "APAC1",
+                    "EU1",
+                    "USA1"
+                ]
+            },
+            "USA2": {
+                "route": [
+                    "APAC1",
+                    "EU1",
+                    "USA1",
+                    "USA2"
+                ]
+            },
+            "USA3": {
+                "route": [
+                    "APAC1",
+                    "EU1",
+                    "USA1",
+                    "USA3"
+                ]
+            }
+        },
+        "APAC2": {
+            "APAC1": {
+                "route": [
+                    "APAC2",
+                    "APAC1"
+                ]
+            },
+            "APAC3": {
+                "route": [
+                    "APAC2",
+                    "APAC1",
+                    "APAC3"
+                ]
+            },
+            "EU1": {
+                "route": [
+                    "APAC2",
+                    "APAC1",
+                    "EU1"
+                ]
+            },
+            "EU2": {
+                "route": [
+                    "APAC2",
+                    "APAC1",
+                    "EU1",
+                    "EU2"
+                ]
+            },
+            "EU3": {
+                "route": [
+                    "APAC2",
+                    "APAC1",
+                    "EU1",
+                    "EU3"
+                ]
+            },
+            "USA1": {
+                "route": [
+                    "APAC2",
+                    "APAC1",
+                    "EU1",
+                    "USA1"
+                ]
+            },
+            "USA2": {
+                "route": [
+                    "APAC2",
+                    "APAC1",
+                    "EU1",
+                    "USA1",
+                    "USA2"
+                ]
+            },
+            "USA3": {
+                "route": [
+                    "APAC2",
+                    "APAC1",
+                    "EU1",
+                    "USA1",
+                    "USA3"
+                ]
+            }
+        },
+        "APAC3": {
+            "APAC1": {
+                "route": [
+                    "APAC3",
+                    "APAC1"
+                ]
+            },
+            "APAC2": {
+                "route": [
+                    "APAC3",
+                    "APAC1",
+                    "APAC2"
+                ]
+            },
+            "EU1": {
+                "route": [
+                    "APAC3",
+                    "APAC1",
+                    "EU1"
+                ]
+            },
+            "EU2": {
+                "route": [
+                    "APAC3",
+                    "APAC1",
+                    "EU1",
+                    "EU2"
+                ]
+            },
+            "EU3": {
+                "route": [
+                    "APAC3",
+                    "APAC1",
+                    "EU1",
+                    "EU3"
+                ]
+            },
+            "USA1": {
+                "route": [
+                    "APAC3",
+                    "APAC1",
+                    "EU1",
+                    "USA1"
+                ]
+            },
+            "USA2": {
+                "route": [
+                    "APAC3",
+                    "APAC1",
+                    "EU1",
+                    "USA1",
+                    "USA2"
+                ]
+            },
+            "USA3": {
+                "route": [
+                    "APAC3",
+                    "APAC1",
+                    "EU1",
+                    "USA1",
+                    "USA3"
+                ]
+            }
+        }
+    }
+}
