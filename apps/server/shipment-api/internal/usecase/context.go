@@ -16,15 +16,6 @@ func (u *Usecase) InitUserContext(ctx context.Context, session *entity.JWTSessio
 	return context.WithValue(ctx, UserContextKey{}, session)
 }
 
-func (u *Usecase) GetUserContext(ctx *fiber.Ctx) *entity.JWTSession {
-	session, ok := ctx.UserContext().Value(UserContextKey{}).(*entity.JWTSession)
-	if !ok {
-		return nil
-	}
-
-	return session
-}
-
 func (u *Usecase) InjectSessionContext(ctx context.Context, c *fiber.Ctx) (*entity.JWTSession, error) {
 	bearerString := c.Get("Authorization")
 	if bearerString == "" {

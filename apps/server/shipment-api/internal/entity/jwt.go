@@ -25,6 +25,6 @@ func (r *ConnectionType) Valid() bool {
 
 type JWTSession struct {
 	jwt.RegisteredClaims
-	Id   int            `json:"id"`
+	Id   string         `json:"id"`
 	Role ConnectionType `json:"role"`
 }

@@ -25,7 +25,6 @@ func (c *RabbitMQConfig) NewConnection(ctx context.Context) (*amqp.Connection, e
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to connect to rabbitmq")
 	}
-	defer conn.Close()
 
 	return conn, nil
 }
@@ -35,7 +34,6 @@ func NewRabbmitMQChannel(ctx context.Context, conn *amqp.Connection) (*amqp.Chan
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open a channel")
 	}
-	defer ch.Close()
 
 	return ch, nil
 }

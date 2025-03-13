@@ -9,8 +9,8 @@ import (
 
 func NewAuthGuard(u *usecase.Usecase) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		session := u.GetUserContext(c)
-		if session == nil {
+		sessionPtr := c.UserContext().Value(usecase.UserContextKey{})
+		if sessionPtr == nil {
 			return errors.Wrap(errs.ErrUnauthorized, "User not authenticated")
 		}
 

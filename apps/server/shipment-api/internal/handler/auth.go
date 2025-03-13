@@ -21,7 +21,7 @@ func (h *Handler) AuthenticateWarehouseConnection(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidBody, "key is required")
 	}
 
-	token, err := h.uc.CreateWarehouseConnectionSession(ctx.Context(), body.Key)
+	token, err := h.Uc.CreateWarehouseConnectionSession(ctx.Context(), body.Key)
 	if err != nil {
 		return errors.Wrap(err, "failed to create warehouse connection session")
 	}
@@ -49,7 +49,7 @@ func (h *Handler) AuthenticateAdmin(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidBody, "key is required")
 	}
 
-	token, err := h.uc.CreateAdminApiSession(ctx.Context(), body.Key)
+	token, err := h.Uc.CreateAdminApiSession(ctx.Context(), body.Key)
 	if err != nil {
 		return errors.Wrap(err, "failed to create admin api session")
 	}

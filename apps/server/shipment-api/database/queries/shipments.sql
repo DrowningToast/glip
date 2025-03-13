@@ -2,6 +2,9 @@
 INSERT INTO shipments (
     route,
     last_warehouse_id,
+    departure_warehouse_id,
+    departure_address,
+    destination_warehouse_id,
     destination_address,
     carrier_id,
         status,
@@ -9,7 +12,7 @@ INSERT INTO shipments (
     total_volume,
     special_instructions
 ) VALUES (
-    @route, @last_warehouse_id, @destination_address, @carrier_id,  @status, @total_weight, @total_volume, @special_instructions
+    @route, @last_warehouse_id, @departure_warehouse_id, @departure_address, @destination_warehouse_id, @destination_address, @carrier_id, @status, @total_weight, @total_volume, @special_instructions
 ) RETURNING *;
 
 -- name: GetShipmentById :one
@@ -24,6 +27,18 @@ LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 -- name: ListShipmentsByLastWarehouse :many
 SELECT * FROM shipments
 WHERE last_warehouse_id = @warehouse_id
+ORDER BY created_at DESC
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
+
+-- name: ListShipmentsByStatus :many
+SELECT * FROM shipments
+WHERE status = @status
+ORDER BY created_at DESC
+LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
+
+-- name: ListShipmentsByStatusAndLastWarehouse :many
+SELECT * FROM shipments
+WHERE status = @status AND last_warehouse_id = @warehouse_id
 ORDER BY created_at DESC
 LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 

@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	uc *usecase.Usecase
+	Uc *usecase.Usecase
 }
 
 type HandlerNewParams struct {
@@ -16,7 +16,7 @@ type HandlerNewParams struct {
 
 func New(params HandlerNewParams) Handler {
 	return Handler{
-		uc: params.Usecase,
+		Uc: params.Usecase,
 	}
 }
 
@@ -47,4 +47,10 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 	customerGroup.Post("/", h.CreateCustomer, middlewares.RoleGuard(entity.ConnectionTypeRoot))
 	customerGroup.Put("/", h.UpdateCustomer)
 	customerGroup.Delete("/:id", h.DeleteCustomer, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+
+	// Shipment
+	shipmentGroup := r.Group("/shipment", middlewares.AuthGuard)
+	shipmentGroup.Post("/", h.CreateShipment, middlewares.RoleGuard(entity.ConnectionTypeWarehouse))
+	shipmentGroup.Get("/", h.ListShipments, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	shipmentGroup.Get("/:id", h.GetShipment, middlewares.RoleGuard(entity.ConnectionTypeRoot))
 }

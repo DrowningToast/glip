@@ -33,7 +33,7 @@ func (h *Handler) CreateCustomer(ctx *fiber.Ctx) error {
 		Address: body.Customer.Address,
 	}
 
-	customer, err = h.uc.CreateCustomer(ctx.Context(), customer)
+	customer, err = h.Uc.CreateCustomer(ctx.Context(), customer)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (h *Handler) ListCustomers(ctx *fiber.Ctx) error {
 		offset = *queries.Offset
 	}
 
-	customerPtrs, err := h.uc.ListCustomers(ctx.Context(), &usecase.ListCustomersQuery{
+	customerPtrs, err := h.Uc.ListCustomers(ctx.Context(), &usecase.ListCustomersQuery{
 		Limit:  limit,
 		Offset: offset,
 	})
@@ -95,7 +95,7 @@ func (h *Handler) GetCustomer(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidQueryString, "id or email is required")
 	}
 
-	customer, err := h.uc.GetCustomer(ctx.Context(), usecase.GetCustomerQuery{
+	customer, err := h.Uc.GetCustomer(ctx.Context(), usecase.GetCustomerQuery{
 		Id:    queries.Id,
 		Email: queries.Email,
 	})
@@ -131,7 +131,7 @@ func (h *Handler) UpdateCustomer(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}
 
-	customer, err := h.uc.UpdateCustomer(ctx.Context(), &entity.Customer{
+	customer, err := h.Uc.UpdateCustomer(ctx.Context(), &entity.Customer{
 		Id:      body.Customer.Id,
 		Name:    body.Customer.Name,
 		Email:   body.Customer.Email,
@@ -159,7 +159,7 @@ func (h *Handler) DeleteCustomer(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidQueryString, err.Error())
 	}
 
-	err = h.uc.DeleteCustomer(ctx.Context(), int(customerIdInt))
+	err = h.Uc.DeleteCustomer(ctx.Context(), int(customerIdInt))
 	if err != nil {
 		return errors.Wrap(err, "failed to delete customer")
 	}

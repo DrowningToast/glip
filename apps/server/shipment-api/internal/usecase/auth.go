@@ -15,7 +15,7 @@ import (
 	"github.com/samber/lo"
 )
 
-func (u *Usecase) SignJWT(ctx context.Context, id int, role entity.ConnectionType) (string, error) {
+func (u *Usecase) SignJWT(ctx context.Context, id string, role entity.ConnectionType) (string, error) {
 	claims := entity.JWTSession{
 		Id:   id,
 		Role: role,
@@ -61,7 +61,7 @@ const (
 
 type warehouseConnectionResponse struct {
 	WarehouseConnection struct {
-		Id int `json:"id"`
+		Id string `json:"id"`
 		// The warehouse id that the connection is for
 		WarehouseId string                    `json:"warehouse_id"`
 		ApiKey      string                    `json:"api_key"`
@@ -148,7 +148,7 @@ func (u *Usecase) CreateAdminApiSession(ctx context.Context, apiKey string) (*st
 		return nil, errors.Wrap(errs.ErrUnauthorized, "invalid api key")
 	}
 
-	tokenString, err := u.SignJWT(ctx, 0, entity.ConnectionTypeRoot)
+	tokenString, err := u.SignJWT(ctx, "root", entity.ConnectionTypeRoot)
 	if err != nil {
 		return nil, errors.Wrap(errs.ErrInternal, err.Error())
 	}

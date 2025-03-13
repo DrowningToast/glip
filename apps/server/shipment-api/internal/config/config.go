@@ -20,6 +20,7 @@ type ShipmentConfig struct {
 	// API config
 	RegistryApiKey string `env:"SHIPMENT_REGISTRY_API_KEY"`
 
+	RabbitMQConfig     services.RabbitMQConfig `envPrefix:"SHIPMENT_RABBITMQ_"`
 	ShipmentAuthConfig config.AuthConfig       `envPrefix:"SHIPMENT_AUTH_"`
 	ShipmentPgConfig   services.PostgresConfig `envPrefix:"SHIPMENT_PG_"`
 }
@@ -58,7 +59,7 @@ func ExtendConfig(config *config.Config, path *string) (*ShipmentConfig, error) 
 	}
 
 	// load local config
-	warehouseRegions, err := GetWarehouseRegions()
+	warehouseRegions, err := LoadWarehouseConfig()
 	if err != nil {
 		return nil, err
 	}

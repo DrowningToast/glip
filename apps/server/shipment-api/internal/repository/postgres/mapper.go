@@ -14,11 +14,11 @@ func mapShipmentModelToEntity(shipment *shipment_database.Shipment) *entity.Ship
 		lastWarehouseId = &shipment.LastWarehouseID.String
 	}
 
-	var carrierId *int
-	if shipment.CarrierID.Valid {
-		i := int(shipment.CarrierID.Int32)
-		carrierId = &i
-	}
+	// var carrierId *int
+	// if shipment.CarrierID.Valid {
+	// 	i := int(shipment.CarrierID.Int32)
+	// 	carrierId = &i
+	// }
 
 	var specialInstructions *string
 	if shipment.SpecialInstructions.Valid {
@@ -33,11 +33,11 @@ func mapShipmentModelToEntity(shipment *shipment_database.Shipment) *entity.Ship
 		DepartureAddress:       pgmapper.MapPgTextToStringPtr(shipment.DepartureAddress),
 		DestinationWarehouseId: shipment.DestinationWarehouseID,
 		DestinationAddress:     shipment.DestinationAddress,
-		CarrierId:              carrierId,
-		Status:                 entity.ShipmentStatus(shipment.Status),
-		TotalWeight:            decimal.New(shipment.TotalWeight.Int.Int64(), shipment.TotalWeight.Exp),
-		TotalVolume:            decimal.New(shipment.TotalVolume.Int.Int64(), shipment.TotalVolume.Exp),
-		SpecialInstructions:    specialInstructions,
+		// CarrierId:              carrierId,
+		Status:              entity.ShipmentStatus(shipment.Status),
+		TotalWeight:         decimal.New(shipment.TotalWeight.Int.Int64(), shipment.TotalWeight.Exp),
+		TotalVolume:         decimal.New(shipment.TotalVolume.Int.Int64(), shipment.TotalVolume.Exp),
+		SpecialInstructions: specialInstructions,
 	}
 }
 

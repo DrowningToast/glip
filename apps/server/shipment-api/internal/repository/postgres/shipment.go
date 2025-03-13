@@ -23,10 +23,13 @@ func (r *PostgresRepository) CreateShipment(ctx context.Context, s *entity.Shipm
 	}
 
 	shipment, err := r.queries.CreateShipment(ctx, database.CreateShipmentParams{
-		Route:               lo.Map(s.Route, func(id string, _ int) string { return id }),
-		LastWarehouseID:     pgmapper.MapStringPtrToPgText(s.LastWarehouseId),
-		DestinationAddress:  s.DestinationAddress,
-		CarrierID:           pgmapper.MapIntPtrToPgInt4(s.CarrierId),
+		Route:                  lo.Map(s.Route, func(id string, _ int) string { return id }),
+		LastWarehouseID:        pgmapper.MapStringPtrToPgText(s.LastWarehouseId),
+		DepartureWarehouseID:   s.DepartureWarehouseId,
+		DepartureAddress:       pgmapper.MapStringPtrToPgText(s.DepartureAddress),
+		DestinationWarehouseID: s.DestinationWarehouseId,
+		DestinationAddress:     s.DestinationAddress,
+		// CarrierID:           pgmapper.MapIntPtrToPgInt4(s.CarrierId),
 		Status:              string(s.Status),
 		TotalWeight:         pgmapper.MapDecimalToPgNumeric(s.TotalWeight),
 		TotalVolume:         pgmapper.MapDecimalToPgNumeric(s.TotalVolume),
@@ -82,6 +85,37 @@ func (r *PostgresRepository) ListShipmentsByLastWarehouse(ctx context.Context, l
 	}), nil
 }
 
+func (r *PostgresRepository) ListShipmentsByStatus(ctx context.Context, status entity.ShipmentStatus, limit int, offset int) ([]*entity.Shipment, error) {
+	shipments, err := r.queries.ListShipmentsByStatus(ctx, database.ListShipmentsByStatusParams{
+		Status:       string(status),
+		ReturnLimit:  pgtype.Int4{Int32: int32(limit)},
+		ReturnOffset: pgtype.Int4{Int32: int32(offset)},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return lo.Map(shipments, func(s database.Shipment, _ int) *entity.Shipment {
+		return mapShipmentModelToEntity(&s)
+	}), nil
+}
+
+func (r *PostgresRepository) ListShipmentsByStatusAndLastWarehouse(ctx context.Context, status entity.ShipmentStatus, lastWarehouseId string, limit int, offset int) ([]*entity.Shipment, error) {
+	shipments, err := r.queries.ListShipmentsByStatusAndLastWarehouse(ctx, database.ListShipmentsByStatusAndLastWarehouseParams{
+		Status:       string(status),
+		WarehouseID:  pgtype.Text{String: lastWarehouseId},
+		ReturnLimit:  pgtype.Int4{Int32: int32(limit)},
+		ReturnOffset: pgtype.Int4{Int32: int32(offset)},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return lo.Map(shipments, func(s database.Shipment, _ int) *entity.Shipment {
+		return mapShipmentModelToEntity(&s)
+	}), nil
+}
+
 func (r *PostgresRepository) UpdateShipment(ctx context.Context, shipment *entity.Shipment) (*entity.Shipment, error) {
 	if shipment == nil {
 		return nil, errors.Wrap(errs.ErrInternal, "shipment is nil")
@@ -92,10 +126,10 @@ func (r *PostgresRepository) UpdateShipment(ctx context.Context, shipment *entit
 		Route:              lo.Map(shipment.Route, func(id string, _ int) string { return id }),
 		LastWarehouseID:    pgmapper.MapStringPtrToPgText(shipment.LastWarehouseId),
 		DestinationAddress: shipment.DestinationAddress,
-		CarrierID:          pgmapper.MapIntPtrToPgInt4(shipment.CarrierId),
-		Status:             string(shipment.Status),
-		TotalWeight:        pgmapper.MapDecimalToPgNumeric(shipment.TotalWeight),
-		TotalVolume:        pgmapper.MapDecimalToPgNumeric(shipment.TotalVolume),
+		// CarrierID:          pgmapper.MapIntPtrToPgInt4(shipment.CarrierId),
+		Status:      string(shipment.Status),
+		TotalWeight: pgmapper.MapDecimalToPgNumeric(shipment.TotalWeight),
+		TotalVolume: pgmapper.MapDecimalToPgNumeric(shipment.TotalVolume),
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {

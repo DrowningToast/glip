@@ -12,7 +12,7 @@ const (
 )
 
 type Warehouse struct {
-	Id              int             `json:"id" validate:"required"`
+	Id              string          `json:"id" validate:"required"`
 	Name            string          `json:"name" validate:"required"`
 	Location        string          `json:"location" validate:"required"`
 	Country         string          `json:"country" validate:"required"`

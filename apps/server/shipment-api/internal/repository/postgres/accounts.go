@@ -49,6 +49,18 @@ func (r *PostgresRepository) GetAccountByUsername(ctx context.Context, username 
 	return mapAccountModelToEntity(&account), nil
 }
 
+func (r *PostgresRepository) GetAccountByUserId(ctx context.Context, userId string) (*entity.Account, error) {
+	account, err := r.queries.GetAccountByUserId(ctx, userId)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errors.Wrap(err, "failed to get account by user id")
+	}
+
+	return mapAccountModelToEntity(&account), nil
+}
+
 func (r *PostgresRepository) GetAccountById(ctx context.Context, id int) (*entity.Account, error) {
 	account, err := r.queries.GetAccountById(ctx, int32(id))
 	if err != nil {

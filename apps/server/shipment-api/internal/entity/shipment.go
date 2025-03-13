@@ -9,10 +9,11 @@ import (
 type ShipmentStatus string
 
 const (
-	ShipmentStatusWaitingForPickup  ShipmentStatus = "WAITING_FOR_PICKUP"
-	ShipmentStatusInTransitOnTheWay ShipmentStatus = "IN_TRANSIT_ON_THE_WAY"
-	ShipmentStatusDelivered         ShipmentStatus = "DELIVERED"
-	ShipmentStatusCancelled         ShipmentStatus = "CANCELLED"
+	ShipmentStatusWaitingForPickup   ShipmentStatus = "WAITING_FOR_PICKUP_TO_WAREHOUSE"
+	ShipmentStatusInTransitOnTheWay  ShipmentStatus = "IN_TRANSIT_ON_THE_WAY"
+	ShipmentStatusArrivedAtWarehouse ShipmentStatus = "ARRIVED_AT_WAREHOUSE"
+	ShipmentStatusDelivered          ShipmentStatus = "DELIVERED"
+	ShipmentStatusCancelled          ShipmentStatus = "CANCELLED"
 )
 
 func (s ShipmentStatus) String() string {
@@ -47,7 +48,7 @@ type Shipment struct {
 	DestinationWarehouseId string `json:"destination_warehouse_id"`
 	DestinationAddress     string `json:"destination_address"`
 
-	CarrierId           *int            `json:"carrier_id"`
+	// CarrierId           *int            `json:"carrier_id"`
 	Status              ShipmentStatus  `json:"status"`
 	TotalWeight         decimal.Decimal `json:"total_weight"`
 	TotalVolume         decimal.Decimal `json:"total_volume"`

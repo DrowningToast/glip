@@ -11,7 +11,7 @@ import (
 func NewRoleGuard(u *usecase.Usecase) func(role entity.ConnectionType) fiber.Handler {
 	return func(role entity.ConnectionType) fiber.Handler {
 		return func(c *fiber.Ctx) error {
-			session := u.GetUserContext(c)
+			session := c.UserContext().Value(usecase.UserContextKey{}).(*entity.JWTSession)
 			if session == nil {
 				return c.SendStatus(fiber.StatusUnauthorized)
 			}

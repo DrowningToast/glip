@@ -11,6 +11,10 @@ INSERT INTO accounts (
 SELECT * FROM accounts
 WHERE username = @username AND deleted_at IS NULL;
 
+-- name: GetAccountByUserId :one
+SELECT * FROM accounts
+WHERE user_id = @user_id AND deleted_at IS NULL;
+
 -- name: GetAccountById :one
 SELECT * FROM accounts
 WHERE id = @id AND deleted_at IS NULL;
