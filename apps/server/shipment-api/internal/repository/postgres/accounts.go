@@ -5,6 +5,7 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
+	"github.com/drowningtoast/glip/apps/server/internal/utils/pgmapper"
 	shipment_database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/datagateway"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
@@ -25,7 +26,7 @@ func (r *PostgresRepository) CreateAccount(ctx context.Context, accountPtr *enti
 	createdAccount, err := r.queries.CreateAccount(ctx, shipment_database.CreateAccountParams{
 		Username: account.Username,
 		Password: account.Password,
-		Role:     string(account.Role),
+		Email:    account.Email,
 	})
 	if err != nil {
 		if checkPgErrCode(err, pgerrcode.UniqueViolation) {
@@ -49,13 +50,13 @@ func (r *PostgresRepository) GetAccountByUsername(ctx context.Context, username 
 	return mapAccountModelToEntity(&account), nil
 }
 
-func (r *PostgresRepository) GetAccountByUserId(ctx context.Context, userId string) (*entity.Account, error) {
-	account, err := r.queries.GetAccountByUserId(ctx, userId)
+func (r *PostgresRepository) GetAccountByEmail(ctx context.Context, email string) (*entity.Account, error) {
+	account, err := r.queries.GetAccountByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
-		return nil, errors.Wrap(err, "failed to get account by user id")
+		return nil, errors.Wrap(err, "failed to get account by email")
 	}
 
 	return mapAccountModelToEntity(&account), nil
@@ -87,12 +88,12 @@ func (r *PostgresRepository) ListAccounts(ctx context.Context, limit int, offset
 	}), nil
 }
 
-func (r *PostgresRepository) UpdateAccount(ctx context.Context, account *entity.Account) (*entity.Account, error) {
+func (r *PostgresRepository) UpdateAccount(ctx context.Context, params *datagateway.UpdateAccountParams) (*entity.Account, error) {
 	updatedAccount, err := r.queries.UpdateAccount(ctx, shipment_database.UpdateAccountParams{
-		ID:       int32(account.Id),
-		Username: account.Username,
-		Password: account.Password,
-		Role:     string(account.Role),
+		ID:       int32(params.Id),
+		Username: pgmapper.MapStringPtrToPgText(params.Username),
+		Password: pgmapper.MapStringPtrToPgText(params.Password),
+		Email:    pgmapper.MapStringPtrToPgText(params.Email),
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {

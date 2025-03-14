@@ -116,6 +116,22 @@ func (r *PostgresRepository) ListShipmentsByStatusAndLastWarehouse(ctx context.C
 	}), nil
 }
 
+func (r *PostgresRepository) ListShipmentsByAccountUsername(ctx context.Context, username string, limit int, offset int, status *entity.ShipmentStatus) ([]*entity.Shipment, error) {
+	shipments, err := r.queries.ListShipmentsByAccountUsername(ctx, database.ListShipmentsByAccountUsernameParams{
+		Username:     username,
+		ReturnLimit:  pgtype.Int4{Int32: int32(limit)},
+		ReturnOffset: pgtype.Int4{Int32: int32(offset)},
+		Status:       pgmapper.MapStringPtrToPgText((*string)(status)),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return lo.Map(shipments, func(s database.ListShipmentsByAccountUsernameRow, _ int) *entity.Shipment {
+		return mapShipmentJoinedAccountModelToEntity(s)
+	}), nil
+}
+
 func (r *PostgresRepository) UpdateShipment(ctx context.Context, shipment *entity.Shipment) (*entity.Shipment, error) {
 	if shipment == nil {
 		return nil, errors.Wrap(errs.ErrInternal, "shipment is nil")

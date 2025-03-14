@@ -13,11 +13,12 @@ import (
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/samber/lo"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func (u *Usecase) SignJWT(ctx context.Context, id string, role entity.ConnectionType) (string, error) {
+func (u *Usecase) SignJWT(ctx context.Context, identifier string, role entity.ConnectionType) (string, error) {
 	claims := entity.JWTSession{
-		Id:   id,
+		Id:   identifier,
 		Role: role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(u.Config.ShipmentAuthConfig.JWTExpirationTime) * time.Second)),
@@ -71,6 +72,27 @@ type warehouseConnectionResponse struct {
 		UpdatedAt   *time.Time                `json:"updated_at"`
 		LastUsedAt  *time.Time                `json:"last_used_at"`
 	} `json:"warehouse_connection"`
+}
+
+func (u *Usecase) CreateUserConnectionSession(ctx context.Context, username string, password string) (*string, error) {
+	account, err := u.AccountDg.GetAccountByUsername(ctx, username)
+	if err != nil {
+		return nil, errors.Wrap(errs.ErrUnauthorized, "invalid username or password")
+	}
+	if account == nil {
+		return nil, errors.Wrap(errs.ErrUnauthorized, "invalid username or password")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password)); err != nil {
+		return nil, errors.Wrap(errs.ErrUnauthorized, "invalid username or password")
+	}
+
+	tokenString, err := u.SignJWT(ctx, account.Username, entity.ConnectionTypeUser)
+	if err != nil {
+		return nil, errors.Wrap(errs.ErrInternal, err.Error())
+	}
+
+	return &tokenString, nil
 }
 
 // return jwt token string

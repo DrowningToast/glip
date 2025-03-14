@@ -6,13 +6,14 @@ INSERT INTO shipments (
     departure_address,
     destination_warehouse_id,
     destination_address,
-    carrier_id,
-        status,
+    owner_id,
+    created_by,
+    status,
     total_weight,
     total_volume,
     special_instructions
 ) VALUES (
-    @route, @last_warehouse_id, @departure_warehouse_id, @departure_address, @destination_warehouse_id, @destination_address, @carrier_id, @status, @total_weight, @total_volume, @special_instructions
+    @route, @last_warehouse_id, @departure_warehouse_id, @departure_address, @destination_warehouse_id, @destination_address, @owner_id, @created_by, @status, @total_weight, @total_volume, @special_instructions
 ) RETURNING *;
 
 -- name: GetShipmentById :one
@@ -42,10 +43,12 @@ WHERE status = @status AND last_warehouse_id = @warehouse_id
 ORDER BY created_at DESC
 LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
--- name: ListShipmentsByCarrier :many
+
+-- name: ListShipmentsByAccountUsername :many
 SELECT * FROM shipments
-WHERE carrier_id = @carrier_id
-ORDER BY created_at DESC
+JOIN accounts ON owners.account_id = accounts.id
+WHERE accounts.username = @username AND status = COALESCE(sqlc.narg(status), status)
+ORDER BY shipments.created_at DESC
 LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
 -- name: UpdateShipment :one
@@ -54,7 +57,6 @@ SET
     route = COALESCE(@route, route),
     last_warehouse_id = COALESCE(@last_warehouse_id, last_warehouse_id),
     destination_address = COALESCE(@destination_address, destination_address),
-    carrier_id = COALESCE(@carrier_id, carrier_id),
     status = COALESCE(@status, status),
     total_weight = COALESCE(@total_weight, total_weight),
     total_volume = COALESCE(@total_volume, total_volume),

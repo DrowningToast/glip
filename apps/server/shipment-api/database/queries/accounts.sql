@@ -2,18 +2,18 @@
 INSERT INTO accounts (
     username,
     password,
-    role
+    email
 ) VALUES (
-    @username, @password, @role
+    @username, @password, @email
 ) RETURNING *;
 
 -- name: GetAccountByUsername :one
 SELECT * FROM accounts
 WHERE username = @username AND deleted_at IS NULL;
 
--- name: GetAccountByUserId :one
+-- name: GetAccountByEmail :one
 SELECT * FROM accounts
-WHERE user_id = @user_id AND deleted_at IS NULL;
+WHERE email = @email AND deleted_at IS NULL;
 
 -- name: GetAccountById :one
 SELECT * FROM accounts
@@ -28,9 +28,9 @@ LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 -- name: UpdateAccount :one
 UPDATE accounts
 SET 
-    username = COALESCE(@username, username),
-    password = COALESCE(@password, password),
-    role = COALESCE(@role, role),
+    username = COALESCE(sqlc.narg(username), username),
+    password = COALESCE(sqlc.narg(password), password),
+    email = COALESCE(sqlc.narg(email), email),
     updated_at = CURRENT_TIMESTAMP
 WHERE id = @id AND deleted_at IS NULL
 RETURNING *;

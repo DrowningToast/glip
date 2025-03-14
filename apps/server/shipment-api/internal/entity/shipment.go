@@ -48,7 +48,12 @@ type Shipment struct {
 	DestinationWarehouseId string `json:"destination_warehouse_id"`
 	DestinationAddress     string `json:"destination_address"`
 
-	// CarrierId           *int            `json:"carrier_id"`
+	// Who managed the shipment, (account entity)
+	CreatedBy int `json:"created_by"`
+
+	// Who the shipment belongs to, (customer entity)
+	OwnerId int `json:"owner_id"`
+
 	Status              ShipmentStatus  `json:"status"`
 	TotalWeight         decimal.Decimal `json:"total_weight"`
 	TotalVolume         decimal.Decimal `json:"total_volume"`

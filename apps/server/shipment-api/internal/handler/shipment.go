@@ -68,10 +68,11 @@ func (h *Handler) ListShipments(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(common.HTTPResponse{
-		Result: struct {
-			Shipments []*entity.Shipment `json:"shipments"`
-		}{
-			Shipments: shipments,
+		Result: common.PaginatedResult[*entity.Shipment]{
+			Items:  shipments,
+			Count:  len(shipments),
+			Offset: *query.Offset,
+			Limit:  *query.Limit,
 		},
 	})
 }
@@ -91,6 +92,83 @@ func (h *Handler) GetShipment(ctx *fiber.Ctx) error {
 	shipment, err := h.Uc.GetShipmentById(ctx.Context(), shipmentIdInt)
 	if err != nil {
 		return errors.Wrap(err, "failed to get shipment")
+	}
+
+	return ctx.JSON(common.HTTPResponse{
+		Result: struct {
+			Shipment *entity.Shipment `json:"shipment"`
+		}{
+			Shipment: shipment,
+		},
+	})
+}
+
+// sent by account
+func (h *Handler) ListShipmentsByAccountUser(ctx *fiber.Ctx) error {
+	var query struct {
+		Limit    *int                   `query:"limit"`
+		Offset   *int                   `query:"offset"`
+		Status   *entity.ShipmentStatus `query:"status"`
+		Username string                 `query:"username"`
+	}
+	if query.Limit == nil {
+		limit := 100
+		query.Limit = &limit
+	}
+
+	if query.Offset == nil {
+		offset := 0
+		query.Offset = &offset
+	}
+
+	session := ctx.UserContext().Value(usecase.UserContextKey{}).(*entity.JWTSession)
+	if session == nil {
+		return errors.Wrap(errs.ErrUnauthorized, "account not found")
+	}
+
+	// Id is the username of the account
+	if query.Username != session.Id {
+		return errors.Wrap(errs.ErrUnauthorized, "account not authorized")
+	}
+
+	shipments, err := h.Uc.ListShipmentsByAccountUser(ctx.Context(), *&usecase.ListShipmentsByAccountUser{
+		Limit:    *query.Limit,
+		Offset:   *query.Offset,
+		Status:   query.Status,
+		Username: query.Username,
+	})
+	if err != nil {
+		return errors.Wrap(err, "failed to list shipments")
+	}
+
+	return ctx.JSON(common.HTTPResponse{
+		Result: common.PaginatedResult[*entity.Shipment]{
+			Items:  shipments,
+			Count:  len(shipments),
+			Offset: *query.Offset,
+			Limit:  *query.Limit,
+		},
+	})
+}
+
+// sent by shipment owner
+// expect request body: {shipment_id: shipment_id, email: email}
+func (h *Handler) TrackShipment(ctx *fiber.Ctx) error {
+	var body struct {
+		ShipmentId int    `json:"shipment_id" validate:"required"`
+		Email      string `json:"email" validate:"required"`
+	}
+
+	if err := ctx.BodyParser(&body); err != nil {
+		return errors.Wrap(errs.ErrInvalidBody, err.Error())
+	}
+
+	shipment, err := h.Uc.GetShipmentByOwner(ctx.Context(), *&usecase.GetShipmentByOwnerParams{
+		ShipmentId: body.ShipmentId,
+		Email:      body.Email,
+	})
+	if err != nil {
+		return errors.Wrap(err, "failed to track shipment")
 	}
 
 	return ctx.JSON(common.HTTPResponse{

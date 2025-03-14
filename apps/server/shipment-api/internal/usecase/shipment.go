@@ -240,3 +240,44 @@ func (uc *Usecase) ListShipments(ctx context.Context, params ListShipmentsParams
 		return shipments, nil
 	}
 }
+
+type ListShipmentsByAccountUser struct {
+	Limit    int
+	Offset   int
+	Status   *entity.ShipmentStatus
+	Username string
+}
+
+func (uc *Usecase) ListShipmentsByAccountUser(ctx context.Context, params ListShipmentsByAccountUser) ([]*entity.Shipment, error) {
+	shipments, err := uc.ShipmentDg.ListShipmentsByAccountUsername(ctx, params.Username, params.Limit, params.Offset, params.Status)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to list shipments")
+	}
+	return shipments, nil
+}
+
+type GetShipmentByOwnerParams struct {
+	Email      string `json:"email" validate:"required"`
+	ShipmentId int    `json:"id" validate:"required"`
+}
+
+func (uc *Usecase) GetShipmentByOwner(ctx context.Context, params GetShipmentByOwnerParams) (*entity.Shipment, error) {
+	shipment, err := uc.ShipmentDg.GetShipmentById(ctx, params.ShipmentId)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get shipment")
+	}
+
+	owner, err := uc.CustomerDg.GetShipmentOwnerByEmail(ctx, params.Email)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get owner")
+	}
+	if owner == nil {
+		return nil, errors.Wrap(errs.ErrNotFound, "owner not found")
+	}
+
+	if shipment.OwnerId != owner.Id {
+		return nil, errors.Wrap(errs.ErrNotFound, "shipment not found")
+	}
+
+	return shipment, nil
+}

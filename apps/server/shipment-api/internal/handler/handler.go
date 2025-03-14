@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/middleware"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,7 +22,7 @@ func New(params HandlerNewParams) Handler {
 
 type MiddlewareParameters struct {
 	AuthGuard fiber.Handler
-	RoleGuard func(permission entity.ConnectionType) fiber.Handler
+	RoleGuard func(params middleware.RoleGuardParams) fiber.Handler
 }
 
 func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
@@ -42,15 +42,24 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 
 	// Customer
 	customerGroup := r.Group("/customer", middlewares.AuthGuard)
-	customerGroup.Get("/", h.GetCustomer)
-	customerGroup.Get("/list", h.ListCustomers)
-	customerGroup.Post("/", h.CreateCustomer, middlewares.RoleGuard(entity.ConnectionTypeRoot))
-	customerGroup.Put("/", h.UpdateCustomer)
-	customerGroup.Delete("/:id", h.DeleteCustomer, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	customerGroup.Get("/", h.GetCustomer, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
+	customerGroup.Get("/list", h.ListCustomers, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
+	customerGroup.Post("/", h.CreateCustomer, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
+	customerGroup.Put("/", h.UpdateCustomer, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
+	customerGroup.Delete("/:id", h.DeleteCustomer, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
 
 	// Shipment
-	shipmentGroup := r.Group("/shipment", middlewares.AuthGuard)
-	shipmentGroup.Post("/", h.CreateShipment, middlewares.RoleGuard(entity.ConnectionTypeWarehouse))
-	shipmentGroup.Get("/list", h.ListShipments, middlewares.RoleGuard(entity.ConnectionTypeRoot))
-	shipmentGroup.Get("/:shipment_id", h.GetShipment, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	shipmentGroup := r.Group("/shipment")
+
+	// list by customer
+	shipmentGroup.Get("/customer/list", h.ListShipmentsByAccountUser, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{User: true}))
+	// track by shipment owner
+	shipmentGroup.Post("/track", h.TrackShipment)
+
+	// Create shipment
+	shipmentGroup.Post("/", h.CreateShipment, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Warehouse: true, Root: true}))
+	// List shipments
+	shipmentGroup.Get("/list", h.ListShipments, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Warehouse: true}))
+	// Get shipment by id
+	shipmentGroup.Get("/:shipment_id", h.GetShipment, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Warehouse: true}))
 }

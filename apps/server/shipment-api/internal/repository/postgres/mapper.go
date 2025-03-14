@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"github.com/drowningtoast/glip/apps/server/internal/utils/pgmapper"
+	database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	shipment_database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
 	"github.com/samber/lo"
@@ -13,12 +14,6 @@ func mapShipmentModelToEntity(shipment *shipment_database.Shipment) *entity.Ship
 	if shipment.LastWarehouseID.Valid {
 		lastWarehouseId = &shipment.LastWarehouseID.String
 	}
-
-	// var carrierId *int
-	// if shipment.CarrierID.Valid {
-	// 	i := int(shipment.CarrierID.Int32)
-	// 	carrierId = &i
-	// }
 
 	var specialInstructions *string
 	if shipment.SpecialInstructions.Valid {
@@ -41,12 +36,38 @@ func mapShipmentModelToEntity(shipment *shipment_database.Shipment) *entity.Ship
 	}
 }
 
+func mapShipmentJoinedAccountModelToEntity(s database.ListShipmentsByAccountUsernameRow) *entity.Shipment {
+	var lastWarehouseId *string
+	if s.LastWarehouseID.Valid {
+		lastWarehouseId = &s.LastWarehouseID.String
+	}
+
+	var specialInstructions *string
+	if s.SpecialInstructions.Valid {
+		specialInstructions = &s.SpecialInstructions.String
+	}
+
+	return &entity.Shipment{
+		Id:                     int(s.ID),
+		Route:                  lo.Map(s.Route, func(id string, _ int) string { return id }),
+		LastWarehouseId:        lastWarehouseId,
+		DepartureWarehouseId:   s.DepartureWarehouseID,
+		DepartureAddress:       pgmapper.MapPgTextToStringPtr(s.DepartureAddress),
+		DestinationWarehouseId: s.DestinationWarehouseID,
+		DestinationAddress:     s.DestinationAddress,
+		Status:                 entity.ShipmentStatus(s.Status),
+		TotalWeight:            decimal.New(s.TotalWeight.Int.Int64(), s.TotalWeight.Exp),
+		TotalVolume:            decimal.New(s.TotalVolume.Int.Int64(), s.TotalVolume.Exp),
+		SpecialInstructions:    specialInstructions,
+	}
+}
+
 func mapAccountModelToEntity(account *shipment_database.Account) *entity.Account {
 	return &entity.Account{
 		Id:       int(account.ID),
 		Username: account.Username,
 		Password: account.Password,
-		Role:     entity.AccountRole(account.Role),
+		Email:    account.Email,
 	}
 }
 

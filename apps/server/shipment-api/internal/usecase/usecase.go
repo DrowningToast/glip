@@ -10,6 +10,7 @@ type Usecase struct {
 
 	ShipmentQueueDg datagateway.ShipmentQueueDataGateway
 
+	AccountDg  datagateway.AccountsDataGateway
 	ShipmentDg datagateway.ShipmentDataGateway
 	CustomerDg datagateway.OwnersDataGateway
 	CarrierDg  datagateway.CarrierDataGateway

@@ -6,7 +6,7 @@ type ConnectionType string
 
 const (
 	ConnectionTypeWarehouse ConnectionType = "WAREHOUSE"
-	ConnectionTypeCustomer  ConnectionType = "CUSTOMER"
+	ConnectionTypeUser      ConnectionType = "USER"
 	ConnectionTypeRoot      ConnectionType = "ROOT"
 )
 
@@ -16,7 +16,7 @@ func (r *ConnectionType) String() string {
 
 func (r *ConnectionType) Valid() bool {
 	switch *r {
-	case ConnectionTypeWarehouse, ConnectionTypeCustomer, ConnectionTypeRoot:
+	case ConnectionTypeWarehouse, ConnectionTypeUser, ConnectionTypeRoot:
 		return true
 	default:
 		return false

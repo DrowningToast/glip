@@ -16,6 +16,7 @@ type ShipmentDataGateway interface {
 	ListShipmentsByLastWarehouse(ctx context.Context, lastWarehouseId string, limit int, offset int) ([]*entity.Shipment, error)
 	ListShipmentsByStatus(ctx context.Context, status entity.ShipmentStatus, limit int, offset int) ([]*entity.Shipment, error)
 	ListShipmentsByStatusAndLastWarehouse(ctx context.Context, status entity.ShipmentStatus, lastWarehouseId string, limit int, offset int) ([]*entity.Shipment, error)
+	ListShipmentsByAccountUsername(ctx context.Context, username string, limit int, offset int, status *entity.ShipmentStatus) ([]*entity.Shipment, error)
 
 	UpdateShipment(ctx context.Context, shipment *entity.Shipment) (*entity.Shipment, error)
 	UpdateShipmentStatus(ctx context.Context, id int, status entity.ShipmentStatus) (*entity.Shipment, error)

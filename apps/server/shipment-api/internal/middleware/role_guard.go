@@ -8,15 +8,34 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func NewRoleGuard(u *usecase.Usecase) func(role entity.ConnectionType) fiber.Handler {
-	return func(role entity.ConnectionType) fiber.Handler {
+type RoleGuardParams struct {
+	Root      bool
+	User      bool
+	Warehouse bool
+}
+
+func NewRoleGuard(u *usecase.Usecase) func(params RoleGuardParams) fiber.Handler {
+	return func(params RoleGuardParams) fiber.Handler {
 		return func(c *fiber.Ctx) error {
 			session := c.UserContext().Value(usecase.UserContextKey{}).(*entity.JWTSession)
 			if session == nil {
 				return c.SendStatus(fiber.StatusUnauthorized)
 			}
 
-			if session.Role != role {
+			isAllowed := func() bool {
+				switch session.Role {
+				case entity.ConnectionTypeRoot:
+					return params.Root
+				case entity.ConnectionTypeUser:
+					return params.User
+				case entity.ConnectionTypeWarehouse:
+					return params.Warehouse
+				default:
+					return false
+				}
+			}()
+
+			if !isAllowed {
 				return errors.Wrap(errs.ErrForbidden, "invalid role")
 			}
 
