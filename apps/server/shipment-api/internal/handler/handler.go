@@ -51,6 +51,6 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 	// Shipment
 	shipmentGroup := r.Group("/shipment", middlewares.AuthGuard)
 	shipmentGroup.Post("/", h.CreateShipment, middlewares.RoleGuard(entity.ConnectionTypeWarehouse))
-	shipmentGroup.Get("/", h.ListShipments, middlewares.RoleGuard(entity.ConnectionTypeRoot))
-	shipmentGroup.Get("/:id", h.GetShipment, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	shipmentGroup.Get("/list", h.ListShipments, middlewares.RoleGuard(entity.ConnectionTypeRoot))
+	shipmentGroup.Get("/:shipment_id", h.GetShipment, middlewares.RoleGuard(entity.ConnectionTypeRoot))
 }

@@ -13,10 +13,10 @@ import (
 	"github.com/drowningtoast/glip/apps/server/internal/utils"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/config"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/handler"
+	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/middleware"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/postgres"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/rabbitmq"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
-	"github.com/drowningtoast/glip/apps/server/shipment-api/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
