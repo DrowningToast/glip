@@ -31,7 +31,6 @@ func (h *Handler) CreateShipment(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInternal, "Invalid context data type")
 	}
 
-	var shipment *entity.Shipment
 	switch session.Role {
 	case entity.ConnectionTypeUser:
 		username := session.Id
@@ -39,24 +38,29 @@ func (h *Handler) CreateShipment(ctx *fiber.Ctx) error {
 		if err != nil {
 			return errors.Wrap(err, fmt.Sprintf("failed to create shipment by customer: %s", username))
 		}
-		shipment = s
+		return ctx.JSON(common.HTTPResponse{
+			Result: struct {
+				Shipment *entity.Shipment `json:"shipment"`
+			}{
+				Shipment: s,
+			},
+		})
 	case entity.ConnectionTypeRoot:
 		s, err := h.Uc.CreateShipment(ctx.Context(), *body.Shipment, nil)
 		if err != nil {
 			return errors.Wrap(err, "failed to create shipment as root")
 		}
-		shipment = s
+		return ctx.JSON(common.HTTPResponse{
+			Result: struct {
+				Shipment *entity.Shipment `json:"shipment"`
+			}{
+				Shipment: s,
+			},
+		})
+
 	default:
 		return errors.Wrap(errs.ErrUnauthorized, "invalid role to create shipment")
 	}
-
-	return ctx.JSON(common.HTTPResponse{
-		Result: struct {
-			Shipment *entity.Shipment `json:"shipment"`
-		}{
-			Shipment: shipment,
-		},
-	})
 }
 
 // request query: ?status=status&last_warehouse_id=warehouse_id&limit=limit&offset=offset
@@ -188,14 +192,39 @@ func (h *Handler) TrackShipment(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}
 
+	userContext := ctx.UserContext().Value(usecase.UserContextKey{})
+	if userContext != nil {
+		// search by admin
+		session, ok := userContext.(*entity.JWTSession)
+		if !ok {
+			return errors.Wrap(errs.ErrInternal, "failed to parse user context value")
+		}
+		if session.Role == entity.ConnectionTypeRoot {
+			shipment, err := h.Uc.GetShipmentByOwner(ctx.Context(), *&usecase.GetShipmentByOwnerParams{
+				ShipmentId: body.ShipmentId,
+				Email:      body.Email,
+			}, true)
+			if err != nil {
+				return errors.Wrap(err, "failed to track shipment")
+			}
+			return ctx.JSON(common.HTTPResponse{
+				Result: struct {
+					Shipment *entity.Shipment `json:"shipment"`
+				}{
+					Shipment: shipment,
+				},
+			})
+		}
+	}
+
+	// search by customer
 	shipment, err := h.Uc.GetShipmentByOwner(ctx.Context(), *&usecase.GetShipmentByOwnerParams{
 		ShipmentId: body.ShipmentId,
 		Email:      body.Email,
-	})
+	}, false)
 	if err != nil {
 		return errors.Wrap(err, "failed to track shipment")
 	}
-
 	return ctx.JSON(common.HTTPResponse{
 		Result: struct {
 			Shipment *entity.Shipment `json:"shipment"`

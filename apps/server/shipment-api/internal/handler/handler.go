@@ -39,6 +39,7 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 	authGroup := r.Group("/auth")
 	authGroup.Post("/warehouse", h.AuthenticateWarehouseConnection)
 	authGroup.Post("/admin", h.AuthenticateAdmin)
+	authGroup.Post("/customer", h.AuthenticateCustomerConnection)
 
 	// Customer
 	customerGroup := r.Group("/customer")

@@ -6,7 +6,6 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
-	"github.com/gofiber/fiber/v2/log"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -23,9 +22,6 @@ type CreateCustomerParams struct {
 }
 
 func (u *Usecase) CreateCustomer(ctx context.Context, params CreateCustomerParams) (*entity.Account, *entity.Customer, error) {
-	log.Debug(ctx)
-	log.Debug(params)
-
 	// Create account
 	hash, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -38,7 +34,6 @@ func (u *Usecase) CreateCustomer(ctx context.Context, params CreateCustomerParam
 		Email:    params.Email,
 	}
 
-	log.Debug(payloadAccount)
 	account, err := u.AccountDg.CreateAccount(ctx, payloadAccount)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "failed to create account in usecase level")
@@ -58,7 +53,6 @@ func (u *Usecase) CreateCustomer(ctx context.Context, params CreateCustomerParam
 			return nil, nil, errors.Wrap(err, "creating customer record failed, and failed to revert the account entity creation!")
 		}
 	}
-	log.Debug(customer)
 
 	return account, customer, nil
 }

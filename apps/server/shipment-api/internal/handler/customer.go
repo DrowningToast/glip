@@ -9,7 +9,6 @@ import (
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
 )
 
 func (h *Handler) CreateCustomer(ctx *fiber.Ctx) error {
@@ -22,14 +21,10 @@ func (h *Handler) CreateCustomer(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}
 
-	log.Debug(body)
-
 	account, customer, err := h.Uc.CreateCustomer(ctx.Context(), body.Customer)
 	if err != nil {
 		return err
 	}
-	log.Debug(account)
-	log.Debug(customer)
 
 	return ctx.JSON(common.HTTPResponse{
 		Result: struct {

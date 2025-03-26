@@ -9,7 +9,6 @@ import (
 	shipment_database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/datagateway"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
-	"github.com/gofiber/fiber/v2/log"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -22,8 +21,6 @@ func (r *PostgresRepository) CreateShipmentOwner(ctx context.Context, payload *e
 	if payload == nil {
 		return nil, errors.Wrap(errs.ErrInternal, "owner is nil")
 	}
-
-	log.Debug(payload)
 
 	owner, err := r.queries.CreateShipmentOwner(ctx, shipment_database.CreateShipmentOwnerParams{
 		Name:      payload.Name,
@@ -38,8 +35,6 @@ func (r *PostgresRepository) CreateShipmentOwner(ctx context.Context, payload *e
 		}
 		return nil, errors.Wrap(err, "failed to create shipment owner")
 	}
-
-	log.Debug(owner)
 
 	return mapShipmentOwnerModelToEntity(&owner), nil
 }

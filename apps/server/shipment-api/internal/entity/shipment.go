@@ -53,7 +53,7 @@ type Shipment struct {
 	CreatedBy int `json:"created_by"`
 
 	// Who the shipment belongs to, (customer entity)
-	OwnerId int `json:"owner_id"`
+	OwnerId *int `json:"owner_id"`
 
 	Status              ShipmentStatus  `json:"status"`
 	TotalWeight         decimal.Decimal `json:"total_weight"`
