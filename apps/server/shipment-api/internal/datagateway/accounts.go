@@ -21,4 +21,5 @@ type AccountsDataGateway interface {
 	ListAccounts(ctx context.Context, limit int, offset int) ([]*entity.Account, error)
 	UpdateAccount(ctx context.Context, account *UpdateAccountParams) (*entity.Account, error)
 	SoftDeleteAccount(ctx context.Context, id int) error
+	DeleteAccount(ctx context.Context, id int) error
 }

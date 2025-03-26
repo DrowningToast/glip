@@ -14,6 +14,7 @@ const (
 	ShipmentStatusArrivedAtWarehouse ShipmentStatus = "ARRIVED_AT_WAREHOUSE"
 	ShipmentStatusDelivered          ShipmentStatus = "DELIVERED"
 	ShipmentStatusCancelled          ShipmentStatus = "CANCELLED"
+	ShipmentStatusLost               ShipmentStatus = "LOST"
 )
 
 func (s ShipmentStatus) String() string {

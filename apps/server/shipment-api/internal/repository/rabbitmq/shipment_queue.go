@@ -142,7 +142,7 @@ func (r *RabbitMQRepository) ListOutboundShipments(ctx context.Context) (map[str
 	return queueByWarehouseId, nil
 }
 
-func (r *RabbitMQRepository) WatchReceivedShipment(ctx context.Context, shipmentChan chan<- entity.ShipmentQueue, errorChan chan error, terminateChan <-chan struct{}) error {
+func (r *RabbitMQRepository) WatchReceivedShipmentQueue(ctx context.Context, shipmentChan chan<- entity.ShipmentQueue, errorChan chan error, terminateChan <-chan struct{}) error {
 	queue := r.InboundQueue
 	if queue == nil {
 		return errors.Wrap(errs.ErrInternal, "failed to get warehouse queue")

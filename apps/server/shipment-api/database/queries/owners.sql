@@ -9,6 +9,10 @@ INSERT INTO owners (
     @name, @email, @phone, @address, @account_id
 ) RETURNING *;
 
+-- name: GetShipmentOwnerByAccountId :one
+SeLECT * FROM owners
+WHERE account_id = @account_id AND deleted_at IS NULL;
+
 -- name: GetShipmentOwnerById :one
 SELECT * FROM owners
 WHERE id = @id AND deleted_at IS NULL;

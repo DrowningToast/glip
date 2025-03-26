@@ -41,12 +41,12 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 	authGroup.Post("/admin", h.AuthenticateAdmin)
 
 	// Customer
-	customerGroup := r.Group("/customer", middlewares.AuthGuard)
-	customerGroup.Get("/", h.GetCustomer, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
-	customerGroup.Get("/list", h.ListCustomers, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
-	customerGroup.Post("/", h.CreateCustomer, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
-	customerGroup.Put("/", h.UpdateCustomer, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
-	customerGroup.Delete("/:id", h.DeleteCustomer, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
+	customerGroup := r.Group("/customer")
+	customerGroup.Get("/", h.GetCustomer, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
+	customerGroup.Get("/list", h.ListCustomers, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
+	customerGroup.Post("/", h.CreateCustomer)
+	customerGroup.Put("/", h.UpdateCustomer, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
+	customerGroup.Delete("/:id", h.DeleteCustomer, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Root: true}))
 
 	// Shipment
 	shipmentGroup := r.Group("/shipment")
@@ -55,7 +55,6 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 	shipmentGroup.Get("/customer/list", h.ListShipmentsByAccountUser, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{User: true}))
 	// track by shipment owner
 	shipmentGroup.Post("/track", h.TrackShipment)
-
 	// Create shipment
 	shipmentGroup.Post("/", h.CreateShipment, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Warehouse: true, Root: true}))
 	// List shipments

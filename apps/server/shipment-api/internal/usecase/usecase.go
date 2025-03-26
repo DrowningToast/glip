@@ -22,6 +22,7 @@ type UsecaseParams struct {
 
 	ShipmentQueueDg datagateway.ShipmentQueueDataGateway
 
+	AccountDg  datagateway.AccountsDataGateway
 	ShipmentDg datagateway.ShipmentDataGateway
 	CustomerDg datagateway.OwnersDataGateway
 	CarrierDg  datagateway.CarrierDataGateway
@@ -34,6 +35,7 @@ func NewUsecase(params *UsecaseParams) *Usecase {
 
 		ShipmentQueueDg: params.ShipmentQueueDg,
 
+		AccountDg:  params.AccountDg,
 		ShipmentDg: params.ShipmentDg,
 		CustomerDg: params.CustomerDg,
 		CarrierDg:  params.CarrierDg,

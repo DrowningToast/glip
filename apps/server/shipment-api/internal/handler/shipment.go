@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/cockroachdb/errors"
@@ -20,9 +21,33 @@ func (h *Handler) CreateShipment(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}
 
-	shipment, err := h.Uc.CreateShipment(ctx.Context(), *body.Shipment)
-	if err != nil {
-		return errors.Wrap(err, "failed to create shipment")
+	// Check who made this shipment
+	userContext := ctx.UserContext().Value(usecase.UserContextKey{})
+	if userContext == nil {
+		return errors.Wrap(errs.ErrForbidden, "User is not authenticated")
+	}
+	session, ok := userContext.(*entity.JWTSession)
+	if !ok {
+		return errors.Wrap(errs.ErrInternal, "Invalid context data type")
+	}
+
+	var shipment *entity.Shipment
+	switch session.Role {
+	case entity.ConnectionTypeUser:
+		username := session.Id
+		s, err := h.Uc.CreateShipment(ctx.Context(), *body.Shipment, &username)
+		if err != nil {
+			return errors.Wrap(err, fmt.Sprintf("failed to create shipment by customer: %s", username))
+		}
+		shipment = s
+	case entity.ConnectionTypeRoot:
+		s, err := h.Uc.CreateShipment(ctx.Context(), *body.Shipment, nil)
+		if err != nil {
+			return errors.Wrap(err, "failed to create shipment as root")
+		}
+		shipment = s
+	default:
+		return errors.Wrap(errs.ErrUnauthorized, "invalid role to create shipment")
 	}
 
 	return ctx.JSON(common.HTTPResponse{

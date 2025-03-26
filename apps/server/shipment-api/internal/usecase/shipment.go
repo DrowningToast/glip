@@ -31,12 +31,38 @@ type CreateShipmentParams struct {
 	DestinationAddress string `json:"destination_address" validate:"required"`
 	DestinationCity    string `json:"destination_city" validate:"required"`
 	// CarrierId           int             `json:"carrier_id"`
+	OwnerId             int             `json:"owner_id"`
 	TotalWeight         decimal.Decimal `json:"total_weight" validate:"required"`
 	TotalVolume         decimal.Decimal `json:"total_volume" validate:"required"`
 	SpecialInstructions *string         `json:"special_instructions,omitempty"`
 }
 
-func (uc *Usecase) CreateShipment(ctx context.Context, shipment CreateShipmentParams) (*entity.Shipment, error) {
+// if the account owner is nil, it'll presume it's created by root
+func (uc *Usecase) CreateShipment(ctx context.Context, shipment CreateShipmentParams, ownerAccountUsername *string) (*entity.Shipment, error) {
+	if ownerAccountUsername != nil {
+		account, err := uc.AccountDg.GetAccountByUsername(ctx, *ownerAccountUsername)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get account to verify the customer (sender)")
+		}
+		if account == nil {
+			return nil, errors.Wrap(errs.ErrNotFound, "customer info not found from provided username")
+		}
+		customer, err := uc.CustomerDg.GetShipmentOwnerByAccountId(ctx, account.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get the customer info")
+		}
+		if customer == nil {
+			return nil, errors.Wrap(errs.ErrNotFound, "no customer info binded to the account entity found")
+		}
+		shipment.OwnerId = customer.Id
+	} else {
+		// Assume the root created this shipment for some reaso:46
+
+		shipment.OwnerId = 0
+	}
+
+	log.Debug(shipment)
+
 	departureWarehouse, err := uc.Config.WarehouseRegions.GetWarehouseByCity(shipment.DepartureCity)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get departure warehouse")
@@ -80,7 +106,7 @@ func (uc *Usecase) CreateShipment(ctx context.Context, shipment CreateShipmentPa
 
 func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan error) {
 	shipmentQueueChan := make(chan entity.ShipmentQueue)
-	go uc.ShipmentQueueDg.WatchReceivedShipment(ctx, shipmentQueueChan, errorChan, ctx.Done())
+	go uc.ShipmentQueueDg.WatchReceivedShipmentQueue(ctx, shipmentQueueChan, errorChan, ctx.Done())
 
 	for {
 		select {
@@ -164,7 +190,6 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					continue
 				}
 				break
-
 			default:
 				log.Warnf("invalid shipment status")
 				errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment status")
