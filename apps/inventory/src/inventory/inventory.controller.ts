@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { ParcelStatus } from "@prisma/client";
+import { ShipmentStatus, Prisma } from "@prisma/client";
 
 import { prismaClient } from "../libs/prismaClient";
 import { InventoryService } from "./inventory.service";
@@ -13,10 +13,12 @@ export const inventoryController = new Elysia({
 })
   .decorate("prisma", prismaClient)
   .decorate("inventoryService", new InventoryService(prismaClient))
-  .get("/", async ({ inventoryService }) => {
+  
+inventoryController.get("/", async ({ inventoryService }) => {
     return inventoryService.getAllInventory();
   })
-  .get(
+  
+inventoryController.get(
     "/:id",
     async ({ inventoryService, params, error }) => {
       const parcel = await inventoryService.getInventoryById(params.id);
@@ -31,14 +33,16 @@ export const inventoryController = new Elysia({
       }),
     }
   )
-  .post(
+
+inventoryController.post(
     "/",
     async ({ inventoryService, body }) => {
       return inventoryService.createInventory(body);
     },
     inventoryCreateDto
   )
-  .put(
+
+inventoryController.put(
     "/:id",
     async ({ inventoryService, body, params, error }) => {
       const parcelExists = await inventoryService.getInventoryById(params.id);
@@ -49,7 +53,8 @@ export const inventoryController = new Elysia({
     },
     inventoryUpdateDto
   )
-  .put(
+
+inventoryController.put(
     "/:id/status",
     async ({ inventoryService, params, body, error }) => {
       const parcelExists = await inventoryService.getInventoryById(params.id);
@@ -63,11 +68,12 @@ export const inventoryController = new Elysia({
         id: t.String(),
       }),
       body: t.Object({
-        status: t.Enum(ParcelStatus),
+        status: t.Enum(ShipmentStatus),
       }),
     }
   )
-  .delete(
+
+inventoryController.delete(
     "/:id",
     async ({ inventoryService, params, error }) => {
       const parcelExists = await inventoryService.getInventoryById(params.id);
