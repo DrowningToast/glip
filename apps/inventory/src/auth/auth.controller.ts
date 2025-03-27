@@ -92,7 +92,7 @@ export const authController = new Elysia({ prefix: "/auth", detail: {
   )
 
   .use(authPlugin).get('/me', ({ user }) => user)
-  .use(authPlugin).get('/logout', ({ cookie: { accessToken}}) => {
+  .use(authPlugin).post('/logout', ({ cookie: { accessToken}}) => {
     accessToken.remove();
     return { message: "Logout successful" }
   });
