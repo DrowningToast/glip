@@ -16,6 +16,7 @@ import (
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/middleware"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/postgres"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/rabbitmq"
+	registry_api "github.com/drowningtoast/glip/apps/server/shipment-api/internal/repository/registry-api"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/usecase"
 	"github.com/gofiber/fiber/v2"
 )
@@ -62,6 +63,7 @@ func main() {
 	// init repository
 	pgRepo := postgres.New(pgConn)
 	rabbitmqRepo := rabbitmq.NewRepository(&configuration.WarehouseRegions, &configuration.RabbitMQConfig, rabbitmqChannel)
+	registryApiRepo := registry_api.NewRepository(configuration)
 
 	// init usecase
 	uc := usecase.NewUsecase(&usecase.UsecaseParams{
@@ -69,11 +71,12 @@ func main() {
 
 		ShipmentQueueDg: rabbitmqRepo,
 
-		AccountDg:  pgRepo,
-		ShipmentDg: pgRepo,
-		CustomerDg: pgRepo,
-		CarrierDg:  pgRepo,
-		AlertDg:    pgRepo,
+		AccountDg:       pgRepo,
+		ShipmentDg:      pgRepo,
+		CustomerDg:      pgRepo,
+		CarrierDg:       pgRepo,
+		AlertDg:         pgRepo,
+		WarehouseConnDg: registryApiRepo,
 	})
 
 	// init h
@@ -86,8 +89,6 @@ func main() {
 		AppName:      "Shipment API",
 		ErrorHandler: utils.FiberErrHandler,
 	})
-
-	// app.Use(logger.New())
 
 	// Middleware
 	initContextMiddleware := middleware.NewInitContextMiddleware(uc)

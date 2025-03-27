@@ -39,7 +39,6 @@ type CreateShipmentParams struct {
 
 // if the account owner is nil, it'll presume it's created by root
 func (uc *Usecase) CreateShipment(ctx context.Context, shipment CreateShipmentParams, ownerAccountUsername *string) (*entity.Shipment, error) {
-	log.Debug(ownerAccountUsername)
 	if ownerAccountUsername != nil {
 		account, err := uc.AccountDg.GetAccountByUsername(ctx, *ownerAccountUsername)
 		if err != nil {

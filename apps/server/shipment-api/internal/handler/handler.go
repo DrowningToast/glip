@@ -62,4 +62,11 @@ func (h *Handler) Mount(r fiber.Router, middlewares MiddlewareParameters) {
 	shipmentGroup.Get("/list", h.ListShipments, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Warehouse: true}))
 	// Get shipment by id
 	shipmentGroup.Get("/:shipment_id", h.GetShipment, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{Warehouse: true}))
+
+	// profile
+	profileGroup := r.Group("/profile")
+
+	// get my profile as customer
+	profileGroup.Get("/customer/me", h.GetMyProfileAsCustomer, middlewares.AuthGuard, middlewares.RoleGuard(middleware.RoleGuardParams{User: true}))
+	profileGroup.Get("/warehouse-connection/me", h.GetMyProfileAsWarehouseConnection, middlewares.AuthGuard, middlewares.RoleGuard((middleware.RoleGuardParams{Warehouse: true})))
 }

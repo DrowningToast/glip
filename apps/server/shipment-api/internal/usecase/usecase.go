@@ -10,11 +10,12 @@ type Usecase struct {
 
 	ShipmentQueueDg datagateway.ShipmentQueueDataGateway
 
-	AccountDg  datagateway.AccountsDataGateway
-	ShipmentDg datagateway.ShipmentDataGateway
-	CustomerDg datagateway.OwnersDataGateway
-	CarrierDg  datagateway.CarrierDataGateway
-	AlertDg    datagateway.AlertDataGateway
+	AccountDg       datagateway.AccountsDataGateway
+	ShipmentDg      datagateway.ShipmentDataGateway
+	CustomerDg      datagateway.OwnersDataGateway
+	CarrierDg       datagateway.CarrierDataGateway
+	AlertDg         datagateway.AlertDataGateway
+	WarehouseConnDg datagateway.WarehouseConnectionDataGateway
 }
 
 type UsecaseParams struct {
@@ -22,11 +23,12 @@ type UsecaseParams struct {
 
 	ShipmentQueueDg datagateway.ShipmentQueueDataGateway
 
-	AccountDg  datagateway.AccountsDataGateway
-	ShipmentDg datagateway.ShipmentDataGateway
-	CustomerDg datagateway.OwnersDataGateway
-	CarrierDg  datagateway.CarrierDataGateway
-	AlertDg    datagateway.AlertDataGateway
+	AccountDg       datagateway.AccountsDataGateway
+	ShipmentDg      datagateway.ShipmentDataGateway
+	CustomerDg      datagateway.OwnersDataGateway
+	CarrierDg       datagateway.CarrierDataGateway
+	AlertDg         datagateway.AlertDataGateway
+	WarehouseConnDg datagateway.WarehouseConnectionDataGateway
 }
 
 func NewUsecase(params *UsecaseParams) *Usecase {
@@ -35,10 +37,11 @@ func NewUsecase(params *UsecaseParams) *Usecase {
 
 		ShipmentQueueDg: params.ShipmentQueueDg,
 
-		AccountDg:  params.AccountDg,
-		ShipmentDg: params.ShipmentDg,
-		CustomerDg: params.CustomerDg,
-		CarrierDg:  params.CarrierDg,
-		AlertDg:    params.AlertDg,
+		AccountDg:       params.AccountDg,
+		ShipmentDg:      params.ShipmentDg,
+		CustomerDg:      params.CustomerDg,
+		CarrierDg:       params.CarrierDg,
+		AlertDg:         params.AlertDg,
+		WarehouseConnDg: params.WarehouseConnDg,
 	}
 }
