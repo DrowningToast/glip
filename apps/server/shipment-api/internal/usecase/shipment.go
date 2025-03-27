@@ -185,16 +185,18 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 						errorChan <- errors.Wrap(errs.ErrNotFound, "last warehouse id not found in route")
 						continue
 					}
-					if currentIndex == len(oldShipment.Route)-1 {
-						log.Warnf("invalid shipment route")
-						errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment route")
-						continue
-					}
-					if oldShipment.Route[currentIndex-1] != *shipmentQueue.LastWarehouseId {
-						log.Warnf("invalid shipment route")
-						errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment route")
-						continue
-					}
+
+					// if currentIndex == len(oldShipment.Route)-1 {
+					// 	log.Warnf("invalid shipment route")
+					// 	errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment route")
+					// 	continue
+					// }
+					// // Check if we're not skiping
+					// if oldShipment.Route[currentIndex-1] != *shipmentQueue.LastWarehouseId {
+					// 	log.Warnf("invalid shipment route")
+					// 	errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment route")
+					// 	continue
+					// }
 				}
 
 				oldShipment.LastWarehouseId = shipmentQueue.FromWarehouseId
