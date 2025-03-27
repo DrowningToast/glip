@@ -28,7 +28,17 @@ export const authController = new Elysia({ prefix: "/auth", detail: {
         return error(400, { message: "User already exists" });
       }
 
-      return authService.createUser(body);
+      const user = await authService.createUser(body);
+
+      return {
+        message: "User created successfully",
+        data: {
+          user: {
+            id: user.id,
+            email: user.email,
+          },
+        },
+      };
     },
     authDto,
   )
@@ -86,4 +96,3 @@ export const authController = new Elysia({ prefix: "/auth", detail: {
     accessToken.remove();
     return { message: "Logout successful" }
   });
-

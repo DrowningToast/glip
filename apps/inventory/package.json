@@ -10,6 +10,7 @@
     "rabbitmq:consumer": "bun run src/rabbitmq/consumer.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
     "@elysiajs/jwt": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
     "@prisma/client": "^5.19.1",
