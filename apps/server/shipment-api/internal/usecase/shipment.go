@@ -198,6 +198,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 				}
 
 				oldShipment.LastWarehouseId = shipmentQueue.FromWarehouseId
+
 				oldShipment.Status = entity.ShipmentStatusArrivedAtWarehouse
 				oldShipment, err = uc.ShipmentDg.UpdateShipment(ctx, oldShipment)
 				if err != nil {
@@ -207,8 +208,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 				}
 				shipmentQueue.Msg.Ack(false)
 				break
-			case entity.ShipmentStatusInTransitOnTheWay:
-			case entity.ShipmentStatusDelivered:
+			case entity.ShipmentStatusInTransitOnTheWay, entity.ShipmentStatusDelivered:
 				if shipmentQueue.LastWarehouseId == nil || shipmentQueue.FromWarehouseId == nil || *shipmentQueue.FromWarehouseId != *shipmentQueue.LastWarehouseId || *shipmentQueue.FromWarehouseId != shipmentQueue.DestinationWarehouseId {
 					log.Warnf("invalid shipment status")
 					errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment status")
@@ -222,7 +222,6 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					errorChan <- errors.Wrap(err, "failed to update shipment")
 					continue
 				}
-				shipmentQueue.Msg.Ack(false)
 
 				if shipmentQueue.Status == entity.ShipmentStatusInTransitOnTheWay {
 					_, currentIndex, _ := lo.FindIndexOf(oldShipment.Route, func(warehouseId string) bool {
@@ -231,6 +230,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					nextWarehouseId := oldShipment.Route[currentIndex+1]
 					uc.ShipmentQueueDg.CreateToReceivedShipment(ctx, oldShipment, nextWarehouseId)
 				}
+				shipmentQueue.Msg.Ack(false)
 
 				break
 			default:
