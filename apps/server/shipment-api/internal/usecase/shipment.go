@@ -159,7 +159,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 				errorChan <- errors.Wrap(errs.ErrNotFound, "shipment not found")
 				continue
 			}
-			if oldShipment.LastWarehouseId == nil {
+			if shipmentQueue.LastWarehouseId == nil {
 				log.Warnf("invalid shipment status")
 				errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment status")
 				continue
