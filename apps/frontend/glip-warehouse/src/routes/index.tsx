@@ -62,9 +62,9 @@ const columns: ColumnDef<Inventory>[] = [
   },
   {
     header: "Status",
-    accessorKey: "Status",
+    accessorKey: "status",
     cell: ({ row }) => {
-      switch (row.original.Status) {
+      switch (row.original.status) {
         case "DELIVERED":
           return <Badge variant="default" className="bg-green-500">Delivered</Badge>;
         case "CANCELLED":
@@ -80,30 +80,30 @@ const columns: ColumnDef<Inventory>[] = [
   },
   {
     header: "From Warehouse",
-    accessorKey: "FromWarehouseId",
+    accessorKey: "from_warehouse_id",
   },
   {
     header: "To Warehouse",
-    accessorKey: "ToWarehouseId",
+    accessorKey: "to_warehouse_id",
   },
   {
     header: "Route",
-    accessorKey: "Route",
+    accessorKey: "route",
   },
   {
     header: "Owner",
-    accessorKey: "OwnerId",
+    accessorKey: "owner_id",
   },
   {
     header: "Special Instructions",
-    accessorKey: "SpecialInstructions",
+    accessorKey: "special_instructions",
     cell: ({ row }) => {
-      return <div>{row.original.SpecialInstructions || "-"}</div>;
+      return <div>{row.original.special_instructions || "-"}</div>;
     },
   },
   {
     header: "Created By",
-    accessorKey: "CreatedBy",
+    accessorKey: "created_by",
   },
   {
     header: ({ column }) => (
@@ -115,11 +115,11 @@ const columns: ColumnDef<Inventory>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    accessorKey: "DeliveryTime",
+    accessorKey: "delivery_time",
     cell: ({ row }) => {
       return (
         <div>
-          {row.original.DeliveryTime ? new Date(row.original.DeliveryTime).toLocaleString("th-TH", {
+          {row.original.delivery_time ? new Date(row.original.delivery_time).toLocaleString("th-TH", {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
@@ -132,14 +132,14 @@ const columns: ColumnDef<Inventory>[] = [
   },
   {
     header: "Action",
-    accessorKey: "Action",
+    accessorKey: "action",
     cell: ({ row }) => {
       return (
         <div>
           <UpdateStatusDialog
             id={row.original.id}
             shipmentId={row.original.shipmentId}
-            status={row.original.Status}
+            status={row.original.status}
           />
         </div>
       );

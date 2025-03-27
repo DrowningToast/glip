@@ -30,22 +30,22 @@ enum ShipmentStatus {
 
 model Shipments {
   id           String       @id @default(uuid())
-  shipmentId   String
-  Route String[]
-  LastWarehouseId String?
-  DepartureWarehouseId String
-  DepartureAddress String?
-  DestinationWarehouseId String
-  DestinationAddress String
-  CreatedBy Int
-  OwnerId Int
-  Status ShipmentStatus
-  TotalWeight Float
-  TotalVolume Float
-  SpecialInstructions String?
-  CreatedAt DateTime
-  UpdatedAt DateTime
-  FromWarehouseId String
-  ToWarehouseId String
-  DeliveryTime DateTime?
+  shipmentId   Int
+  route String[]
+  last_warehouse_id String?
+  departure_warehouse_id String
+  departure_address String?
+  destination_warehouse_id String
+  destination_address String
+  created_by Int
+  owner_id Int
+  status ShipmentStatus
+  total_weight Float
+  total_volume Float
+  special_instructions String?
+  created_at DateTime
+  updated_at DateTime
+  from_warehouse_id String?
+  to_warehouse_id String
+  delivery_time DateTime?
 }

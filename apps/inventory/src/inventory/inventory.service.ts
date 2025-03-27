@@ -43,8 +43,8 @@ export class InventoryService {
           id,
         },
         data: {
-          Status: status,
-          DeliveryTime: null,
+          status: status,
+          delivery_time: null,
         },
       });
     } else if (status === ShipmentStatus.WAREHOUSE_RECEIVED) {
@@ -53,29 +53,30 @@ export class InventoryService {
           id,
         },
         data: {
-          Status: status,
-          DeliveryTime: new Date(),
+          status: status,
+          delivery_time: new Date(),
         },
       });
+      console.log('ARRIVED_AT_WAREHOUSE', shipment)
       await notifyWarehouse({
-        shipmentId: shipment.shipmentId,
-        Route: shipment.Route,
-        LastWarehouseId: shipment.LastWarehouseId,
-        DepartureWarehouseId: shipment.DepartureWarehouseId,
-        DepartureAddress: shipment.DepartureAddress,
-        DestinationWarehouseId: shipment.DestinationWarehouseId,
-        DestinationAddress: shipment.DestinationAddress,
-        CreatedBy: shipment.CreatedBy,
-        OwnerId: shipment.OwnerId,
-        Status: "ARRIVED_AT_WAREHOUSE",
-        TotalWeight: shipment.TotalWeight,
-        TotalVolume: shipment.TotalVolume,
-        CreatedAt: shipment.CreatedAt.toISOString(),
-        UpdatedAt: shipment.UpdatedAt.toISOString(),
-        FromWarehouseId: shipment.FromWarehouseId,
-        ToWarehouseId: shipment.ToWarehouseId,
-        QueueType: "INBOUND",
-        SpecialInstructions: shipment.SpecialInstructions,
+        id: shipment.shipmentId,
+        route: shipment.route,
+        last_warehouse_id: Bun.env.INVENTORY_REGION as string,
+        departure_warehouse_id: shipment.departure_warehouse_id,
+        departure_address: shipment.departure_address,
+        destination_warehouse_id: shipment.destination_warehouse_id,
+        destination_address: shipment.destination_address,
+        created_by: shipment.created_by,
+        owner_id: shipment.owner_id,
+        status: "ARRIVED_AT_WAREHOUSE",
+        total_weight: shipment.total_weight,
+        total_volume: shipment.total_volume,
+        created_at: shipment.created_at.toISOString(),
+        updated_at: shipment.updated_at.toISOString(),
+        from_warehouse_id: shipment.from_warehouse_id,
+        to_warehouse_id: shipment.to_warehouse_id,
+        type: "INBOUND",
+        special_instructions: shipment.special_instructions,
       });
     } else if (status === ShipmentStatus.WAREHOUSE_DEPARTED) {
       const shipment = await this.prisma.shipments.update({
@@ -83,28 +84,28 @@ export class InventoryService {
           id,
         },
         data: {
-          Status: status,
+          status: status,
         },
       });
       await notifyWarehouse({
-        shipmentId: shipment.shipmentId,
-        Route: shipment.Route,
-        LastWarehouseId: shipment.LastWarehouseId,
-        DepartureWarehouseId: shipment.DepartureWarehouseId,
-        DepartureAddress: shipment.DepartureAddress,
-        DestinationWarehouseId: shipment.DestinationWarehouseId,
-        DestinationAddress: shipment.DestinationAddress,
-        CreatedBy: shipment.CreatedBy,
-        OwnerId: shipment.OwnerId,
-        Status: "IN_TRANSIT_ON_THE_WAY",
-        TotalWeight: shipment.TotalWeight,
-        TotalVolume: shipment.TotalVolume,
-        CreatedAt: shipment.CreatedAt.toISOString(),
-        UpdatedAt: shipment.UpdatedAt.toISOString(),
-        FromWarehouseId: shipment.FromWarehouseId,
-        ToWarehouseId: shipment.ToWarehouseId,
-        QueueType: "INBOUND",
-        SpecialInstructions: shipment.SpecialInstructions,
+        id: shipment.shipmentId,
+        route: shipment.route,
+        last_warehouse_id: Bun.env.INVENTORY_REGION as string,
+        departure_warehouse_id: shipment.departure_warehouse_id,
+        departure_address: shipment.departure_address,
+        destination_warehouse_id: shipment.destination_warehouse_id,
+        destination_address: shipment.destination_address,
+        created_by: shipment.created_by,
+        owner_id: shipment.owner_id,
+        status: "IN_TRANSIT_ON_THE_WAY",
+        total_weight: shipment.total_weight,
+        total_volume: shipment.total_volume,
+        created_at: shipment.created_at.toISOString(),
+        updated_at: shipment.updated_at.toISOString(),
+        from_warehouse_id: shipment.from_warehouse_id,
+        to_warehouse_id: shipment.to_warehouse_id,
+        type: "INBOUND",
+        special_instructions: shipment.special_instructions,
       });
     } else {
       await this.prisma.shipments.update({
@@ -112,7 +113,7 @@ export class InventoryService {
           id,
         },
         data: {
-          Status: status,
+          status: status,
         },
       });
     }

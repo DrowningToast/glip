@@ -6,8 +6,11 @@ export const notifyWarehouse = async (shipment: InventoryRabbitMQType) => {
         const connection = await amqp.connect(process.env.RABBITMQ_URL as string);
         const channel = await connection.createChannel();
         
-        await channel.assertQueue(`warehouse_queue/to_warehouse/${process.env.INVENTORY_REGION}`);
-        channel.sendToQueue(`warehouse_queue/to_warehouse/${process.env.INVENTORY_REGION}`, Buffer.from(JSON.stringify(shipment)));
+        await channel.assertQueue(`warehouse_queue/to_shipment_api`, {
+            durable: true,
+            autoDelete: true
+        });
+        channel.sendToQueue(`warehouse_queue/to_shipment_api`, Buffer.from(JSON.stringify(shipment)));
 
         setTimeout(async () => {
             await connection.close();
