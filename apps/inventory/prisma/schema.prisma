@@ -11,7 +11,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("PG_URL")
 }
 
 model User {
@@ -20,18 +20,32 @@ model User {
   password String
 }
 
-enum ParcelStatus {
-  PENDING
+enum ShipmentStatus {
+  INCOMING_SHIPMENT
+  WAREHOUSE_RECEIVED
+  WAREHOUSE_DEPARTED
   DELIVERED
   CANCELLED
 }
 
-model Parcels {
+model Shipments {
   id           String       @id @default(uuid())
-  name         String
-  weight       Float
-  status       ParcelStatus @default(PENDING)
-  remarks      String?
-  deliveryTime DateTime?
-  createdAt    DateTime     @default(now())
+  shipmentId   String
+  Route String[]
+  LastWarehouseId String?
+  DepartureWarehouseId String
+  DepartureAddress String?
+  DestinationWarehouseId String
+  DestinationAddress String
+  CreatedBy Int
+  OwnerId Int
+  Status ShipmentStatus
+  TotalWeight Float
+  TotalVolume Float
+  SpecialInstructions String?
+  CreatedAt DateTime
+  UpdatedAt DateTime
+  FromWarehouseId String
+  ToWarehouseId String
+  DeliveryTime DateTime?
 }

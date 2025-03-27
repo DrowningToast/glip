@@ -6,13 +6,17 @@
     "dev": "bun run --watch src/index.ts",
     "db:migrate": "bunx prisma migrate dev",
     "db:studio": "bunx prisma studio",
-    "db:generate": "bunx prisma generate"
+    "db:generate": "bunx prisma generate",
+    "rabbitmq:consumer": "bun run src/rabbitmq/consumer.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
     "@elysiajs/jwt": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
     "@prisma/client": "^5.19.1",
+    "@types/amqplib": "^0.10.7",
     "@types/bcrypt": "^5.0.2",
+    "amqplib": "^0.10.5",
     "bcrypt": "^5.1.1",
     "elysia": "latest"
   },
