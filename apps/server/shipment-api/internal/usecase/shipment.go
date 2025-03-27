@@ -209,9 +209,14 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 				shipmentQueue.Msg.Ack(false)
 				break
 			case entity.ShipmentStatusInTransitOnTheWay, entity.ShipmentStatusDelivered:
-				if shipmentQueue.LastWarehouseId == nil || shipmentQueue.FromWarehouseId == nil || *shipmentQueue.FromWarehouseId != *shipmentQueue.LastWarehouseId || *shipmentQueue.FromWarehouseId != shipmentQueue.DestinationWarehouseId {
+				if shipmentQueue.LastWarehouseId == nil || shipmentQueue.FromWarehouseId == nil || *shipmentQueue.FromWarehouseId != *shipmentQueue.LastWarehouseId {
 					log.Warnf("invalid shipment status")
 					errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment status")
+					continue
+				}
+				if shipmentQueue.Status == entity.ShipmentStatusDelivered && *shipmentQueue.FromWarehouseId != oldShipment.DestinationWarehouseId {
+					log.Warnf("invalid shipment status")
+					errorChan <- errors.Wrap(errs.ErrInvalidArgument, "destination warehouse id doesn't match the from warehouse id value")
 					continue
 				}
 
