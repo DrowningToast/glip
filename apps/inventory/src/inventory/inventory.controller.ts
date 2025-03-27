@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { ShipmentStatus, Prisma } from "@prisma/client";
+import { ShipmentStatus } from "@prisma/client";
 
 import { prismaClient } from "../libs/prismaClient";
 import { InventoryService } from "./inventory.service";
