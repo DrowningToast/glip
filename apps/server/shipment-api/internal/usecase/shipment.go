@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
@@ -142,6 +143,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 		// incoming shipment queue
 		case shipmentQueue := <-shipmentQueueChan:
 			// validate shipment queue
+			log.Debug(fmt.Sprintf("MSG TO SHIPMENT API, TYPE : %s", shipmentQueue.QueueType))
 			if shipmentQueue.QueueType == entity.ShipmentQueueTypeOutbound {
 				errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment queue type")
 				continue
@@ -203,6 +205,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					errorChan <- errors.Wrap(err, "failed to update shipment")
 					continue
 				}
+				break
 			case entity.ShipmentStatusInTransitOnTheWay:
 			case entity.ShipmentStatusDelivered:
 				if shipmentQueue.LastWarehouseId == nil || shipmentQueue.FromWarehouseId == nil || *shipmentQueue.FromWarehouseId != *shipmentQueue.LastWarehouseId || *shipmentQueue.FromWarehouseId != shipmentQueue.DestinationWarehouseId {

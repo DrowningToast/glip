@@ -10,8 +10,8 @@ type ShipmentStatus string
 
 const (
 	ShipmentStatusWaitingForPickup   ShipmentStatus = "WAITING_FOR_PICKUP_TO_WAREHOUSE"
-	ShipmentStatusInTransitOnTheWay  ShipmentStatus = "IN_TRANSIT_ON_THE_WAY"
 	ShipmentStatusArrivedAtWarehouse ShipmentStatus = "ARRIVED_AT_WAREHOUSE"
+	ShipmentStatusInTransitOnTheWay  ShipmentStatus = "IN_TRANSIT_ON_THE_WAY"
 	ShipmentStatusDelivered          ShipmentStatus = "DELIVERED"
 	ShipmentStatusCancelled          ShipmentStatus = "CANCELLED"
 	ShipmentStatusLost               ShipmentStatus = "LOST"
