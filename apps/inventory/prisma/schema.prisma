@@ -48,4 +48,5 @@ model Shipments {
   from_warehouse_id String?
   to_warehouse_id String
   delivery_time DateTime?
+  warehouse_id String?
 }

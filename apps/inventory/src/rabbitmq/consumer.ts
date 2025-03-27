@@ -42,8 +42,8 @@ channel.consume(`warehouse_queue/to_warehouse/${process.env.INVENTORY_REGION}`, 
                 total_volume: Number(shipment.total_volume),
                 created_at: shipment.created_at,
                 updated_at: shipment.updated_at,
-                from_warehouse_id: shipment.from_warehouse_id,
-                to_warehouse_id: shipment.to_warehouse_id,
+                from_warehouse_id: shipment.from_warehouse_id || "",
+                to_warehouse_id: shipment.to_warehouse_id || "",
             });
             console.log(`Created inventory for shipment ${shipment.id}`);
         }

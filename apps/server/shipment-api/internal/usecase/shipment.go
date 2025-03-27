@@ -177,7 +177,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					// First arrival
 				} else {
 					// Not the first arrival
-					_, currentIndex, found := lo.FindIndexOf(oldShipment.Route, func(warehouseId string) bool {
+					_, _, found := lo.FindIndexOf(oldShipment.Route, func(warehouseId string) bool {
 						return warehouseId == *shipmentQueue.FromWarehouseId
 					})
 					if !found {

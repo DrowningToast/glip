@@ -8,7 +8,7 @@ export const notifyWarehouse = async (shipment: InventoryRabbitMQType) => {
         
         await channel.assertQueue(`warehouse_queue/to_shipment_api`, {
             durable: true,
-            autoDelete: true
+            autoDelete: true,
         });
         channel.sendToQueue(`warehouse_queue/to_shipment_api`, Buffer.from(JSON.stringify(shipment)));
 

@@ -20,7 +20,10 @@ export class InventoryService {
 
   async createInventory(data: Prisma.ShipmentsCreateInput) {
     return await this.prisma.shipments.create({
-      data,
+      data: {
+        ...data,
+        warehouse_id: Bun.env.INVENTORY_REGION as string,
+      },
     });
   }
 
@@ -57,7 +60,7 @@ export class InventoryService {
           delivery_time: new Date(),
         },
       });
-      console.log('ARRIVED_AT_WAREHOUSE', shipment)
+      console.log(shipment.route)
       await notifyWarehouse({
         id: shipment.shipmentId,
         route: shipment.route,
@@ -73,8 +76,7 @@ export class InventoryService {
         total_volume: shipment.total_volume,
         created_at: shipment.created_at.toISOString(),
         updated_at: shipment.updated_at.toISOString(),
-        from_warehouse_id: shipment.from_warehouse_id,
-        to_warehouse_id: shipment.to_warehouse_id,
+        from_warehouse_id: Bun.env.INVENTORY_REGION as string,
         type: "INBOUND",
         special_instructions: shipment.special_instructions,
       });
@@ -87,6 +89,8 @@ export class InventoryService {
           status: status,
         },
       });
+      console.log(shipment.route)
+      console.log('IN TRANSIT ON THE WAY')
       await notifyWarehouse({
         id: shipment.shipmentId,
         route: shipment.route,
@@ -102,8 +106,37 @@ export class InventoryService {
         total_volume: shipment.total_volume,
         created_at: shipment.created_at.toISOString(),
         updated_at: shipment.updated_at.toISOString(),
-        from_warehouse_id: shipment.from_warehouse_id,
-        to_warehouse_id: shipment.to_warehouse_id,
+        from_warehouse_id: Bun.env.INVENTORY_REGION as string,
+        type: "INBOUND",
+        special_instructions: shipment.special_instructions,
+      });
+    } else if (status === ShipmentStatus.DELIVERED) {
+      const shipment = await this.prisma.shipments.update({
+        where: {
+          id,
+        },
+        data: {
+          status: status,
+        },
+      });
+      console.log(shipment.route)
+      console.log('DELIVERED')
+      await notifyWarehouse({
+        id: shipment.shipmentId,
+        route: shipment.route,
+        last_warehouse_id: Bun.env.INVENTORY_REGION as string,
+        departure_warehouse_id: shipment.departure_warehouse_id,
+        departure_address: shipment.departure_address,
+        destination_warehouse_id: shipment.destination_warehouse_id,
+        destination_address: shipment.destination_address,
+        created_by: shipment.created_by,
+        owner_id: shipment.owner_id,
+        status: "DELIVERED",
+        total_weight: shipment.total_weight,
+        total_volume: shipment.total_volume,
+        created_at: shipment.created_at.toISOString(),
+        updated_at: shipment.updated_at.toISOString(),
+        from_warehouse_id: Bun.env.INVENTORY_REGION as string,
         type: "INBOUND",
         special_instructions: shipment.special_instructions,
       });

@@ -20,4 +20,5 @@ export type Inventory = {
     from_warehouse_id: string;
     to_warehouse_id: string;
     delivery_time: string | null;
+    warehouse_id: string;
 }

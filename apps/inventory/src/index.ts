@@ -18,5 +18,5 @@ const app = new Elysia()
 .listen(3000);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.url}`
+  `🦊 Elysia (${Bun.env.INVENTORY_REGION}) is running at ${app.server?.url}`
 );

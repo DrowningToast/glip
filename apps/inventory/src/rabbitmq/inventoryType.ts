@@ -3,7 +3,7 @@ export type ShipmentQueueType = "INBOUND" | "OUTBOUND";
 export type ShipmentStatusRabbitMQType = "WAITING_FOR_PICKUP_TO_WAREHOUSE" | "IN_TRANSIT_ON_THE_WAY" | "ARRIVED_AT_WAREHOUSE" | "DELIVERED" | "CANCELLED";
 
 export type InventoryRabbitMQType = {
-    id: string;
+    id: number;
     route: string[];
     last_warehouse_id: string | null;
     departure_warehouse_id: string;
@@ -18,7 +18,7 @@ export type InventoryRabbitMQType = {
     special_instructions: string | null;
     created_at: string;
     updated_at: string;
-    from_warehouse_id: string;
-    to_warehouse_id: string;
+    from_warehouse_id?: string;
+    to_warehouse_id?: string;
     type: ShipmentQueueType;
 }

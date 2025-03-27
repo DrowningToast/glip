@@ -66,25 +66,49 @@ const columns: ColumnDef<Inventory>[] = [
     cell: ({ row }) => {
       switch (row.original.status) {
         case "DELIVERED":
-          return <Badge variant="default" className="bg-green-500">Delivered</Badge>;
+          return (
+            <Badge variant="default" className="bg-green-500">
+              Delivered
+            </Badge>
+          );
         case "CANCELLED":
-          return <Badge variant="destructive" className="bg-red-500">Cancelled</Badge>;
+          return (
+            <Badge variant="destructive" className="bg-red-500">
+              Cancelled
+            </Badge>
+          );
         case "INCOMING_SHIPMENT":
-          return <Badge variant="default" className="bg-blue-500">Incoming Shipment</Badge>;
+          return (
+            <Badge variant="default" className="bg-blue-500">
+              Incoming Shipment
+            </Badge>
+          );
         case "WAREHOUSE_RECEIVED":
-          return <Badge variant="default" className="bg-yellow-500">Warehouse Received</Badge>;
+          return (
+            <Badge variant="default" className="bg-yellow-500">
+              Warehouse Received
+            </Badge>
+          );
         case "WAREHOUSE_DEPARTED":
-          return <Badge variant="default" className="bg-yellow-500">Warehouse Departed</Badge>;
+          return (
+            <Badge variant="default" className="bg-yellow-500">
+              Warehouse Departed
+            </Badge>
+          );
       }
     },
   },
   {
+    header: "Warehouse",
+    accessorKey: "warehouse_id",
+  },
+  {
     header: "From Warehouse",
-    accessorKey: "from_warehouse_id",
+    accessorKey: "last_warehouse_id",
   },
   {
     header: "To Warehouse",
-    accessorKey: "to_warehouse_id",
+    accessorKey: "destination_warehouse_id",
   },
   {
     header: "Route",
@@ -119,17 +143,20 @@ const columns: ColumnDef<Inventory>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          {row.original.delivery_time ? new Date(row.original.delivery_time).toLocaleString("th-TH", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          }) : "-"}
+          {row.original.delivery_time
+            ? new Date(row.original.delivery_time).toLocaleString("th-TH", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "-"}
         </div>
       );
     },
   },
+
   {
     header: "Action",
     accessorKey: "action",
@@ -191,7 +218,9 @@ function Index() {
     <div className="max-w-7xl mx-auto py-14">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold">Inventory Dashboard</h1>
-        <Button variant="outline" size="sm" onClick={handleLogout}>Logout</Button>
+        <Button variant="outline" size="sm" onClick={handleLogout}>
+          Logout
+        </Button>
       </div>
       <div className="mt-4">
         <div className="flex justify-between items-center py-4">
@@ -235,6 +264,26 @@ function Index() {
                 <SelectItem value="WAREHOUSE_DEPARTED">
                   Warehouse Departed
                 </SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              onValueChange={(value) =>
+                table.getColumn("warehouse_id")?.setFilterValue(value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by Warehouse" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USA1">USA1</SelectItem>
+                <SelectItem value="USA2">USA2</SelectItem>
+                <SelectItem value="USA3">USA3</SelectItem>
+                <SelectItem value="EU1">EU1</SelectItem>
+                <SelectItem value="EU2">EU2</SelectItem>
+                <SelectItem value="EU3">EU3</SelectItem>
+                <SelectItem value="APAC1">APAC1</SelectItem>
+                <SelectItem value="APAC2">APAC2</SelectItem>
+                <SelectItem value="APAC3">APAC3</SelectItem>
               </SelectContent>
             </Select>
           </div>
