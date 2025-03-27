@@ -17,17 +17,17 @@ import (
 
 var _ datagateway.OwnersDataGateway = (*PostgresRepository)(nil)
 
-func (r *PostgresRepository) CreateShipmentOwner(ctx context.Context, ownerPtr *entity.Customer) (*entity.Customer, error) {
-	if ownerPtr == nil {
+func (r *PostgresRepository) CreateShipmentOwner(ctx context.Context, payload *entity.Customer) (*entity.Customer, error) {
+	if payload == nil {
 		return nil, errors.Wrap(errs.ErrInternal, "owner is nil")
 	}
 
 	owner, err := r.queries.CreateShipmentOwner(ctx, shipment_database.CreateShipmentOwnerParams{
-		Name:      ownerPtr.Name,
-		Email:     ownerPtr.Email,
-		Phone:     pgmapper.MapStringPtrToPgText(ownerPtr.Phone),
-		Address:   pgmapper.MapStringPtrToPgText(ownerPtr.Address),
-		AccountID: pgmapper.MapIntPtrToPgInt4(ownerPtr.AccountId),
+		Name:      payload.Name,
+		Email:     payload.Email,
+		Phone:     pgmapper.MapStringPtrToPgText(payload.Phone),
+		Address:   pgmapper.MapStringPtrToPgText(payload.Address),
+		AccountID: pgmapper.MapIntPtrToPgInt4(payload.AccountId),
 	})
 	if err != nil {
 		if checkPgErrCode(err, pgerrcode.UniqueViolation) {
@@ -60,6 +60,17 @@ func (r *PostgresRepository) GetShipmentOwnerByEmail(ctx context.Context, email 
 		return nil, errors.Wrap(err, "failed to get shipment owner by email")
 	}
 
+	return mapShipmentOwnerModelToEntity(&owner), nil
+}
+
+func (r *PostgresRepository) GetShipmentOwnerByAccountId(ctx context.Context, id int) (*entity.Customer, error) {
+	owner, err := r.queries.GetShipmentOwnerByAccountId(ctx, pgmapper.MapIntPtrToPgInt4(&id))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errors.Wrap(err, "failed to get shipment owner by account id")
+	}
 	return mapShipmentOwnerModelToEntity(&owner), nil
 }
 

@@ -39,3 +39,7 @@ RETURNING *;
 UPDATE accounts
 SET deleted_at = CURRENT_TIMESTAMP
 WHERE id = @id;
+
+-- name: DeleteAccount :exec
+DELETE FROM accounts
+WHERE id = @id;

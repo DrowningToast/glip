@@ -7,6 +7,31 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func (h *Handler) AuthenticateCustomerConnection(ctx *fiber.Ctx) error {
+	var body struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	err := ctx.BodyParser(&body)
+	if err != nil {
+		return errors.Wrap(errs.ErrInvalidBody, err.Error())
+	}
+
+	token, err := h.Uc.CreateUserConnectionSession(ctx.Context(), body.Username, body.Password)
+	if err != nil {
+		return errors.Wrap(err, "failed to create session for customer connection")
+	}
+
+	return ctx.JSON(common.HTTPResponse{
+		Result: struct {
+			JWT string `json:"jwt"`
+		}{
+			JWT: *token,
+		},
+	})
+}
+
 func (h *Handler) AuthenticateWarehouseConnection(ctx *fiber.Ctx) error {
 	var body struct {
 		Key string `json:"key" validate:"required"`

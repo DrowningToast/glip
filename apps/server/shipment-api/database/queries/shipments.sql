@@ -6,6 +6,23 @@ INSERT INTO shipments (
     departure_address,
     destination_warehouse_id,
     destination_address,
+    created_by,
+    status,
+    total_weight,
+    total_volume,
+    special_instructions
+) VALUES (
+    @route, @last_warehouse_id, @departure_warehouse_id, @departure_address, @destination_warehouse_id, @destination_address, @created_by, @status, @total_weight, @total_volume, @special_instructions
+) RETURNING *;
+
+-- name: CreateShipmentWithOwner :one
+INSERT INTO shipments (
+    route,
+    last_warehouse_id,
+    departure_warehouse_id,
+    departure_address,
+    destination_warehouse_id,
+    destination_address,
     owner_id,
     created_by,
     status,

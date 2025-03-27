@@ -58,7 +58,7 @@ CREATE TABLE shipments (
     departure_address TEXT,
     destination_warehouse_id TEXT NOT NULL,
     destination_address TEXT NOT NULL,
-    owner_id INTEGER REFERENCES owners(id) NOT NULL,
+    owner_id INTEGER REFERENCES owners(id),
     created_by INTEGER REFERENCES accounts(id),
     status VARCHAR(60) NOT NULL, -- WAITING_FOR_PICKUP, IN_TRANSIT_ON_THE_WAY, DELIVERED, CANCELLED
     total_weight DECIMAL(10,2) NOT NULL,

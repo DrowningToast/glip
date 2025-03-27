@@ -17,11 +17,10 @@ import (
 
 var _ datagateway.AccountsDataGateway = (*PostgresRepository)(nil)
 
-func (r *PostgresRepository) CreateAccount(ctx context.Context, accountPtr *entity.Account) (*entity.Account, error) {
-	if accountPtr == nil {
+func (r *PostgresRepository) CreateAccount(ctx context.Context, account *entity.Account) (*entity.Account, error) {
+	if account == nil {
 		return nil, errors.Wrap(errs.ErrInternal, "account is nil")
 	}
-	account := *accountPtr
 
 	createdAccount, err := r.queries.CreateAccount(ctx, shipment_database.CreateAccountParams{
 		Username: account.Username,
@@ -110,5 +109,15 @@ func (r *PostgresRepository) SoftDeleteAccount(ctx context.Context, id int) erro
 		return errors.Wrap(err, "failed to soft delete account")
 	}
 
+	return nil
+}
+
+func (r *PostgresRepository) DeleteAccount(ctx context.Context, id int) error {
+	if err := r.queries.DeleteAccount(ctx, int32(id)); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return errors.Wrap(errs.ErrNotFound, "account not found")
+		}
+		return errors.Wrap(errs.ErrInternal, err.Error())
+	}
 	return nil
 }

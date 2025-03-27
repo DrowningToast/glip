@@ -13,12 +13,7 @@ import (
 
 func (h *Handler) CreateCustomer(ctx *fiber.Ctx) error {
 	var body struct {
-		Customer struct {
-			Name    string  `json:"name" validate:"required"`
-			Email   string  `json:"email" validate:"required"`
-			Phone   *string `json:"phone,omitempty"`
-			Address *string `json:"address,omitempty"`
-		} `json:"customer" validate:"required"`
+		Customer usecase.CreateCustomerParams `json:"customer" validate:"required"`
 	}
 
 	err := ctx.BodyParser(&body)
@@ -26,20 +21,19 @@ func (h *Handler) CreateCustomer(ctx *fiber.Ctx) error {
 		return errors.Wrap(errs.ErrInvalidBody, err.Error())
 	}
 
-	customer := &entity.Customer{
-		Name:    body.Customer.Name,
-		Email:   body.Customer.Email,
-		Phone:   body.Customer.Phone,
-		Address: body.Customer.Address,
-	}
-
-	customer, err = h.Uc.CreateCustomer(ctx.Context(), customer)
+	account, customer, err := h.Uc.CreateCustomer(ctx.Context(), body.Customer)
 	if err != nil {
 		return err
 	}
 
 	return ctx.JSON(common.HTTPResponse{
-		Result: customer,
+		Result: struct {
+			Account  entity.Account  `json:"account"`
+			Customer entity.Customer `json:"customer"`
+		}{
+			Account:  *account,
+			Customer: *customer,
+		},
 	})
 }
 

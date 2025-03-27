@@ -9,6 +9,7 @@ import (
 	database "github.com/drowningtoast/glip/apps/server/shipment-api/database/gen"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/datagateway"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -21,6 +22,8 @@ func (r *PostgresRepository) CreateShipment(ctx context.Context, s *entity.Shipm
 	if s == nil {
 		return nil, errors.Wrap(errs.ErrInternal, "shipment is nil")
 	}
+
+	log.Debug(s)
 
 	shipment, err := r.queries.CreateShipment(ctx, database.CreateShipmentParams{
 		Route:                  lo.Map(s.Route, func(id string, _ int) string { return id }),
@@ -41,6 +44,41 @@ func (r *PostgresRepository) CreateShipment(ctx context.Context, s *entity.Shipm
 		}
 		return nil, err
 	}
+
+	log.Debug(shipment)
+
+	return mapShipmentModelToEntity(&shipment), nil
+}
+
+func (r *PostgresRepository) CreateShipmentWithOwner(ctx context.Context, s *entity.Shipment) (*entity.Shipment, error) {
+	if s == nil {
+		return nil, errors.Wrap(errs.ErrInternal, "shipment is nil")
+	}
+
+	log.Debug(s)
+
+	shipment, err := r.queries.CreateShipmentWithOwner(ctx, database.CreateShipmentWithOwnerParams{
+		Route:                  lo.Map(s.Route, func(id string, _ int) string { return id }),
+		LastWarehouseID:        pgmapper.MapStringPtrToPgText(s.LastWarehouseId),
+		DepartureWarehouseID:   s.DepartureWarehouseId,
+		DepartureAddress:       pgmapper.MapStringPtrToPgText(s.DepartureAddress),
+		DestinationWarehouseID: s.DestinationWarehouseId,
+		DestinationAddress:     s.DestinationAddress,
+		// CarrierID:           pgmapper.MapIntPtrToPgInt4(s.CarrierId),
+		Status:              string(s.Status),
+		TotalWeight:         pgmapper.MapDecimalToPgNumeric(s.TotalWeight),
+		TotalVolume:         pgmapper.MapDecimalToPgNumeric(s.TotalVolume),
+		SpecialInstructions: pgmapper.MapStringPtrToPgText(s.SpecialInstructions),
+		OwnerID:             pgmapper.MapIntPtrToPgInt4(s.OwnerId),
+	})
+	if err != nil {
+		if checkPgErrCode(err, pgerrcode.UniqueViolation) {
+			return nil, errors.Wrap(errs.ErrDuplicate, err.Error())
+		}
+		return nil, err
+	}
+
+	log.Debug(shipment.OwnerID)
 
 	return mapShipmentModelToEntity(&shipment), nil
 }

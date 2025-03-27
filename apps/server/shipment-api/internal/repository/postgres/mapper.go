@@ -20,6 +20,12 @@ func mapShipmentModelToEntity(shipment *shipment_database.Shipment) *entity.Ship
 		specialInstructions = &shipment.SpecialInstructions.String
 	}
 
+	var ownerId *int
+	if shipment.OwnerID.Valid {
+		temp := int(shipment.OwnerID.Int32)
+		ownerId = &temp
+	}
+
 	return &entity.Shipment{
 		Id:                     int(shipment.ID),
 		Route:                  lo.Map(shipment.Route, func(id string, _ int) string { return id }),
@@ -33,6 +39,7 @@ func mapShipmentModelToEntity(shipment *shipment_database.Shipment) *entity.Ship
 		TotalWeight:         decimal.New(shipment.TotalWeight.Int.Int64(), shipment.TotalWeight.Exp),
 		TotalVolume:         decimal.New(shipment.TotalVolume.Int.Int64(), shipment.TotalVolume.Exp),
 		SpecialInstructions: specialInstructions,
+		OwnerId:             ownerId,
 	}
 }
 

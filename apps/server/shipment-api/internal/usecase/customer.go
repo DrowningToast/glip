@@ -6,15 +6,61 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/drowningtoast/glip/apps/server/internal/errs"
 	"github.com/drowningtoast/glip/apps/server/shipment-api/internal/entity"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func (u *Usecase) CreateCustomer(ctx context.Context, customer *entity.Customer) (*entity.Customer, error) {
-	return u.CustomerDg.CreateShipmentOwner(ctx, customer)
+type CreateCustomerParams struct {
+	// Account info
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Email    string `json:"email" validate:"required"`
+
+	// Customer info
+	Name    string  `json:"name"`
+	Phone   *string `json:"phone"`
+	Address *string `json:"address"`
+}
+
+func (u *Usecase) CreateCustomer(ctx context.Context, params CreateCustomerParams) (*entity.Account, *entity.Customer, error) {
+	// Create account
+	hash, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	payloadAccount := &entity.Account{
+		Username: params.Username,
+		Password: string(hash),
+		Email:    params.Email,
+	}
+
+	account, err := u.AccountDg.CreateAccount(ctx, payloadAccount)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to create account in usecase level")
+	}
+
+	// create payloadCustomer
+	payloadCustomer := &entity.Customer{
+		Name:      params.Name,
+		Email:     params.Email,
+		Phone:     params.Phone,
+		Address:   params.Address,
+		AccountId: &account.Id,
+	}
+	customer, err := u.CustomerDg.CreateShipmentOwner(ctx, payloadCustomer)
+	if err != nil {
+		if err := u.AccountDg.SoftDeleteAccount(ctx, payloadAccount.Id); err != nil {
+			return nil, nil, errors.Wrap(err, "creating customer record failed, and failed to revert the account entity creation!")
+		}
+	}
+
+	return account, customer, nil
 }
 
 type GetCustomerQuery struct {
-	Id    *int
-	Email *string
+	Id        *int
+	Email     *string
+	AccountId *int
 }
 
 func (u *Usecase) GetCustomer(ctx context.Context, query GetCustomerQuery) (*entity.Customer, error) {

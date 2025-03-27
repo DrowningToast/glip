@@ -31,12 +31,41 @@ type CreateShipmentParams struct {
 	DestinationAddress string `json:"destination_address" validate:"required"`
 	DestinationCity    string `json:"destination_city" validate:"required"`
 	// CarrierId           int             `json:"carrier_id"`
+	OwnerId             *int            `json:"owner_id"`
 	TotalWeight         decimal.Decimal `json:"total_weight" validate:"required"`
 	TotalVolume         decimal.Decimal `json:"total_volume" validate:"required"`
 	SpecialInstructions *string         `json:"special_instructions,omitempty"`
 }
 
-func (uc *Usecase) CreateShipment(ctx context.Context, shipment CreateShipmentParams) (*entity.Shipment, error) {
+// if the account owner is nil, it'll presume it's created by root
+func (uc *Usecase) CreateShipment(ctx context.Context, shipment CreateShipmentParams, ownerAccountUsername *string) (*entity.Shipment, error) {
+	log.Debug(ownerAccountUsername)
+	if ownerAccountUsername != nil {
+		account, err := uc.AccountDg.GetAccountByUsername(ctx, *ownerAccountUsername)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get account to verify the customer (sender)")
+		}
+		if account == nil {
+			return nil, errors.Wrap(errs.ErrNotFound, "customer info not found from provided username")
+		}
+		customer, err := uc.CustomerDg.GetShipmentOwnerByAccountId(ctx, account.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get the customer info")
+		}
+		if customer == nil {
+			return nil, errors.Wrap(errs.ErrNotFound, "no customer info binded to the account entity found")
+		}
+		shipment.OwnerId = &customer.Id
+	} else {
+		// Assume the root created this shipment for some reaso:46
+
+		shipment.OwnerId = nil
+	}
+
+	if shipment.OwnerId != nil {
+		log.Debug(*shipment.OwnerId)
+	}
+
 	departureWarehouse, err := uc.Config.WarehouseRegions.GetWarehouseByCity(shipment.DepartureCity)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get departure warehouse")
@@ -52,19 +81,46 @@ func (uc *Usecase) CreateShipment(ctx context.Context, shipment CreateShipmentPa
 		return nil, errors.Wrap(err, "failed to find shipment route")
 	}
 
-	createdShipment, err := uc.ShipmentDg.CreateShipment(ctx, &entity.Shipment{
-		// Id is set to 0, because the repository will set it
-		DepartureAddress:       &shipment.DepartureAddress,
-		DepartureWarehouseId:   route[0],
-		DestinationAddress:     shipment.DestinationAddress,
-		DestinationWarehouseId: route[len(route)-1],
-		// CarrierId:              &shipment.CarrierId,
-		Status:              entity.ShipmentStatusWaitingForPickup,
-		TotalWeight:         shipment.TotalWeight,
-		TotalVolume:         shipment.TotalVolume,
-		SpecialInstructions: shipment.SpecialInstructions,
-		Route:               route,
-	})
+	var createdShipment *entity.Shipment
+	if shipment.OwnerId == nil {
+		// created by admin
+		createdShipment, err = uc.ShipmentDg.CreateShipment(ctx, &entity.Shipment{
+			// Id is set to 0, because the repository will set it
+			DepartureAddress:       &shipment.DepartureAddress,
+			DepartureWarehouseId:   route[0],
+			DestinationAddress:     shipment.DestinationAddress,
+			DestinationWarehouseId: route[len(route)-1],
+			// CarrierId:              &shipment.CarrierId,
+			Status:              entity.ShipmentStatusWaitingForPickup,
+			TotalWeight:         shipment.TotalWeight,
+			TotalVolume:         shipment.TotalVolume,
+			SpecialInstructions: shipment.SpecialInstructions,
+			Route:               route,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to create shipment")
+		}
+	} else {
+		// created by customer
+		createdShipment, err = uc.ShipmentDg.CreateShipmentWithOwner(ctx, &entity.Shipment{
+			// Id is set to 0, because the repository will set it
+			DepartureAddress:       &shipment.DepartureAddress,
+			DepartureWarehouseId:   route[0],
+			DestinationAddress:     shipment.DestinationAddress,
+			DestinationWarehouseId: route[len(route)-1],
+			// CarrierId:              &shipment.CarrierId,
+			Status:              entity.ShipmentStatusWaitingForPickup,
+			TotalWeight:         shipment.TotalWeight,
+			TotalVolume:         shipment.TotalVolume,
+			SpecialInstructions: shipment.SpecialInstructions,
+			Route:               route,
+			OwnerId:             shipment.OwnerId,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to create shipment")
+		}
+	}
+
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create shipment")
 	}
@@ -80,7 +136,7 @@ func (uc *Usecase) CreateShipment(ctx context.Context, shipment CreateShipmentPa
 
 func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan error) {
 	shipmentQueueChan := make(chan entity.ShipmentQueue)
-	go uc.ShipmentQueueDg.WatchReceivedShipment(ctx, shipmentQueueChan, errorChan, ctx.Done())
+	go uc.ShipmentQueueDg.WatchReceivedShipmentQueue(ctx, shipmentQueueChan, errorChan, ctx.Done())
 
 	for {
 		select {
@@ -164,7 +220,6 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					continue
 				}
 				break
-
 			default:
 				log.Warnf("invalid shipment status")
 				errorChan <- errors.Wrap(errs.ErrInvalidArgument, "invalid shipment status")
@@ -261,7 +316,7 @@ type GetShipmentByOwnerParams struct {
 	ShipmentId int    `json:"id" validate:"required"`
 }
 
-func (uc *Usecase) GetShipmentByOwner(ctx context.Context, params GetShipmentByOwnerParams) (*entity.Shipment, error) {
+func (uc *Usecase) GetShipmentByOwner(ctx context.Context, params GetShipmentByOwnerParams, bypassOwnerCheck bool) (*entity.Shipment, error) {
 	shipment, err := uc.ShipmentDg.GetShipmentById(ctx, params.ShipmentId)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get shipment")
@@ -275,8 +330,10 @@ func (uc *Usecase) GetShipmentByOwner(ctx context.Context, params GetShipmentByO
 		return nil, errors.Wrap(errs.ErrNotFound, "owner not found")
 	}
 
-	if shipment.OwnerId != owner.Id {
-		return nil, errors.Wrap(errs.ErrNotFound, "shipment not found")
+	if !bypassOwnerCheck && shipment.OwnerId != nil {
+		if *shipment.OwnerId != owner.Id {
+			return nil, errors.Wrap(errs.ErrNotFound, "shipment not found")
+		}
 	}
 
 	return shipment, nil

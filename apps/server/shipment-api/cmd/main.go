@@ -69,6 +69,7 @@ func main() {
 
 		ShipmentQueueDg: rabbitmqRepo,
 
+		AccountDg:  pgRepo,
 		ShipmentDg: pgRepo,
 		CustomerDg: pgRepo,
 		CarrierDg:  pgRepo,

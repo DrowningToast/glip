@@ -41,10 +41,10 @@ type ShipmentQueue struct {
 	Shipment
 
 	// Message queue sent from warehouse id to shipment api
-	FromWarehouseId *string `json:"from_warehouse_id"`
+	FromWarehouseId *string `json:"from_warehouse_id,omitempty"`
 
 	// Message queue sent from shipment api to warehouse id
-	ToWarehouseId *string `json:"to_warehouse_id"`
+	ToWarehouseId *string `json:"to_warehouse_id,omitempty"`
 
 	QueueType ShipmentQueueType `json:"type"`
 
