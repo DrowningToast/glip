@@ -223,6 +223,15 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					continue
 				}
 				shipmentQueue.Msg.Ack(false)
+
+				if shipmentQueue.Status == entity.ShipmentStatusInTransitOnTheWay {
+					_, currentIndex, _ := lo.FindIndexOf(oldShipment.Route, func(warehouseId string) bool {
+						return warehouseId == *oldShipment.LastWarehouseId
+					})
+					nextWarehouseId := oldShipment.Route[currentIndex+1]
+					uc.ShipmentQueueDg.CreateToReceivedShipment(ctx, oldShipment, nextWarehouseId)
+				}
+
 				break
 			default:
 				log.Warnf("invalid shipment status")
