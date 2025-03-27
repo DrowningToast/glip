@@ -205,6 +205,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					errorChan <- errors.Wrap(err, "failed to update shipment")
 					continue
 				}
+				shipmentQueue.Msg.Ack(false)
 				break
 			case entity.ShipmentStatusInTransitOnTheWay:
 			case entity.ShipmentStatusDelivered:
@@ -221,6 +222,7 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 					errorChan <- errors.Wrap(err, "failed to update shipment")
 					continue
 				}
+				shipmentQueue.Msg.Ack(false)
 				break
 			default:
 				log.Warnf("invalid shipment status")
@@ -228,23 +230,23 @@ func (uc *Usecase) WatchShipmentUpdates(ctx context.Context, errorChan chan erro
 				continue
 			}
 
-			oldShipment, err = uc.ShipmentDg.GetShipmentById(ctx, shipmentQueue.Id)
-			if err != nil {
-				log.Warnf("failed to get shipment: %v", err)
-				errorChan <- errors.Wrap(err, "failed to get shipment")
-				continue
-			}
-			if oldShipment == nil {
-				log.Warnf("shipment not found")
-				errorChan <- errors.Wrap(errs.ErrNotFound, "shipment not found")
-				continue
-			}
+			// oldShipment, err = uc.ShipmentDg.GetShipmentById(ctx, shipmentQueue.Id)
+			// if err != nil {
+			// 	log.Warnf("failed to get shipment: %v", err)
+			// 	errorChan <- errors.Wrap(err, "failed to get shipment")
+			// 	continue
+			// }
+			// if oldShipment == nil {
+			// 	log.Warnf("shipment not found")
+			// 	errorChan <- errors.Wrap(errs.ErrNotFound, "shipment not found")
+			// 	continue
+			// }
 
-			// update shipment status
-			uc.ShipmentDg.UpdateShipment(ctx, &entity.Shipment{
-				Id:     shipmentQueue.Id,
-				Status: entity.ShipmentStatus(shipmentQueue.Status),
-			})
+			// // update shipment status
+			// uc.ShipmentDg.UpdateShipment(ctx, &entity.Shipment{
+			// 	Id:     shipmentQueue.Id,
+			// 	Status: entity.ShipmentStatus(shipmentQueue.Status),
+			// })
 			break
 		case err := <-errorChan:
 			log.Warnf("error: %v", err)
