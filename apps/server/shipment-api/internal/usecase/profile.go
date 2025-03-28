@@ -38,7 +38,7 @@ func (u Usecase) GetMyProfileAsWarehouseConnection(ctx context.Context, jwt *ent
 		return nil, errors.Wrap(err, "cannot get warehouse connection")
 	}
 
-	if warehouseconnection.Id != jwt.Id {
+	if warehouseconnection.WarehouseId != jwt.Id {
 		return nil, errors.Wrap(errs.ErrUnauthorized, "incorrect warehouse connection credentials")
 	}
 

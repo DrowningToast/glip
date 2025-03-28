@@ -1,6 +1,6 @@
+import { ChevronLeft } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "../../../components/ui/button";
-import { ChevronLeft } from "lucide-react";
 import { WarehouseLoginForm } from "./form";
 
 export default function WarehouseLoginPage() {

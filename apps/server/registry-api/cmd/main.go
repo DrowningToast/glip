@@ -18,6 +18,7 @@ import (
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/repository/postgres"
 	"github.com/drowningtoast/glip/apps/server/registry-api/internal/usecase"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
@@ -89,6 +90,12 @@ func main() {
 
 	// mount
 	v1Router := app.Group("/v1")
+	v1Router.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://localhost:3000, http://localhost:5173",
+		AllowCredentials: true,
+		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+	}))
 	h.Mount(v1Router, handler.MiddlewareParameters{
 		AuthGuard:      authGuard,
 		AdminGuard:     adminGuard,

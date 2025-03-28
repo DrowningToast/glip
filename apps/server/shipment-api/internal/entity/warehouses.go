@@ -36,7 +36,7 @@ const (
 )
 
 type WarehouseConnection struct {
-	Id string `json:"id"`
+	Id int `json:"id"`
 	// The warehouse id that the connection is for
 	WarehouseId string                    `json:"warehouse_id"`
 	ApiKey      string                    `json:"api_key"`

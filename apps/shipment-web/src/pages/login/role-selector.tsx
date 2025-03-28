@@ -1,9 +1,9 @@
 "use client"
 
+import { ShieldCheck, UserCircle, Warehouse } from "lucide-react"
 import { useState } from "react"
-import { Card, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
-import { UserCircle, Warehouse, ShieldCheck } from "lucide-react"
 import { useNavigate } from "react-router"
+import { Card, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
 
 export function RoleSelector() {
     const navigate = useNavigate()

@@ -106,7 +106,7 @@ func (u *Usecase) CreateWarehouseConnectionSession(ctx context.Context, apiKey s
 		return nil, errors.Wrap(errs.ErrUnauthorized, "warehouse connection inactive")
 	}
 
-	tokenString, err := u.SignJWT(ctx, warehouseConn.Id, entity.ConnectionTypeWarehouse)
+	tokenString, err := u.SignJWT(ctx, warehouseConn.WarehouseId, entity.ConnectionTypeWarehouse)
 	if err != nil {
 		return nil, errors.Wrap(errs.ErrInternal, err.Error())
 	}

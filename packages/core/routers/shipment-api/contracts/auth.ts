@@ -27,7 +27,7 @@ export const AuthContract = c.router(
 		},
 		AuthCustomerConnection: {
 			method: "POST",
-			path: "/admin",
+			path: "/customer",
 			body: z.object({
 				username: z.string(),
 				password: z.string(),
@@ -44,7 +44,7 @@ export const AuthContract = c.router(
 		},
 		AuthAdminConnection: {
 			method: "POST",
-			path: "/customer",
+			path: "/admin",
 			body: z.object({
 				key: z.string(),
 			}),

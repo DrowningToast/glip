@@ -5,16 +5,15 @@ import {
 	type InitClientReturn,
 } from "@ts-rest/core";
 import { isAxiosError, type AxiosInstance, type Method } from "axios";
-import axiosClient from "../../apps/frontend/glip-warehouse/src/libs/axiosClient";
 
 // Router
 export * from "./routers/shipment-api/router";
 
 // Contracts
-export * from "./routers/shipment-api/contracts/customer";
 export * from "./routers/shipment-api/contracts/auth";
-export * from "./routers/shipment-api/contracts/shipment";
+export * from "./routers/shipment-api/contracts/customer";
 export * from "./routers/shipment-api/contracts/profile";
+export * from "./routers/shipment-api/contracts/shipment";
 
 // Router
 export * from "./routers/registry-api/router";

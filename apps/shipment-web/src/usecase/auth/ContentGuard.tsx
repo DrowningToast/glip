@@ -1,11 +1,11 @@
 import { Role } from "core"
 import React from "react"
-import { useCustomerProfile } from "./useCustomerProfile"
-import { useWarehouseProfile } from "./useWarehouseProfile"
-import { useSession } from "./useSession"
 import { useNavigate } from "react-router"
-import { Unauthorized } from "../../components/unauthorized"
 import { Skeleton } from "../../components/ui/skeleton"
+import { Unauthorized } from "../../components/unauthorized"
+import { useCustomerProfile } from "./useCustomerProfile"
+import { useSession } from "./useSession"
+import { useWarehouseProfile } from "./useWarehouseProfile"
 
 interface ContentGuardProps {
     children: React.ReactNode

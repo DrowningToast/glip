@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router"
-import { Button } from "./ui/button"
 import { signOut } from "../usecase/auth/signout"
+import { Button } from "./ui/button"
 
 export const Unauthorized: React.FC = () => {
     const navigate = useNavigate()
