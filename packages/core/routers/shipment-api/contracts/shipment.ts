@@ -12,14 +12,16 @@ import { ShipmentSchema, ShipmentStatusSchema } from "../../../entity/shipment";
  * types
  */
 export const CreateShipmentBodySchema = z.object({
-	departure_address: z.string(),
-	departure_city: z.string(),
-	destination_address: z.string(),
-	destination_city: z.string(),
-	owner_id: z.number().optional(),
-	total_weight: z.number(),
-	total_volume: z.number(),
-	special_instructions: z.string().optional(),
+	shipment: z.object({
+		departure_address: z.string(),
+		departure_city: z.string(),
+		destination_address: z.string(),
+		destination_city: z.string(),
+		owner_id: z.number().optional(),
+		total_weight: z.number(),
+		total_volume: z.number(),
+		special_instructions: z.string().optional(),
+	}),
 });
 
 /**

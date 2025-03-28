@@ -99,10 +99,12 @@ export function CreateShipmentForm() {
 			}
 
 			return createShipment({
-				...values,
-				owner_id: Number(customerProfile?.id),
-				departure_city: values.departure_address.split(",")[0],
-				destination_city: values.destination_address.split(",")[0],
+				shipment: {
+					...values,
+					owner_id: Number(customerProfile?.id),
+					departure_city: values.departure_address.split(",")[0],
+					destination_city: values.destination_address.split(",")[0],
+				},
 			});
 		});
 		if (err) {
