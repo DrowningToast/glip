@@ -94,7 +94,7 @@ func main() {
 		AllowOrigins:     "http://localhost:3000, http://localhost:5174",
 		AllowCredentials: true,
 		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
-		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization, AuthType",
 	}))
 	h.Mount(v1Router, handler.MiddlewareParameters{
 		AuthGuard:      authGuard,
