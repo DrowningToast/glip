@@ -1,36 +1,15 @@
 FROM oven/bun AS build
 
+RUN apt-get update -y && apt-get install -y openssl
+
 WORKDIR /app
 
-# Cache packages installation
-COPY package.json package.json
-COPY bun.lock bun.lock
-
-COPY ./src ./src
-COPY ./prisma ./prisma
+COPY . .
 
 RUN bun install
 
-ENV NODE_ENV=production
-
-RUN bunx prisma generate --generator binary-targets=linux-arm64-openssl-1.1.x
-
-RUN bun build \
-	--compile \
-	--minify-whitespace \
-	--minify-syntax \
-	--target bun \
-	--outfile server \
-	./src/index.ts
-
-FROM gcr.io/distroless/base
-
-WORKDIR /app
-
-COPY --from=build /app/server server
-
-ENV NODE_ENV=production
-
-CMD ["./server"]
+RUN bun db:generate
 
 EXPOSE 3000
+
+CMD ["bun", "run", "src/runner.ts"]

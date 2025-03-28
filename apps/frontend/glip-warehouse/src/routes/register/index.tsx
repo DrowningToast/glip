@@ -3,19 +3,33 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
-import { useState } from "react"
-import { Link } from "@tanstack/react-router"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { EyeIcon, EyeOffIcon } from "lucide-react"
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 import { getUser, register } from "@/queries/auth/query";
 import { RegisterResponse } from "@/queries/auth/type";
 import { APIError } from "@/libs/axiosClient";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export const Route = createFileRoute('/register/')({
+export const Route = createFileRoute("/register/")({
   component: RouteComponent,
   loader: async () => {
     try {
@@ -28,44 +42,47 @@ export const Route = createFileRoute('/register/')({
       console.error(error);
       return null;
     }
-  }
-})
+  },
+});
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [passwordError, setPasswordError] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
   const registerMutation = useMutation({
     mutationFn: register,
-  })
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setPasswordError("รหัสผ่านไม่ตรงกัน")
-      return
+      setPasswordError("รหัสผ่านไม่ตรงกัน");
+      return;
     }
 
-    setPasswordError("")
+    setPasswordError("");
 
-    const id = toast.loading("กำลังสมัครสมาชิก...")
+    const id = toast.loading("กำลังสมัครสมาชิก...");
 
-    registerMutation.mutateAsync({
-      email,
-      password,
-    }).then((res: RegisterResponse) => {
-      toast.success(res.message, { id })
-      navigate({ to: "/login" })
-    }).catch((err: APIError) => {
-      toast.error(err.message, { id })
-    })
-  }
+    registerMutation
+      .mutateAsync({
+        email,
+        password,
+      })
+      .then((res: RegisterResponse) => {
+        toast.success(res.message, { id });
+        navigate({ to: "/login" });
+      })
+      .catch((err: APIError) => {
+        toast.error(err.message, { id });
+      });
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
@@ -104,7 +121,11 @@ function RouteComponent() {
                   className="absolute right-0 top-0 h-full px-3 py-2 text-gray-400 hover:text-gray-600"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOffIcon className="h-4 w-4" />
+                  ) : (
+                    <EyeIcon className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -117,16 +138,50 @@ function RouteComponent() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
-              {passwordError && <p className="text-sm text-red-500">{passwordError}</p>}
+              {passwordError && (
+                <p className="text-sm text-red-500">{passwordError}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="region">ภูมิภาค</Label>
+              <Select
+                onValueChange={(value) => {
+                  localStorage.setItem("region", value);
+                  window.location.reload();
+                }}
+                defaultValue={localStorage.getItem("region") || "USA1"}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Region" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USA1">USA1</SelectItem>
+                  <SelectItem value="USA2">USA2</SelectItem>
+                  <SelectItem value="USA3">USA3</SelectItem>
+                  <SelectItem value="EU1">EU1</SelectItem>
+                  <SelectItem value="EU2">EU2</SelectItem>
+                  <SelectItem value="EU3">EU3</SelectItem>
+                  <SelectItem value="APAC1">APAC1</SelectItem>
+                  <SelectItem value="APAC2">APAC2</SelectItem>
+                  <SelectItem value="APAC3">APAC3</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4 mt-4">
-            <Button className="w-full" type="submit" disabled={registerMutation.isPending}>
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={registerMutation.isPending}
+            >
               สมัครสมาชิก
             </Button>
             <p className="text-center text-sm">
               มีบัญชีผู้ใช้แล้ว?{" "}
-              <Link to="/login" className="font-semibold text-primary hover:underline">
+              <Link
+                to="/login"
+                className="font-semibold text-primary hover:underline"
+              >
                 เข้าสู่ระบบ
               </Link>
             </p>
@@ -134,5 +189,5 @@ function RouteComponent() {
         </form>
       </Card>
     </div>
-  )
+  );
 }

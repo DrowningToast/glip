@@ -99,10 +99,6 @@ const columns: ColumnDef<Inventory>[] = [
     },
   },
   {
-    header: "Warehouse",
-    accessorKey: "warehouse_id",
-  },
-  {
     header: "From Warehouse",
     accessorKey: "last_warehouse_id",
   },
@@ -217,7 +213,9 @@ function Index() {
   return (
     <div className="max-w-7xl mx-auto py-14">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold">Inventory Dashboard</h1>
+        <h1 className="text-2xl font-bold">
+          Inventory Dashboard ({localStorage.getItem("region")})
+        </h1>
         <Button variant="outline" size="sm" onClick={handleLogout}>
           Logout
         </Button>
@@ -264,26 +262,6 @@ function Index() {
                 <SelectItem value="WAREHOUSE_DEPARTED">
                   Warehouse Departed
                 </SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              onValueChange={(value) =>
-                table.getColumn("warehouse_id")?.setFilterValue(value)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by Warehouse" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="USA1">USA1</SelectItem>
-                <SelectItem value="USA2">USA2</SelectItem>
-                <SelectItem value="USA3">USA3</SelectItem>
-                <SelectItem value="EU1">EU1</SelectItem>
-                <SelectItem value="EU2">EU2</SelectItem>
-                <SelectItem value="EU3">EU3</SelectItem>
-                <SelectItem value="APAC1">APAC1</SelectItem>
-                <SelectItem value="APAC2">APAC2</SelectItem>
-                <SelectItem value="APAC3">APAC3</SelectItem>
               </SelectContent>
             </Select>
           </div>

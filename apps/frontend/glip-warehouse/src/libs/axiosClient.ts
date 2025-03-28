@@ -1,12 +1,16 @@
 import axios from "axios";
+import urlConfig from "@/config/endpoint.json";
 
 export type APIError = {
     status: number;
     message: string;
 }
 
+const region = localStorage.getItem("region") || "USA1";
+const endpoint = urlConfig.find((item) => item.region === region)?.endpoint;
+
 const axiosClient = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}`,
+  baseURL: `${endpoint}`,
   withCredentials: true,
 });
 

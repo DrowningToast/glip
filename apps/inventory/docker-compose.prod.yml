@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: mdd_inventory
       POSTGRES_PASSWORD: password
       POSTGRES_DB: public
+    env_file:
+      - .env.prod
     ports:
       - "5432:5432"
     volumes:
@@ -24,8 +26,8 @@ services:
       - postgres
     env_file:
       - .env.prod
-    expose:
-      - 3000
+    ports:
+      - "3000:3000"
     networks:
       - inventory_network
 volumes:

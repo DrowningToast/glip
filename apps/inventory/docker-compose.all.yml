@@ -1,0 +1,303 @@
+services:
+  usa1_postgres:
+    image: postgres:latest
+    container_name: usa1_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6000:5432"
+    volumes:
+      - usa1_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  usa2_postgres:
+    image: postgres:latest
+    container_name: usa2_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6001:5432"
+    volumes:
+      - usa2_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  usa3_postgres:
+    image: postgres:latest
+    container_name: usa3_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6002:5432"
+    volumes:
+      - usa3_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  eu1_postgres:
+    image: postgres:latest
+    container_name: eu1_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6003:5432"
+    volumes:
+      - eu1_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  eu2_postgres:
+    image: postgres:latest
+    container_name: eu2_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6004:5432"
+    volumes:
+      - eu2_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  eu3_postgres:
+    image: postgres:latest
+    container_name: eu3_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6005:5432"
+    volumes:
+      - eu3_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  apac1_postgres:
+    image: postgres:latest
+    container_name: apac1_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6006:5432"
+    volumes:
+      - apac1_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  apac2_postgres:
+    image: postgres:latest
+    container_name: apac2_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6007:5432"
+    volumes:
+      - apac2_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  apac3_postgres:
+    image: postgres:latest
+    container_name: apac3_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: public
+    ports:
+      - "6008:5432"
+    volumes:
+      - apac3_postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory_network
+
+  usa1_backend:
+    image: inventory_backend
+    container_name: usa1_backend
+    restart: always
+    ports:
+      - "8000:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - usa1_postgres
+    environment:
+      PG_URL: postgres://root:root@usa1_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: USA1
+
+  usa2_backend:
+    image: inventory_backend
+    container_name: usa2_backend
+    restart: always
+    ports:
+      - "8001:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - usa2_postgres
+    environment:
+      PG_URL: postgres://root:root@usa2_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: USA2
+
+  usa3_backend:
+    image: inventory_backend
+    container_name: usa3_backend
+    restart: always
+    ports:
+      - "8002:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - usa3_postgres
+    environment:
+      PG_URL: postgres://root:root@usa3_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: USA3
+
+  eu1_backend:
+    image: inventory_backend
+    container_name: eu1_backend
+    restart: always
+    ports:
+      - "8003:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - eu1_postgres
+    environment:
+      PG_URL: postgres://root:root@eu1_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: EU1
+
+  eu2_backend:
+    image: inventory_backend
+    container_name: eu2_backend
+    restart: always
+    ports:
+      - "8004:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - eu2_postgres
+    environment:
+      PG_URL: postgres://root:root@eu2_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: EU2
+
+  eu3_backend:
+    image: inventory_backend
+    container_name: eu3_backend
+    restart: always
+    ports:
+      - "8005:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - eu3_postgres
+    environment:
+      PG_URL: postgres://root:root@eu3_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: EU3
+
+  apac1_backend:
+    image: inventory_backend
+    container_name: apac1_backend
+    restart: always
+    ports:
+      - "8006:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - apac1_postgres
+    environment:
+      PG_URL: postgres://root:root@apac1_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: APAC1
+
+  apac2_backend:
+    image: inventory_backend
+    container_name: apac2_backend
+    restart: always
+    ports:
+      - "8007:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - apac2_postgres
+    environment:
+      PG_URL: postgres://root:root@apac2_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: APAC2
+
+  apac3_backend:
+    image: inventory_backend
+    container_name: apac3_backend
+    restart: always
+    ports:
+      - "8008:3000"
+    networks:
+      - inventory_network
+    depends_on:
+      - apac3_postgres
+    environment:
+      PG_URL: postgres://root:root@apac3_postgres:5432/public
+      RABBITMQ_URL: amqp://admin:admin@host.docker.internal:5672/
+      SECRET_KEY: inv-secret-1
+      JWT_SECRET: secret
+      INVENTORY_REGION: APAC3
+
+volumes:
+  usa1_postgres_data:
+  usa2_postgres_data:
+  usa3_postgres_data:
+  eu1_postgres_data:
+  eu2_postgres_data:
+  eu3_postgres_data:
+  apac1_postgres_data:
+  apac2_postgres_data:
+  apac3_postgres_data:
+
+networks:
+  inventory_network:
+    driver: bridge

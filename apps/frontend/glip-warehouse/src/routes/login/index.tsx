@@ -16,6 +16,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
@@ -37,7 +44,7 @@ export const Route = createFileRoute("/login/")({
       console.error(error);
       return null;
     }
-  }
+  },
 });
 
 function RouteComponent() {
@@ -47,35 +54,38 @@ function RouteComponent() {
   const navigate = useNavigate();
   const loginMutation = useMutation({
     mutationFn: login,
-  })
+  });
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Filter out special characters except @ and .
-    const filteredValue = value.replace(/[^a-zA-Z0-9@.]/g, '');
+    const filteredValue = value.replace(/[^a-zA-Z0-9@.]/g, "");
     setEmail(filteredValue);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Filter out special characters except basic alphanumeric
-    const filteredValue = value.replace(/[^a-zA-Z0-9]/g, '');
+    const filteredValue = value.replace(/[^a-zA-Z0-9]/g, "");
     setPassword(filteredValue);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const id = toast.loading("กำลังเข้าสู่ระบบ...")
+    const id = toast.loading("กำลังเข้าสู่ระบบ...");
 
-    loginMutation.mutateAsync({
-      email,
-      password,
-    }).then((res: LoginResponse) => {
-      toast.success(res.message, { id })
-      navigate({ to: "/" })
-    }).catch((err: APIError) => {
-      toast.error(err.message, { id })
-    })
+    loginMutation
+      .mutateAsync({
+        email,
+        password,
+      })
+      .then((res: LoginResponse) => {
+        toast.success(res.message, { id });
+        navigate({ to: "/" });
+      })
+      .catch((err: APIError) => {
+        toast.error(err.message, { id });
+      });
   };
 
   return (
@@ -125,9 +135,38 @@ function RouteComponent() {
                 </Button>
               </div>
             </div>
+            <div className="space-y-2 flex items-center gap-2">
+              <Label htmlFor="region">ภูมิภาค</Label>
+              <Select
+                onValueChange={(value) => {
+                  localStorage.setItem("region", value);
+                  window.location.reload();
+                }}
+                defaultValue={localStorage.getItem("region") || "USA1"}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Region" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USA1">USA1</SelectItem>
+                  <SelectItem value="USA2">USA2</SelectItem>
+                  <SelectItem value="USA3">USA3</SelectItem>
+                  <SelectItem value="EU1">EU1</SelectItem>
+                  <SelectItem value="EU2">EU2</SelectItem>
+                  <SelectItem value="EU3">EU3</SelectItem>
+                  <SelectItem value="APAC1">APAC1</SelectItem>
+                  <SelectItem value="APAC2">APAC2</SelectItem>
+                  <SelectItem value="APAC3">APAC3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4 mt-4">
-            <Button className="w-full" type="submit" disabled={loginMutation.isPending}>
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={loginMutation.isPending}
+            >
               เข้าสู่ระบบ
             </Button>
             <p className="text-center text-sm">

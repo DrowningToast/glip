@@ -5,6 +5,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
     "db:migrate": "bunx prisma migrate dev",
+    "db:push": "bunx prisma db push --skip-generate",
     "db:studio": "bunx prisma studio",
     "db:generate": "bunx prisma generate",
     "rabbitmq:consumer": "bun run src/rabbitmq/consumer.ts"

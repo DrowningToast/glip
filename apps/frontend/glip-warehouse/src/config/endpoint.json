@@ -1,0 +1,38 @@
+[
+    {
+        "region": "USA1",
+        "endpoint": "http://localhost:8000"
+    },
+    {
+        "region": "USA2",
+        "endpoint": "http://localhost:8001"
+    },
+    {
+        "region": "USA3",
+        "endpoint": "http://localhost:8002"
+    },
+    {
+        "region": "EU1",
+        "endpoint": "http://localhost:8003"
+    },
+    {
+        "region": "EU2",
+        "endpoint": "http://localhost:8004"
+    },
+    {
+        "region": "EU3",
+        "endpoint": "http://localhost:8005"
+    },
+    {
+        "region": "APAC1",
+        "endpoint": "http://localhost:8006"
+    },
+    {
+        "region": "APAC2",
+        "endpoint": "http://localhost:8007"
+    },
+    {
+        "region": "APAC3",
+        "endpoint": "http://localhost:8008"
+    }
+]
