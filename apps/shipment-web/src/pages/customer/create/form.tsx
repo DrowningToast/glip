@@ -52,13 +52,13 @@ const WAREHOUSES = [
 
 // Form schema for shipment creation
 const formSchema = z.object({
-	departure_warehouse_id: z.string({
+	departure_city: z.string({
 		required_error: "Please select a departure warehouse",
 	}),
 	departure_address: z.string().min(5, {
 		message: "Departure address must be at least 5 characters",
 	}),
-	destination_warehouse_id: z.string({
+	destination_city: z.string({
 		required_error: "Please select a destination warehouse",
 	}),
 	destination_address: z.string().min(5, {
@@ -133,7 +133,7 @@ export function CreateShipmentForm() {
 							<div className="grid gap-6 sm:grid-cols-2">
 								<FormField
 									control={form.control}
-									name="departure_warehouse_id"
+									name="departure_city"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Departure Warehouse</FormLabel>
@@ -194,7 +194,7 @@ export function CreateShipmentForm() {
 							<div className="grid gap-6 sm:grid-cols-2">
 								<FormField
 									control={form.control}
-									name="destination_warehouse_id"
+									name="destination_city"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Destination Warehouse</FormLabel>
