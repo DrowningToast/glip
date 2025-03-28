@@ -27,7 +27,7 @@ export const useSigninCustomer = () => {
 		onSuccess: (data) => {
 			queryClient.setQueryData(["customer"], data);
 			setSession(data);
-			setRole("customer");
+			setRole("USER");
 		},
 		onError: (error) => {
 			console.error(error);

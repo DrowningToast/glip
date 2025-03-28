@@ -27,7 +27,7 @@ export const useSigninWarehouse = () => {
 		onSuccess: (data) => {
 			queryClient.setQueryData(["warehouse"], data);
 			setSession(data);
-			setRole("warehouse");
+			setRole("WAREHOUSE_CONNECTION");
 		},
 		onError: (error) => {
 			console.error(error);

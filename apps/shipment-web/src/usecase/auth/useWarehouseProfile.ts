@@ -8,8 +8,18 @@ interface UseWarehouseProfileProps {
 export const useWarehouseProfile = ({ jwt }: UseWarehouseProfileProps) => {
 	return useQuery({
 		queryKey: ["warehouse-profile"],
-		queryFn: () => {
-			return shipmentApi.profile.getMyProfileAsWarehouseConnection();
+		queryFn: async () => {
+			const res = await shipmentApi.profile.getMyProfileAsWarehouseConnection({
+				headers: {
+					authorization: `Bearer ${jwt}`,
+				},
+			});
+
+			if (res.status != 200) {
+				throw new Error("Failed to fetch warehouse profile");
+			}
+
+			return res.body.result.warehouseConnection;
 		},
 		enabled: !!jwt,
 	});

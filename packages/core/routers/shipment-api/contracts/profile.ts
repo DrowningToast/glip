@@ -4,8 +4,8 @@ import {
 	HTTPErrorResponseSchema,
 	HTTPSuccessResponseSchema,
 } from "../../../common";
-import { CustomerSchema } from "../../../entity/customer";
 import { AccountSchema } from "../../../entity/account";
+import { CustomerSchema } from "../../../entity/customer";
 import { WarehouseConnectionSchema } from "../../../entity/warehouse-connection";
 
 const c = initContract();
@@ -15,6 +15,9 @@ export const ProfileContract = c.router(
 		getMyProfileAsCustomer: {
 			method: "GET",
 			path: "/customer/me",
+			headers: z.object({
+				Authorization: z.string(),
+			}),
 			responses: {
 				200: HTTPSuccessResponseSchema(
 					z.object({
@@ -29,6 +32,9 @@ export const ProfileContract = c.router(
 		getMyProfileAsWarehouseConnection: {
 			method: "GET",
 			path: "/warehouse-connection/me",
+			headers: z.object({
+				Authorization: z.string(),
+			}),
 			responses: {
 				200: HTTPSuccessResponseSchema(
 					z.object({

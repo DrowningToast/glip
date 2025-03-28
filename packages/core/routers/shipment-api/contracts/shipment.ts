@@ -1,12 +1,29 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
-import { ShipmentSchema, ShipmentStatusSchema } from "../../../entity/shipment";
 import {
 	HTTPErrorResponseSchema,
 	HTTPSuccessResponseSchema,
 	PaginatedResultSchema,
 } from "../../../common";
+import { ShipmentSchema, ShipmentStatusSchema } from "../../../entity/shipment";
 
+/**
+ * types
+ */
+export const CreateShipmentBodySchema = z.object({
+	departure_address: z.string(),
+	departure_city: z.string(),
+	destination_address: z.string(),
+	destination_city: z.string(),
+	owner_id: z.number().optional(),
+	total_weight: z.number(),
+	total_volume: z.number(),
+	special_instructions: z.string().optional(),
+});
+
+/**
+ * contract
+ */
 const c = initContract();
 
 export const ShipmentContract = c.router(
@@ -46,16 +63,7 @@ export const ShipmentContract = c.router(
 		create: {
 			method: "POST",
 			path: "/",
-			body: z.object({
-				departure_address: z.string(),
-				departure_city: z.string(),
-				destination_address: z.string(),
-				destination_city: z.string(),
-				owner_id: z.number().optional(),
-				total_weight: z.number(),
-				total_volume: z.number(),
-				special_instructions: z.string().optional(),
-			}),
+			body: CreateShipmentBodySchema,
 			responses: {
 				200: HTTPSuccessResponseSchema(
 					z.object({
@@ -102,3 +110,6 @@ export const ShipmentContract = c.router(
 		pathPrefix: "/shipment",
 	}
 );
+
+export interface CreateShipmentBody
+	extends z.infer<typeof CreateShipmentBodySchema> {}

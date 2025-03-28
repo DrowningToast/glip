@@ -12,8 +12,18 @@ export const useCustomerProfile = ({ jwt }: UseCustomerProfileProps) => {
 
 	return useQuery({
 		queryKey: ["customer-profile"],
-		queryFn: () => {
-			return shipmentApi.profile.getMyProfileAsCustomer();
+		queryFn: async () => {
+			const res = await shipmentApi.profile.getMyProfileAsCustomer({
+				headers: {
+					authorization: `Bearer ${jwt}`,
+				},
+			});
+
+			if (res.status != 200) {
+				throw new Error("Failed to fetch customer profile");
+			}
+
+			return res.body.result.customer;
 		},
 		enabled: !!jwt,
 	});

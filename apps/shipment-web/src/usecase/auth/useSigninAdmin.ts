@@ -1,8 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../api/queryClient";
 import { shipmentApi } from "../../api/shipment";
+import { useSession } from "./useSession";
 
 export const useSigninAdmin = () => {
+	const { setSession, setRole } = useSession();
 	const mutation = useMutation({
 		mutationFn: async (data: { key: string }) => {
 			const res = await shipmentApi.auth.AuthAdminConnection({
@@ -23,6 +25,8 @@ export const useSigninAdmin = () => {
 		},
 		onSuccess: (data) => {
 			queryClient.setQueryData(["admin"], data);
+			setSession(data);
+			setRole("ADMIN");
 		},
 		onError: (error) => {
 			console.error(error);
