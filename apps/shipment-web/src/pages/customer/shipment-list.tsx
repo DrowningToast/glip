@@ -43,68 +43,6 @@ import {
 } from "../../components/ui/table";
 
 // Mock data for shipments
-const shipments = [
-	{
-		id: "SHP-001",
-		departure_warehouse_id: "USA1",
-		departure_address: "123 Main St, New York, NY",
-		destination_warehouse_id: "EU1",
-		destination_address: "456 High St, London, UK",
-		status: "WAITING_FOR_PICKUP",
-		total_weight: 125.5,
-		total_volume: 2.3,
-		created_at: "2023-03-15T10:30:00Z",
-		updated_at: "2023-03-15T10:30:00Z",
-	},
-	{
-		id: "SHP-002",
-		departure_warehouse_id: "USA2",
-		departure_address: "789 Oak Ave, Chicago, IL",
-		destination_warehouse_id: "APAC1",
-		destination_address: "101 Harbor Rd, Singapore",
-		status: "IN_TRANSIT_ON_THE_WAY",
-		total_weight: 350.75,
-		total_volume: 5.1,
-		created_at: "2023-03-10T08:15:00Z",
-		updated_at: "2023-03-12T14:20:00Z",
-	},
-	{
-		id: "SHP-003",
-		departure_warehouse_id: "EU2",
-		departure_address: "22 Rue de Paris, Paris, France",
-		destination_warehouse_id: "USA3",
-		destination_address: "555 Tech Blvd, San Francisco, CA",
-		status: "DELIVERED",
-		total_weight: 78.25,
-		total_volume: 1.2,
-		created_at: "2023-02-28T09:45:00Z",
-		updated_at: "2023-03-08T16:30:00Z",
-	},
-	{
-		id: "SHP-004",
-		departure_warehouse_id: "APAC2",
-		departure_address: "88 Orchard Rd, Singapore",
-		destination_warehouse_id: "EU1",
-		destination_address: "33 Berlin St, Berlin, Germany",
-		status: "CANCELLED",
-		total_weight: 200.0,
-		total_volume: 3.5,
-		created_at: "2023-03-01T11:20:00Z",
-		updated_at: "2023-03-02T09:10:00Z",
-	},
-	{
-		id: "SHP-005",
-		departure_warehouse_id: "USA1",
-		departure_address: "42 Commerce St, Dallas, TX",
-		destination_warehouse_id: "USA3",
-		destination_address: "777 Valley Dr, Los Angeles, CA",
-		status: "IN_TRANSIT_ON_THE_WAY",
-		total_weight: 430.6,
-		total_volume: 6.8,
-		created_at: "2023-03-12T13:40:00Z",
-		updated_at: "2023-03-14T10:15:00Z",
-	},
-];
 
 // Helper function to format dates
 function formatDate(dateString: string) {
@@ -169,6 +107,7 @@ export function ShipmentList() {
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState("desc");
+	const { data: shipments } = useShipments();
 
 	// Filter and sort shipments
 	const filteredShipments = shipments
