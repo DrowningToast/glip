@@ -4,7 +4,7 @@ import { WarehouseEndpointContract } from "./contracts/warehouse-endpoint";
 
 const c = initContract();
 
-export const RouterApiRouter = c.router({
+export const RegistryApiRouter = c.router({
 	warehouseConnection: WarehouseConnectionContract,
-	WarehouseEndpoint: WarehouseEndpointContract,
+	warehouseEndpoint: WarehouseEndpointContract,
 });
