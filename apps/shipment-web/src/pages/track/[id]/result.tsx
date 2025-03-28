@@ -1,7 +1,6 @@
-import { FileText, Info, MapPin } from "lucide-react";
+import { Info, MapPin } from "lucide-react";
 import { useEffect } from "react";
 import { StatusBadge } from "../../../components/status-badge";
-import { Button } from "../../../components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -95,10 +94,9 @@ export const TrackingResult: React.FC<Props> = ({ shipmentId, email }) => {
 			</Card>
 
 			<Tabs defaultValue="tracking">
-				<TabsList className="grid w-full grid-cols-3">
+				<TabsList className="grid w-full grid-cols-2">
 					<TabsTrigger value="tracking">Tracking History</TabsTrigger>
 					<TabsTrigger value="details">Shipment Details</TabsTrigger>
-					<TabsTrigger value="documents">Documents</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value="tracking" className="mt-4">
@@ -142,7 +140,7 @@ export const TrackingResult: React.FC<Props> = ({ shipmentId, email }) => {
 													Weight:
 												</span>
 												<span className="font-medium">
-													{shipment.total_weight.toFixed(2)} kg
+													{shipment.total_weight} kg
 												</span>
 											</div>
 											<Separator className="my-1" />
@@ -151,7 +149,7 @@ export const TrackingResult: React.FC<Props> = ({ shipmentId, email }) => {
 													Volume:
 												</span>
 												<span className="font-medium">
-													{shipment.total_volume.toFixed(2)} m³
+													{shipment.total_volume} m³
 												</span>
 											</div>
 										</div>
@@ -185,71 +183,7 @@ export const TrackingResult: React.FC<Props> = ({ shipmentId, email }) => {
 													{formatDate(shipment.created_at)}
 												</span>
 											</div>
-											<Separator className="my-1" />
 										</div>
-									</div>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-
-				<TabsContent value="documents" className="mt-4">
-					<Card>
-						<CardHeader>
-							<CardTitle>Shipping Documents</CardTitle>
-							<CardDescription>
-								Access and download shipping documents
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								<div className="rounded-md border p-4">
-									<div className="flex items-center justify-between">
-										<div className="flex items-center gap-2">
-											<FileText className="h-5 w-5 text-muted-foreground" />
-											<div>
-												<p className="font-medium">Commercial Invoice</p>
-												<p className="text-sm text-muted-foreground">
-													PDF document - 245 KB
-												</p>
-											</div>
-										</div>
-										<Button variant="outline" size="sm">
-											Download
-										</Button>
-									</div>
-								</div>
-								<div className="rounded-md border p-4">
-									<div className="flex items-center justify-between">
-										<div className="flex items-center gap-2">
-											<FileText className="h-5 w-5 text-muted-foreground" />
-											<div>
-												<p className="font-medium">Packing List</p>
-												<p className="text-sm text-muted-foreground">
-													PDF document - 180 KB
-												</p>
-											</div>
-										</div>
-										<Button variant="outline" size="sm">
-											Download
-										</Button>
-									</div>
-								</div>
-								<div className="rounded-md border p-4">
-									<div className="flex items-center justify-between">
-										<div className="flex items-center gap-2">
-											<FileText className="h-5 w-5 text-muted-foreground" />
-											<div>
-												<p className="font-medium">Bill of Lading</p>
-												<p className="text-sm text-muted-foreground">
-													PDF document - 320 KB
-												</p>
-											</div>
-										</div>
-										<Button variant="outline" size="sm">
-											Download
-										</Button>
 									</div>
 								</div>
 							</div>
