@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/cockroachdb/errors"
@@ -86,7 +87,7 @@ func (h *Handler) ListShipments(ctx *fiber.Ctx) error {
 		query.Offset = &offset
 	}
 
-	shipments, err := h.Uc.ListShipments(ctx.Context(), *&usecase.ListShipmentsParams{
+	shipments, err := h.Uc.ListShipments(ctx.Context(), usecase.ListShipmentsParams{
 		Status:          query.Status,
 		LastWarehouseId: query.LastWarehouseId,
 		Limit:           *query.Limit,
@@ -135,10 +136,9 @@ func (h *Handler) GetShipment(ctx *fiber.Ctx) error {
 // sent by account
 func (h *Handler) ListShipmentsByAccountUser(ctx *fiber.Ctx) error {
 	var query struct {
-		Limit    *int                   `query:"limit"`
-		Offset   *int                   `query:"offset"`
-		Status   *entity.ShipmentStatus `query:"status"`
-		Username string                 `query:"username"`
+		Limit  *int                   `query:"limit"`
+		Offset *int                   `query:"offset"`
+		Status *entity.ShipmentStatus `query:"status"`
 	}
 	if query.Limit == nil {
 		limit := 100
@@ -151,20 +151,16 @@ func (h *Handler) ListShipmentsByAccountUser(ctx *fiber.Ctx) error {
 	}
 
 	session := ctx.UserContext().Value(usecase.UserContextKey{}).(*entity.JWTSession)
+	log.Println(session)
 	if session == nil {
 		return errors.Wrap(errs.ErrUnauthorized, "account not found")
-	}
-
-	// Id is the username of the account
-	if query.Username != session.Id {
-		return errors.Wrap(errs.ErrUnauthorized, "account not authorized")
 	}
 
 	shipments, err := h.Uc.ListShipmentsByAccountUser(ctx.Context(), *&usecase.ListShipmentsByAccountUser{
 		Limit:    *query.Limit,
 		Offset:   *query.Offset,
 		Status:   query.Status,
-		Username: query.Username,
+		Username: session.Id,
 	})
 	if err != nil {
 		return errors.Wrap(err, "failed to list shipments")
@@ -200,7 +196,7 @@ func (h *Handler) TrackShipment(ctx *fiber.Ctx) error {
 			return errors.Wrap(errs.ErrInternal, "failed to parse user context value")
 		}
 		if session.Role == entity.ConnectionTypeRoot {
-			shipment, err := h.Uc.GetShipmentByOwner(ctx.Context(), *&usecase.GetShipmentByOwnerParams{
+			shipment, err := h.Uc.GetShipmentByOwner(ctx.Context(), usecase.GetShipmentByOwnerParams{
 				ShipmentId: body.ShipmentId,
 				Email:      body.Email,
 			}, true)
@@ -218,7 +214,7 @@ func (h *Handler) TrackShipment(ctx *fiber.Ctx) error {
 	}
 
 	// search by customer
-	shipment, err := h.Uc.GetShipmentByOwner(ctx.Context(), *&usecase.GetShipmentByOwnerParams{
+	shipment, err := h.Uc.GetShipmentByOwner(ctx.Context(), usecase.GetShipmentByOwnerParams{
 		ShipmentId: body.ShipmentId,
 		Email:      body.Email,
 	}, false)

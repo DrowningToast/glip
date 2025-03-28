@@ -37,6 +37,19 @@ import { useCustomerProfile } from "../../../usecase/auth/useCustomerProfile";
 import { useSession } from "../../../usecase/auth/useSession";
 import { useCreateShipment } from "../../../usecase/shipment/useCreateShipment";
 //
+// Add this near the top of the file, after imports
+const WAREHOUSES = [
+	{ id: "USA1", name: "USA1", region: "North America" },
+	{ id: "USA2", name: "USA2", region: "North America" },
+	{ id: "USA3", name: "USA3", region: "North America" },
+	{ id: "EU1", name: "EU1", region: "Europe" },
+	{ id: "EU2", name: "EU2", region: "Europe" },
+	{ id: "EU3", name: "EU3", region: "Europe" },
+	{ id: "APAC1", name: "APAC1", region: "Asia-Pacific" },
+	{ id: "APAC2", name: "APAC2", region: "Asia-Pacific" },
+	{ id: "APAC3", name: "APAC3", region: "Asia-Pacific" },
+] as const;
+
 // Form schema for shipment creation
 const formSchema = z.object({
 	departure_warehouse_id: z.string({
@@ -132,23 +145,11 @@ export function CreateShipmentForm() {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													<SelectItem value="USA1">
-														USA1 (North America)
-													</SelectItem>
-													<SelectItem value="USA2">
-														USA2 (North America)
-													</SelectItem>
-													<SelectItem value="USA3">
-														USA3 (North America)
-													</SelectItem>
-													<SelectItem value="EU1">EU1 (Europe)</SelectItem>
-													<SelectItem value="EU2">EU2 (Europe)</SelectItem>
-													<SelectItem value="APAC1">
-														APAC1 (Asia-Pacific)
-													</SelectItem>
-													<SelectItem value="APAC2">
-														APAC2 (Asia-Pacific)
-													</SelectItem>
+													{WAREHOUSES.map((warehouse) => (
+														<SelectItem key={warehouse.id} value={warehouse.id}>
+															{warehouse.name} ({warehouse.region})
+														</SelectItem>
+													))}
 												</SelectContent>
 											</Select>
 											<FormDescription>
@@ -205,23 +206,11 @@ export function CreateShipmentForm() {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													<SelectItem value="USA1">
-														USA1 (North America)
-													</SelectItem>
-													<SelectItem value="USA2">
-														USA2 (North America)
-													</SelectItem>
-													<SelectItem value="USA3">
-														USA3 (North America)
-													</SelectItem>
-													<SelectItem value="EU1">EU1 (Europe)</SelectItem>
-													<SelectItem value="EU2">EU2 (Europe)</SelectItem>
-													<SelectItem value="APAC1">
-														APAC1 (Asia-Pacific)
-													</SelectItem>
-													<SelectItem value="APAC2">
-														APAC2 (Asia-Pacific)
-													</SelectItem>
+													{WAREHOUSES.map((warehouse) => (
+														<SelectItem key={warehouse.id} value={warehouse.id}>
+															{warehouse.name} ({warehouse.region})
+														</SelectItem>
+													))}
 												</SelectContent>
 											</Select>
 											<FormDescription>

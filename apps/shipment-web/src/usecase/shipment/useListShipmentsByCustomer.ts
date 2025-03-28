@@ -1,21 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { shipmentApi } from "../../api/shipment";
-import { useSession } from "../auth/useSession";
 
-export const useListShipments = (lastWarehouseId?: string) => {
-	const { session } = useSession();
+interface UseListShipmentsByCustomerProps {
+	jwt?: string;
+}
 
+export const useListShipmentsByCustomer = ({
+	jwt,
+}: UseListShipmentsByCustomerProps) => {
 	return useQuery({
-		queryKey: ["shipments"],
+		queryKey: ["shipments-by-customer"],
 		queryFn: async () => {
-			const res = await shipmentApi.shipment.list({
-				query: {
-					last_warehouse_id: lastWarehouseId
-						? lastWarehouseId?.toString()
-						: undefined,
-				},
+			const res = await shipmentApi.shipment.listByCustomer({
 				headers: {
-					authorization: `Bearer ${session}`,
+					authorization: `Bearer ${jwt}`,
 				},
 			});
 			switch (res.status) {
@@ -29,5 +27,6 @@ export const useListShipments = (lastWarehouseId?: string) => {
 					throw new Error("Unknown error");
 			}
 		},
+		enabled: !!jwt,
 	});
 };

@@ -1,6 +1,10 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 import {
+	HeaderAuthorizationSchema,
+	HeaderAuthTypeSchema,
+} from "../../../common/header";
+import {
 	HTTPErrorResponseSchema,
 	HTTPSuccessResponseSchema,
 	PaginatedResultSchema,
@@ -9,7 +13,6 @@ import {
 	WarehouseConnectionSchema,
 	WarehouseConnectionStatusSchema,
 } from "../../../entity/warehouse-connection";
-import { HeaderBearerSchema } from "../../../common/header";
 
 const c = initContract();
 
@@ -31,7 +34,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderBearerSchema,
+			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
 		},
 		listConnections: {
 			method: "GET",
@@ -49,7 +52,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderBearerSchema,
+			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
 		},
 		createConnection: {
 			method: "POST",
@@ -71,7 +74,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderBearerSchema,
+			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
 		},
 		updateConnection: {
 			method: "PUT",
@@ -94,7 +97,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderBearerSchema,
+			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
 		},
 		deleteConnection: {
 			method: "DELETE",
@@ -104,7 +107,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderBearerSchema,
+			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
 		},
 	},
 	{

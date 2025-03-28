@@ -22,10 +22,10 @@ export function CustomerHeader() {
 
 	const { session: jwt } = useSession();
 	const { data: profile } = useCustomerProfile({ jwt });
-	const signOut = useSignout()
+	const signOut = useSignout();
 
 	const navigation = [
-		{ name: "Shipments", href: "/customer/shipments", icon: Package },
+		{ name: "Shipments", href: "/customer", icon: Package },
 		{ name: "Tracking", href: "/customer/tracking", icon: Truck },
 	];
 

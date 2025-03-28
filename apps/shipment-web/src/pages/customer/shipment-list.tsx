@@ -10,10 +10,9 @@ import {
 	MapPin,
 	MoreHorizontal,
 	Search,
-	Table,
 	Truck,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
@@ -35,13 +34,15 @@ import {
 	SelectValue,
 } from "../../components/ui/select";
 import {
+	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
 } from "../../components/ui/table";
-
+import { useSession } from "../../usecase/auth/useSession";
+import { useListShipmentsByCustomer } from "../../usecase/shipment/useListShipmentsByCustomer";
 // Mock data for shipments
 
 // Helper function to format dates
@@ -103,11 +104,18 @@ function getStatusBadge(status: string) {
 
 export function ShipmentList() {
 	const navigate = useNavigate();
+	const { session } = useSession();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState("desc");
-	const { data: shipments } = useShipments();
+	const { data: _shipments } = useListShipmentsByCustomer({
+		jwt: session,
+	});
+
+	const shipments = useMemo(() => {
+		return _shipments?.items ?? [];
+	}, [_shipments]);
 
 	// Filter and sort shipments
 	const filteredShipments = shipments
@@ -116,9 +124,9 @@ export function ShipmentList() {
 			if (searchTerm) {
 				const searchLower = searchTerm.toLowerCase();
 				return (
-					shipment.id.toLowerCase().includes(searchLower) ||
-					shipment.departure_address.toLowerCase().includes(searchLower) ||
-					shipment.destination_address.toLowerCase().includes(searchLower)
+					shipment.id.toString().toLowerCase().includes(searchLower) ||
+					shipment.departure_address?.toLowerCase().includes(searchLower) ||
+					shipment.destination_address?.toLowerCase().includes(searchLower)
 				);
 			}
 			return true;
@@ -140,8 +148,10 @@ export function ShipmentList() {
 			}
 
 			// For dates and numbers
-			if (fieldA < fieldB) return sortDirection === "asc" ? -1 : 1;
-			if (fieldA > fieldB) return sortDirection === "asc" ? 1 : -1;
+			if (fieldA && fieldB && fieldA < fieldB)
+				return sortDirection === "asc" ? -1 : 1;
+			if (fieldA && fieldB && fieldA > fieldB)
+				return sortDirection === "asc" ? 1 : -1;
 			return 0;
 		});
 
@@ -295,7 +305,7 @@ export function ShipmentList() {
 										</TableCell>
 										<TableCell>{getStatusBadge(shipment.status)}</TableCell>
 										<TableCell className="hidden md:table-cell">
-											{shipment.total_weight.toFixed(2)}
+											{Number(shipment.total_weight).toFixed(2)}
 										</TableCell>
 										<TableCell className="hidden md:table-cell">
 											{formatDate(shipment.created_at)}

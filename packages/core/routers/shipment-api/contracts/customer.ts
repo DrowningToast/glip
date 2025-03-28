@@ -1,12 +1,13 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
+import { HeaderBearerSchema } from "../../../common/header";
 import {
 	HTTPErrorResponseSchema,
 	HTTPSuccessResponseSchema,
 	PaginatedResultSchema,
 } from "../../../common/http";
-import { CustomerSchema } from "../../../entity/customer";
 import { AccountSchema } from "../../../entity/account";
+import { CustomerSchema } from "../../../entity/customer";
 
 const c = initContract();
 
@@ -28,6 +29,7 @@ export const CustomerContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
+			headers: HeaderBearerSchema,
 		},
 		listCustomers: {
 			method: "GET",
@@ -41,6 +43,7 @@ export const CustomerContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
+			headers: HeaderBearerSchema,
 		},
 		createCustomer: {
 			method: "POST",
@@ -63,6 +66,7 @@ export const CustomerContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
+			headers: HeaderBearerSchema,
 		},
 		updateCustomer: {
 			method: "PUT",
@@ -83,6 +87,7 @@ export const CustomerContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
+			headers: HeaderBearerSchema,
 		},
 		deleteCustomer: {
 			method: "DELETE",
@@ -93,6 +98,7 @@ export const CustomerContract = c.router(
 			responses: {
 				200: HTTPSuccessResponseSchema(z.object({})),
 			},
+			headers: HeaderBearerSchema,
 		},
 	},
 	{

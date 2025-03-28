@@ -60,9 +60,9 @@ WHERE status = @status AND last_warehouse_id = @warehouse_id
 ORDER BY created_at DESC
 LIMIT sqlc.narg(return_limit) OFFSET sqlc.narg(return_offset);
 
-
 -- name: ListShipmentsByAccountUsername :many
 SELECT * FROM shipments
+JOIN owners ON shipments.owner_id = owners.id
 JOIN accounts ON owners.account_id = accounts.id
 WHERE accounts.username = @username AND status = COALESCE(sqlc.narg(status), status)
 ORDER BY shipments.created_at DESC

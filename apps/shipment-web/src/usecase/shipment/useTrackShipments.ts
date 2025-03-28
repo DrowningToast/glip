@@ -6,11 +6,21 @@ export const useTrackShipments = (shipmentId: number) => {
 		queryKey: ["track-shipments"],
 		queryFn: async () => {
 			const res = await shipmentApi.shipment.track({
-				query: {
+				body: {
+					email: "test@test.com",
 					shipment_id: shipmentId,
 				},
 			});
-			return res.body.result;
+			switch (res.status) {
+				case 200:
+					return res.body.result;
+				case 400:
+					throw new Error(res.body.message);
+				case 500:
+					throw new Error(res.body.message);
+				default:
+					throw new Error("Unknown error");
+			}
 		},
 	});
 };

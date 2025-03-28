@@ -13,7 +13,7 @@ export default function ShipmentsPage() {
 						View and manage all your shipments in one place
 					</p>
 				</div>
-				<Link to="/customer/shipments/create">
+				<Link to="/customer/create">
 					<Button className="flex items-center gap-2">
 						<Plus className="h-4 w-4" />
 						Create Shipment

@@ -2,13 +2,19 @@ import { useMutation } from "@tanstack/react-query";
 import { CreateShipmentBody } from "core/routers/shipment-api/contracts/shipment";
 import { toast } from "sonner";
 import { shipmentApi } from "../../api/shipment";
+import { useSession } from "../auth/useSession";
 
 export const useCreateShipment = () => {
+	const { session } = useSession();
+
 	return useMutation({
 		mutationFn: async (data: CreateShipmentBody) => {
 			const response = await shipmentApi.shipment.create({
 				body: {
 					...data,
+				},
+				headers: {
+					authorization: `Bearer ${session}`,
 				},
 			});
 

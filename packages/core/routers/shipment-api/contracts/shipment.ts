@@ -1,6 +1,7 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 import {
+	HeaderBearerSchema,
 	HTTPErrorResponseSchema,
 	HTTPSuccessResponseSchema,
 	PaginatedResultSchema,
@@ -37,6 +38,7 @@ export const ShipmentContract = c.router(
 				status: ShipmentStatusSchema.optional(),
 				username: z.string().optional(),
 			}),
+			headers: HeaderBearerSchema,
 			responses: {
 				200: HTTPSuccessResponseSchema(PaginatedResultSchema(ShipmentSchema)),
 				400: HTTPErrorResponseSchema(),
@@ -62,6 +64,7 @@ export const ShipmentContract = c.router(
 		},
 		create: {
 			method: "POST",
+			headers: HeaderBearerSchema,
 			path: "/",
 			body: CreateShipmentBodySchema,
 			responses: {
@@ -83,6 +86,7 @@ export const ShipmentContract = c.router(
 				status: ShipmentStatusSchema.optional(),
 				last_warehouse_id: z.string().optional(),
 			}),
+			headers: HeaderBearerSchema,
 			responses: {
 				200: HTTPSuccessResponseSchema(PaginatedResultSchema(ShipmentSchema)),
 				400: HTTPErrorResponseSchema(),
@@ -95,6 +99,7 @@ export const ShipmentContract = c.router(
 			pathParams: z.object({
 				shipment_id: z.string(),
 			}),
+			headers: HeaderBearerSchema,
 			responses: {
 				200: HTTPSuccessResponseSchema(
 					z.object({
@@ -107,7 +112,7 @@ export const ShipmentContract = c.router(
 		},
 	},
 	{
-		pathPrefix: "/shipment",
+		pathPrefix: "/v1/shipment",
 	}
 );
 

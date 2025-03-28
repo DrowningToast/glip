@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/cockroachdb/errors"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type PostgresConfig struct {
@@ -20,21 +20,22 @@ func (c *PostgresConfig) String() string {
 	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s", c.User, c.Password, c.Host, c.Port, c.DBName)
 }
 
-func (c *PostgresConfig) NewConnection(ctx context.Context) (*pgx.Conn, error) {
+func (c *PostgresConfig) NewConnection(ctx context.Context) (*pgxpool.Pool, error) {
 	connString := c.String()
-	connConfig, err := pgx.ParseConfig(connString)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse connection string")
-	}
+	// connConfig, err := pgx.ParseConfig(connString)
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "failed to parse connection string")
+	// }
 
-	conn, err := pgx.ConnectConfig(ctx, connConfig)
+	dbpool, err := pgxpool.New(ctx, connString)
+	// conn, err := pgx.ConnectConfig(ctx, connConfig)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to connect to database")
 	}
 
-	if err := conn.Ping(ctx); err != nil {
+	if err := dbpool.Ping(ctx); err != nil {
 		return nil, errors.Wrap(err, "failed to ping database")
 	}
 
-	return conn, nil
+	return dbpool, nil
 }
