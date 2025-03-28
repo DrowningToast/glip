@@ -91,7 +91,7 @@ func main() {
 	// mount
 	v1Router := app.Group("/v1")
 	v1Router.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000, http://localhost:5173",
+		AllowOrigins:     "http://localhost:3000, http://localhost:5174",
 		AllowCredentials: true,
 		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
