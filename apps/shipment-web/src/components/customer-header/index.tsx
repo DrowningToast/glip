@@ -2,7 +2,7 @@
 
 import { LogOut, Menu, Settings, User, X } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "../../components/ui/button";
 import {
 	DropdownMenu,
@@ -19,6 +19,7 @@ import { useSignout } from "../../usecase/auth/useSignout";
 export function CustomerHeader() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+	const navigate = useNavigate();
 	const { session: jwt } = useSession();
 	const { data: profile } = useCustomerProfile({ jwt });
 	const signOut = useSignout();
@@ -89,7 +90,14 @@ export function CustomerHeader() {
 							<DropdownMenuSeparator />
 							<DropdownMenuItem>
 								<LogOut className="mr-2 h-4 w-4" />
-								<span>Log out</span>
+								<span
+									onClick={() => {
+										signOut();
+										navigate("/login");
+									}}
+								>
+									Log out
+								</span>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -121,17 +129,19 @@ export function CustomerHeader() {
 										<Settings className="h-5 w-5" />
 										Settings
 									</Link>
-									<Link
-										to="/login"
+									<button
+										type="button"
 										className="-mx-3 flex items-center gap-2 rounded-lg px-3 py-2 text-base font-semibold leading-7 hover:bg-muted"
 										onClick={() => {
+											console.log("help");
 											setMobileMenuOpen(false);
 											signOut();
+											navigate("/login");
 										}}
 									>
 										<LogOut className="h-5 w-5" />
 										Log out
-									</Link>
+									</button>
 								</div>
 							</div>
 						</div>

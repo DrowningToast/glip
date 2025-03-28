@@ -5,6 +5,7 @@ import { components, hooks, utils } from '@generouted/react-router/client'
 
 export type Path =
   | `/`
+  | `/create-tracking-form`
   | `/customer`
   | `/customer/create`
   | `/customer/create/form`
@@ -18,9 +19,12 @@ export type Path =
   | `/login/warehouse`
   | `/login/warehouse/form`
   | `/track`
+  | `/track/:id`
+  | `/track/:id/result`
 
 export type Params = {
-  
+  '/track/:id': { id: string }
+  '/track/:id/result': { id: string }
 }
 
 export type ModalPath = never

@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { ThemeProvider } from "../components/theme-provider";
 import { Button } from "../components/ui/button";
+import { PublicTrackingForm } from "./create-tracking-form";
 
 const Page = () => {
 	return (
@@ -10,7 +11,7 @@ const Page = () => {
 					<div className="container flex h-16 items-center justify-between">
 						<div className="flex items-center gap-2">
 							<svg
-								xmlns="http://www.w3.org/2000/svg"
+								xmlns="http://www.w3.org/2000, 2, 3, .../svg"
 								viewBox="0 0 24 24"
 								fill="none"
 								stroke="currentColor"
@@ -83,17 +84,7 @@ const Page = () => {
 										</Link>
 									</div>
 								</div>
-								<div className="flex items-center justify-center">
-									<div className="relative h-[350px] w-[350px] sm:h-[450px] sm:w-[450px]">
-										<img
-											src="/placeholder.svg?height=450&width=450"
-											width={450}
-											height={450}
-											alt="Global Logistics"
-											className="rounded-lg object-cover"
-										/>
-									</div>
-								</div>
+								<div className="flex items-center justify-center"></div>
 							</div>
 						</div>
 					</section>
