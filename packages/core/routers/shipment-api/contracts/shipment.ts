@@ -9,7 +9,7 @@ import {
 
 const c = initContract();
 
-export const ShipmentApiContract = c.router(
+export const ShipmentContract = c.router(
 	{
 		listByCustomer: {
 			method: "GET",

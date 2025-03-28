@@ -12,12 +12,18 @@
 		"statusBar.foreground": "#e9dbb7"
 	},
 	"files.readonlyInclude": {
-      "**/routeTree.gen.ts": true
-    },
-    "files.watcherExclude": {
-      "**/routeTree.gen.ts": true
-    },
-    "search.exclude": {
-        "**/routeTree.gen.ts": true
-    }
+		"**/routeTree.gen.ts": true
+	},
+	"files.watcherExclude": {
+		"**/routeTree.gen.ts": true
+	},
+	"search.exclude": {
+		"**/routeTree.gen.ts": true
+	},
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "explicit",
+		"source.organizeImports": "explicit",
+		"typescript.preferences.importModuleSpecifier": "non-relative"
+	}
 }

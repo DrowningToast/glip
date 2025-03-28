@@ -5,6 +5,13 @@ import { components, hooks, utils } from '@generouted/react-router/client'
 
 export type Path =
   | `/`
+  | `/login`
+  | `/login/admin`
+  | `/login/customer`
+  | `/login/customer/form`
+  | `/login/role-selector`
+  | `/login/warehouse`
+  | `/login/warehouse/form`
 
 export type Params = {
   

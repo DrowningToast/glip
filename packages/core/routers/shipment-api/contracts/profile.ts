@@ -10,7 +10,7 @@ import { WarehouseConnectionSchema } from "../../../entity/warehouse-connection"
 
 const c = initContract();
 
-export const ProfileApiContract = c.router(
+export const ProfileContract = c.router(
 	{
 		getMyProfileAsCustomer: {
 			method: "GET",
