@@ -9,6 +9,8 @@ export const ShipmentStatusSchema = z.enum([
 	"LOST",
 ]);
 
+export const ShipmentStatuses = ShipmentStatusSchema.Values;
+
 export type ShipmentStatus = z.infer<typeof ShipmentStatusSchema>;
 
 export const ShipmentSchema = z.object({

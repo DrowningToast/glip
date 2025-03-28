@@ -1,9 +1,6 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
-import {
-	HeaderAuthorizationSchema,
-	HeaderAuthTypeSchema,
-} from "../../../common/header";
+import { RegistryAuthHeadersSchema } from "../../../common/header";
 import {
 	HTTPErrorResponseSchema,
 	HTTPSuccessResponseSchema,
@@ -34,7 +31,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
+			headers: RegistryAuthHeadersSchema,
 		},
 		listConnections: {
 			method: "GET",
@@ -52,7 +49,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
+			headers: RegistryAuthHeadersSchema,
 		},
 		createConnection: {
 			method: "POST",
@@ -74,7 +71,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
+			headers: RegistryAuthHeadersSchema,
 		},
 		updateConnection: {
 			method: "PUT",
@@ -97,7 +94,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
+			headers: RegistryAuthHeadersSchema,
 		},
 		deleteConnection: {
 			method: "DELETE",
@@ -107,7 +104,7 @@ export const WarehouseConnectionContract = c.router(
 				400: HTTPErrorResponseSchema(),
 				500: HTTPErrorResponseSchema(),
 			},
-			headers: HeaderAuthorizationSchema.merge(HeaderAuthTypeSchema),
+			headers: RegistryAuthHeadersSchema,
 		},
 	},
 	{

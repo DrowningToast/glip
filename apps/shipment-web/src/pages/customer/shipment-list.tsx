@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import { Badge } from "../../components/ui/badge";
+import { StatusBadge } from "../../components/status-badge";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import {
@@ -52,54 +52,6 @@ function formatDate(dateString: string) {
 		month: "short",
 		day: "numeric",
 	});
-}
-
-// Helper function to get status badge
-function getStatusBadge(status: string) {
-	switch (status) {
-		case "WAITING_FOR_PICKUP":
-			return (
-				<Badge
-					variant="outline"
-					className="flex items-center gap-1 bg-yellow-50 text-yellow-700 border-yellow-200"
-				>
-					<Clock className="h-3 w-3" />
-					Waiting for Pickup
-				</Badge>
-			);
-		case "IN_TRANSIT_ON_THE_WAY":
-			return (
-				<Badge
-					variant="outline"
-					className="flex items-center gap-1 bg-blue-50 text-blue-700 border-blue-200"
-				>
-					<Truck className="h-3 w-3" />
-					In Transit
-				</Badge>
-			);
-		case "DELIVERED":
-			return (
-				<Badge
-					variant="outline"
-					className="flex items-center gap-1 bg-green-50 text-green-700 border-green-200"
-				>
-					<CheckCircle2 className="h-3 w-3" />
-					Delivered
-				</Badge>
-			);
-		case "CANCELLED":
-			return (
-				<Badge
-					variant="outline"
-					className="flex items-center gap-1 bg-red-50 text-red-700 border-red-200"
-				>
-					<AlertCircle className="h-3 w-3" />
-					Cancelled
-				</Badge>
-			);
-		default:
-			return <Badge variant="outline">{status}</Badge>;
-	}
 }
 
 export function ShipmentList() {
@@ -198,14 +150,42 @@ export function ShipmentList() {
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="all">All Statuses</SelectItem>
-								<SelectItem value="WAITING_FOR_PICKUP">
+								<SelectItem
+									value="WAITING_FOR_PICKUP"
+									className="flex items-center gap-2"
+								>
+									<div className="h-4 w-4 rounded-full bg-amber-100 flex items-center justify-center">
+										<Clock className="h-2 w-2 text-amber-600" />
+									</div>
 									Waiting for Pickup
 								</SelectItem>
-								<SelectItem value="IN_TRANSIT_ON_THE_WAY">
+								<SelectItem
+									value="IN_TRANSIT_ON_THE_WAY"
+									className="flex items-center gap-2"
+								>
+									<div className="h-4 w-4 rounded-full bg-blue-100 flex items-center justify-center">
+										<Truck className="h-2 w-2 text-blue-600" />
+									</div>
 									In Transit
 								</SelectItem>
-								<SelectItem value="DELIVERED">Delivered</SelectItem>
-								<SelectItem value="CANCELLED">Cancelled</SelectItem>
+								<SelectItem
+									value="DELIVERED"
+									className="flex items-center gap-2"
+								>
+									<div className="h-4 w-4 rounded-full bg-green-100 flex items-center justify-center">
+										<CheckCircle2 className="h-2 w-2 text-green-600" />
+									</div>
+									Delivered
+								</SelectItem>
+								<SelectItem
+									value="CANCELLED"
+									className="flex items-center gap-2"
+								>
+									<div className="h-4 w-4 rounded-full bg-red-100 flex items-center justify-center">
+										<AlertCircle className="h-2 w-2 text-red-600" />
+									</div>
+									Cancelled
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -303,9 +283,11 @@ export function ShipmentList() {
 												</span>
 											</div>
 										</TableCell>
-										<TableCell>{getStatusBadge(shipment.status)}</TableCell>
+										<TableCell className="min-w-[220px]">
+											<StatusBadge status={shipment.status} />
+										</TableCell>
 										<TableCell className="hidden md:table-cell">
-											{Number(shipment.total_weight).toFixed(2)}
+											{shipment.total_weight}
 										</TableCell>
 										<TableCell className="hidden md:table-cell">
 											{formatDate(shipment.created_at)}

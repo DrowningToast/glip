@@ -1,8 +1,8 @@
 "use client";
 
-import { LogOut, Menu, Package, Settings, Truck, User, X } from "lucide-react";
+import { LogOut, Menu, Settings, User, X } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { Button } from "../../components/ui/button";
 import {
 	DropdownMenu,
@@ -17,17 +17,11 @@ import { useSession } from "../../usecase/auth/useSession";
 import { useSignout } from "../../usecase/auth/useSignout";
 
 export function CustomerHeader() {
-	const location = useLocation();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	const { session: jwt } = useSession();
 	const { data: profile } = useCustomerProfile({ jwt });
 	const signOut = useSignout();
-
-	const navigation = [
-		{ name: "Shipments", href: "/customer", icon: Package },
-		{ name: "Tracking", href: "/customer/tracking", icon: Truck },
-	];
 
 	return (
 		<header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
@@ -74,23 +68,6 @@ export function CustomerHeader() {
 					</button>
 				</div>
 
-				<div className="hidden lg:flex lg:gap-x-8">
-					{navigation.map((item) => (
-						<Link
-							key={item.name}
-							to={item.href}
-							className={`flex items-center gap-1 text-sm font-medium leading-6 ${
-								location.pathname.startsWith(item.href)
-									? "text-primary"
-									: "text-muted-foreground hover:text-foreground"
-							}`}
-						>
-							<item.icon className="h-4 w-4" />
-							{item.name}
-						</Link>
-					))}
-				</div>
-
 				<div className="hidden lg:flex lg:flex-1 lg:justify-end">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -126,23 +103,7 @@ export function CustomerHeader() {
 					<div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
 						<div className="mt-6 flow-root">
 							<div className="-my-6 divide-y">
-								<div className="space-y-2 py-6">
-									{navigation.map((item) => (
-										<Link
-											key={item.name}
-											to={item.href}
-											className={`-mx-3 flex items-center gap-2 rounded-lg px-3 py-2 text-base font-semibold leading-7 ${
-												location.pathname.startsWith(item.href)
-													? "bg-accent text-accent-foreground"
-													: "hover:bg-muted"
-											}`}
-											onClick={() => setMobileMenuOpen(false)}
-										>
-											<item.icon className="h-5 w-5" />
-											{item.name}
-										</Link>
-									))}
-								</div>
+								<div className="space-y-2 py-6"></div>
 								<div className="py-6">
 									<Link
 										to="/customer/profile"

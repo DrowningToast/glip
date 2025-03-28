@@ -4,10 +4,7 @@ export const HeaderBearerSchema = z.object({
 	authorization: z.string().startsWith("Bearer "),
 });
 
-export const HeaderAuthorizationSchema = z.object({
-	Authorization: z.string().startsWith("Bearer "),
-});
-
-export const HeaderAuthTypeSchema = z.object({
+export const RegistryAuthHeadersSchema = z.object({
+	Authorization: z.string(),
 	AuthType: z.string(),
 });

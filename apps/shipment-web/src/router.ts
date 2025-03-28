@@ -17,6 +17,7 @@ export type Path =
   | `/login/role-selector`
   | `/login/warehouse`
   | `/login/warehouse/form`
+  | `/track`
 
 export type Params = {
   
