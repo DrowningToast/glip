@@ -5,6 +5,6 @@ export const HeaderBearerSchema = z.object({
 });
 
 export const RegistryAuthHeadersSchema = z.object({
-	Authorization: z.string(),
-	AuthType: z.string(),
+	authorization: z.string(),
+	authtype: z.string(),
 });
